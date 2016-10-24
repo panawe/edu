@@ -1,0 +1,8 @@
+1- Populate the file "UPLOAD STUDENT FROM EXCEL TO ISCHOOL TEMPLATE.xlsx" with the student names and all the fields listed
+2- Replace all the single quotes (') in student names with '' ---- Caution Caution and Caution: DO NOT REPLACE ' IN THE EXCEL FORMULA THAT HAS THE SQL!!!
+3- Apply the excel formulae to generate SQL for all rows
+4- Copy/paste the SQL and remove the double quotes (")
+5- Run the SQL to create students
+6- Run the query below to activate the students and link them to their respective user IDs.
+UPDATE STUDENT S SET STATUS =1, USER_ID=(SELECT USER_ID FROM USERS WHERE USER_NAME =S.MATRICULE),
+ENROLLMENT_ID =(SELECT ENROLLMENT_ID FROm SENROLLMENT WHERE STUDENT_ID = S.STUDENT_ID limit 1);

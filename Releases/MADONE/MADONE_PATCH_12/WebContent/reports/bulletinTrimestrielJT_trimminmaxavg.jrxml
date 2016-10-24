@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletinSequenciel_trimminmaxavg" language="groovy" pageWidth="124" pageHeight="16" columnWidth="124" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="3.1384283767210035"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="yearId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="termGroupId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="className" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="schoolId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT AVG(MARK)  AVG_MARK,
+MAX(MARK) MAX_MARK,
+MIN(MARK) MIN_MARK
+FROM (
+SELECT  STUDENT_ID, SUM(MARK)/2 MARK
+FROM  BULLETIN BULL
+WHERE BULL.SCHOOLYEAR_ID= $P{yearId}
+AND BULL.TERM_ID IN (SELECT TERM_ID FROM TERM WHERE TERM_GROUP_ID=$P{termGroupId})
+AND BULL.CLASS_NAME=$P{className}
+AND BULL.SCHOOL_ID=$P{schoolId}
+GROUP BY STUDENT_ID)tt]]>
+	</queryString>
+	<field name="AVG_MARK" class="java.lang.Double"/>
+	<field name="MAX_MARK" class="java.lang.Double"/>
+	<field name="MIN_MARK" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<textField pattern="###0.00;-###0.00">
+				<reportElement x="0" y="0" width="41" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{AVG_MARK}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement x="41" y="0" width="41" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{MIN_MARK}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement x="83" y="0" width="41" height="16"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{MAX_MARK}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="41" y="0" width="1" height="16"/>
+			</line>
+			<line>
+				<reportElement x="83" y="0" width="1" height="16"/>
+			</line>
+		</band>
+	</detail>
+</jasperReport>

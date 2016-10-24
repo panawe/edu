@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="StatistiquesParEcole_graph" pageWidth="750" pageHeight="550" orientation="Landscape" columnWidth="750" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="yearId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="levelName" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="schoolId" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT SC.NAME SCHOOLNAME, SY.DESCRIPTION SCHOOLYEAR, LVL.NAME LEVELNAME, SB.NAME SUBJECTNAME,
+AVG((BULL.CLASS_MARK*CLASS_RATIO+EXAM_MARK*EXAM_RATIO)*.20/MAX_MARK) AVERAGEMARK,
+MIN((BULL.CLASS_MARK*CLASS_RATIO+EXAM_MARK*EXAM_RATIO)*.20/MAX_MARK) MINMARK,
+MAX((BULL.CLASS_MARK*CLASS_RATIO+EXAM_MARK*EXAM_RATIO)*.20/MAX_MARK) MAXMARK,
+SUM(CASE WHEN (BULL.CLASS_MARK*CLASS_RATIO+EXAM_MARK*EXAM_RATIO)*.20/MAX_MARK>=10 THEN 1 ELSE 0 END ) PASSED,
+SUM(CASE WHEN (BULL.CLASS_MARK*CLASS_RATIO+EXAM_MARK*EXAM_RATIO)*.20/MAX_MARK<10 THEN 1 ELSE 0 END ) FAILED
+FROM  AVERAGES BULL,LEVELS LVL,  SCHOOLYEAR SY, SUBJECT SB, SCHOOL SC
+WHERE BULL.SCHOOLYEAR_ID = SY.SCHOOLYEAR_ID
+AND BULL.LEVEL_ID  = LVL.LEVEL_ID
+AND BULL.SUBJECT_ID = SB.SUBJECT_ID
+AND BULL.SCHOOL_ID=$P{schoolId}
+AND SC.SCHOOL_ID=BULL.SCHOOL_ID
+AND BULL.SCHOOLYEAR_ID=$P{yearId}
+AND LVL.NAME=$P{levelName}
+GROUP BY  SY.DESCRIPTION,SC.NAME, LVL.NAME, SB.NAME]]>
+	</queryString>
+	<field name="SCHOOLNAME" class="java.lang.String"/>
+	<field name="SCHOOLYEAR" class="java.lang.String"/>
+	<field name="LEVELNAME" class="java.lang.String"/>
+	<field name="SUBJECTNAME" class="java.lang.String"/>
+	<field name="AVERAGEMARK" class="java.lang.Double"/>
+	<field name="MINMARK" class="java.lang.Double"/>
+	<field name="MAXMARK" class="java.lang.Double"/>
+	<field name="PASSED" class="java.lang.Long"/>
+	<field name="FAILED" class="java.lang.Long"/>
+	<sortField name="AVERAGEMARK" order="Descending"/>
+	<sortField name="SCHOOLNAME"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="430" splitType="Stretch">
+			<lineChart>
+				<chart theme="aegean">
+					<reportElement x="3" y="4" width="745" height="197"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend position="Bottom"/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Moyennes"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{SUBJECTNAME}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{AVERAGEMARK}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Faibles Moyennes"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{SUBJECTNAME}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{MINMARK}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Fortes Moyennes"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{SUBJECTNAME}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{MAXMARK}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot labelRotation="-5.0"/>
+					<categoryAxisFormat labelRotation="-5.0">
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+			<lineChart>
+				<chart theme="aegean">
+					<reportElement x="3" y="208" width="745" height="212"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend position="Bottom"/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Taux de Reussite"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{SUBJECTNAME}]]></categoryExpression>
+						<valueExpression><![CDATA[100.0*$F{PASSED}/($F{PASSED}+$F{FAILED})]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot labelRotation="-5.0"/>
+					<categoryAxisFormat labelRotation="-5.0">
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+		</band>
+	</summary>
+</jasperReport>

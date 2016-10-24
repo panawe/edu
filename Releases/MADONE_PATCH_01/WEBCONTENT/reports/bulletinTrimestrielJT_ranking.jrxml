@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletinTrimestrielJT_ranking" language="groovy" pageWidth="40" pageHeight="22" columnWidth="40" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="13.109994191499972"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="termGroupId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="yearId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="className" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="schoolId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="subjectId" class="java.lang.Integer">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="studentId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT rank from
+(SELECT @rownum:=@rownum + 1 as rank,STUDENT_ID FROM
+(SELECT  STUDENT_ID, SUM(AVERAGE_MARK)
+ FROM AVERAGES AV1
+WHERE TERM_ID IN (SELECT TERM_ID FROM TERM WHERE TERM_GROUP_ID=$P{termGroupId})
+AND SCHOOLYEAR_ID= $P{yearId}
+AND CLASS_NAME=$P{className}
+AND SCHOOL_ID=$P{schoolId}
+AND SUBJECT_ID = $P{subjectId}
+GROUP BY  STUDENT_ID
+ORDER BY 2 DESC
+) AV1, (SELECT @rownum := 0) r)tt
+WHERE STUDENT_ID = $P{studentId}]]>
+	</queryString>
+	<field name="rank" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="22">
+			<textField pattern="###0">
+				<reportElement x="0" y="0" width="40" height="22"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{rank}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

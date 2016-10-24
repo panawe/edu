@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="StatistiquesParEcole_graph" language="groovy" pageWidth="750" pageHeight="555" orientation="Landscape" columnWidth="750" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="termId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="yearId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="schoolIds" class="java.util.List"/>
+	<queryString>
+		<![CDATA[SELECT SC.NAME SCHOOLNAME, SC.SHORT_NAME, SY.DESCRIPTION SCHOOLYEAR, TE.NAME TERMNAME, AVG(BULL.MARK) AVERAGEMARK, MIN(BULL.MARK) MINMARK,
+MAX(BULL.MARK) MAXMARK, SUM(CASE WHEN BULL.MARK>=10 THEN 1 ELSE 0 END ) PASSED, SUM(CASE WHEN BULL.MARK<10 THEN 1 ELSE 0 END ) FAILED,   COUNT(*) NBR_STUDENT
+FROM  BULLETIN BULL,TERM TE,  SCHOOLYEAR SY,SCHOOL SC
+WHERE BULL.SCHOOLYEAR_ID = SY.SCHOOLYEAR_ID
+AND BULL.TERM_ID  = TE.TERM_ID
+AND BULL.TERM_ID=$P{termId}
+AND BULL.SCHOOLYEAR_ID=$P{yearId}
+AND SC.SCHOOL_ID=BULL.SCHOOL_ID
+AND $X{IN,BULL.SCHOOL_ID, schoolIds}
+GROUP BY  SY.DESCRIPTION,SC.NAME, TE.NAME, SC.SHORT_NAME]]>
+	</queryString>
+	<field name="SCHOOLNAME" class="java.lang.String"/>
+	<field name="SHORT_NAME" class="java.lang.String"/>
+	<field name="SCHOOLYEAR" class="java.lang.String"/>
+	<field name="TERMNAME" class="java.lang.String"/>
+	<field name="AVERAGEMARK" class="java.lang.Double"/>
+	<field name="MINMARK" class="java.lang.Double"/>
+	<field name="MAXMARK" class="java.lang.Double"/>
+	<field name="PASSED" class="java.math.BigDecimal"/>
+	<field name="FAILED" class="java.math.BigDecimal"/>
+	<field name="NBR_STUDENT" class="java.lang.Long"/>
+	<sortField name="AVERAGEMARK" order="Descending"/>
+	<sortField name="SCHOOLNAME"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="432" splitType="Stretch">
+			<lineChart>
+				<chart theme="aegean">
+					<reportElement stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="750" height="210"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend position="Bottom"/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Moyennes"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{SHORT_NAME}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{AVERAGEMARK}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Faibles Moyennes"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{SHORT_NAME}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{MINMARK}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Fortes Moyennes"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{SHORT_NAME}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{MAXMARK}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot labelRotation="-10.0"/>
+					<categoryAxisFormat labelRotation="-10.0">
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+			<lineChart>
+				<chart theme="aegean">
+					<reportElement stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="222" width="750" height="210"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend position="Bottom"/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Taux de Reussite"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{SHORT_NAME}]]></categoryExpression>
+						<valueExpression><![CDATA[100*$F{PASSED}/($F{PASSED}+$F{FAILED})]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot labelRotation="-10.0"/>
+					<categoryAxisFormat labelRotation="-10.0">
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+		</band>
+	</summary>
+</jasperReport>

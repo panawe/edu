@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletinTrimestriel_schooling" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.3310000000000004"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="studentId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="schoolId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[
+SELECT  L.LEVEL_ID, CONCAT_WS(' : ',L.NAME, SY.NAME) YEAR  FROM  LEVELS L INNER JOIN CLASS C ON (L.LEVEL_ID =C.LEVEL_ID) INNER JOIN SENROLLMENT SE ON (C.CLASS_ID=SE.CLASS_ID )
+INNER JOIN SCHOOLYEAR SY ON(SY.SCHOOLYEAR_ID = SE.SCHOOLYEAR_ID)
+WHERE  SE.STUDENT_ID =$P{studentId}
+AND SE.SCHOOL_ID=$P{schoolId}
+ORDER BY 1]]>
+	</queryString>
+	<field name="LEVEL_ID" class="java.lang.Integer"/>
+	<field name="YEAR" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="404" height="22"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{YEAR}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

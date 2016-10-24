@@ -1,0 +1,32 @@
+<style type=”text/css”>
+.dr-mpnl-pnl {overflow:auto!important}
+                        <style>
+                
+                            .row {height: 100px;}
+                            .rich-sdt-column-cell-body {height: 100px; text-align: center;valign:center}                    
+                            #preview{
+                                position:absolute;
+                                border:1px solid #ccc;
+                                background:#888;
+                                padding:5px;
+                                display:none;
+                                color:#fff;
+                                }
+                            .content_container {
+                                left: 0;
+                                position: absolute;
+                                top: 95px;
+                            }
+                            .content_container_left_brick {
+                                background-color: transparent;
+                                width: 235px;
+                            }
+                            .rich-sdt-column-cell {
+                                -moz-box-sizing: border-box;
+                                -moz-user-focus: normal;
+                                background-color: black;
+                                border-bottom: 0 solid;
+                                border-right: 0 solid;
+                            }                                                                                                                                
+                          </style>
+</style>

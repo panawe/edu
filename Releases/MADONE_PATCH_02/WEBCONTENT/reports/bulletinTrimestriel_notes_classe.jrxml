@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletinTrimestriel_notes_classe" language="groovy" pageWidth="802" pageHeight="30" orientation="Landscape" columnWidth="802" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="subjectName" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="yearId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="termId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="studentId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="className" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="schoolId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT SE.STUDENT_ID, E.EXAM_ID, MARK*20/C.MAX_MARK MARK FROM MARK M, EXAM E, SENROLLMENT SE, COURSE C, SUBJECT S, CLASS CL
+WHERE M.EXAM_ID = E.EXAM_ID
+AND SE.ENROLLMENT_ID = M.ENROLLMENT_ID
+AND E.COURSE_ID=C.COURSE_ID
+AND S.SUBJECT_ID = C.SUBJECT_ID
+AND CL.CLASS_ID = C.CLASS_ID
+AND E.EVALUATION_TYPE =0
+AND S.NAME = $P{subjectName}
+AND E.SCHOOLYEAR_ID= $P{yearId}
+AND E.TERM_ID=$P{termId}
+AND SE.STUDENT_ID =$P{studentId}
+AND CL.NAME=$P{className}
+AND M.SCHOOL_ID=$P{schoolId}]]>
+	</queryString>
+	<field name="STUDENT_ID" class="java.lang.Long"/>
+	<field name="EXAM_ID" class="java.lang.Integer"/>
+	<field name="MARK" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="15" splitType="Stretch">
+			<crosstab>
+				<reportElement x="0" y="0" width="802" height="15"/>
+				<rowGroup name="STUDENT_ID" width="0">
+					<bucket>
+						<bucketExpression class="java.lang.Long"><![CDATA[$F{STUDENT_ID}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="EXAM_ID" height="0">
+					<bucket>
+						<bucketExpression class="java.lang.Integer"><![CDATA[$F{EXAM_ID}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="MARKMeasure" class="java.lang.Double" calculation="Average">
+					<measureExpression><![CDATA[$F{MARK}]]></measureExpression>
+				</measure>
+				<crosstabCell width="32" height="16">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="###0.00;-###0.00">
+							<reportElement style="Crosstab Data Text" x="0" y="1" width="32" height="15"/>
+							<textElement verticalAlignment="Middle">
+								<font size="9"/>
+							</textElement>
+							<textFieldExpression class="java.lang.Double"><![CDATA[$V{MARKMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="STUDENT_ID">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression class="java.lang.Double"><![CDATA[$V{MARKMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="EXAM_ID">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression class="java.lang.Double"><![CDATA[$V{MARKMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="STUDENT_ID" columnTotalGroup="EXAM_ID">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression class="java.lang.Double"><![CDATA[$V{MARKMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

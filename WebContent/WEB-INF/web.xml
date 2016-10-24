@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	id="WebApp_ID" version="2.5">
+	<display-name>education</display-name>
+	<welcome-file-list>
+		<welcome-file>index.faces</welcome-file>
+	</welcome-file-list>
+
+	<!-- Plugging the "Blue Sky" skin into the project -->
+	<context-param>
+		<param-name>org.richfaces.SKIN</param-name>
+		<param-value>#{skinBean.skin}</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>org.apache.myfaces.USE_ENCRYPTION</param-name>
+		<param-value>false</param-value>
+	</context-param>
+
+<!-- 
+	<context-param>
+	    <description>State saving method: 'client' or 'server' (=default). See JSF Specification 2.5.2</description>
+	    <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+	    <param-value>client</param-value>
+	</context-param>
+-->
+	<!-- Making the RichFaces skin spread to standard HTML controls -->
+	<context-param>
+		<param-name>org.richfaces.CONTROL_SKINNING</param-name>
+		<param-value>enable</param-value>
+	</context-param>
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/educationconfig.xml</param-value>
+	</context-param>
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>/WEB-INF/log4j.xml</param-value>
+	</context-param>
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>
+			org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>com.edu.listener.MySessionAttributeListener</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>com.edu.listener.MySessionListener</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>com.edu.listener.MyContextListener</listener-class>
+	</listener>
+	<!-- Defining and mapping the RichFaces filter -->
+	<filter>
+		<display-name>RichFaces Filter</display-name>
+		<filter-name>richfaces</filter-name>
+		<filter-class>org.ajax4jsf.Filter</filter-class>
+		<init-param>
+			<param-name>createTempFiles</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>
+			<description> Enable caching of frameworkgenerated resources
+                (JavaScript, CSS, images, etc.). </description>
+			<param-name>enable-cache</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>maxRequestSize</param-name>
+			<param-value>1000000000</param-value>
+		</init-param>
+
+	</filter>
+
+	<filter-mapping>
+		<filter-name>richfaces</filter-name>
+		<servlet-name>Faces Servlet</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>Restricting Filter</filter-name>
+		<filter-class>com.edu.filter.RestrictPageFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>Restricting Filter</filter-name>
+		<url-pattern>*.faces</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>IE9</filter-name>
+		<filter-class>com.edu.filter.IE9CompatablityFixServlet</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>IE9</filter-name>
+		<url-pattern>*.*</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.faces</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>/faces/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet>
+		<servlet-name>logout</servlet-name>
+		<servlet-class>com.edu.servlet.Logout</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>logout</servlet-name>
+		<url-pattern>/logout</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>dispatch</servlet-name>
+		<servlet-class>com.edu.servlet.Dispatcher</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dispatch</servlet-name>
+		<url-pattern>/dispatch</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+	  <servlet-name>scheduler_1</servlet-name>
+	  <servlet-class>com.edu.servlet.Scheduler_RecConnector</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	  <servlet-name>scheduler_1</servlet-name>
+	  <url-pattern>/events_rec.do</url-pattern>
+	</servlet-mapping>
+	  
+	<servlet>
+	  <servlet-name>scheduler_2</servlet-name>
+	  <servlet-class>com.edu.servlet.Scheduler_BasicConnector</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	  <servlet-name>scheduler_2</servlet-name>
+	  <url-pattern>/events.do</url-pattern>
+	</servlet-mapping>
+  
+</web-app>

@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="productList" pageWidth="792" pageHeight="612" orientation="Landscape" whenNoDataType="BlankPage" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="34"/>
+	<property name="ireport.callouts" value="##Sat Jun 25 23:04:15 CDT 2011"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="schoolInfo">
+		<queryString>
+			<![CDATA[SELECT logo, report_header from school where show_report_header=1 limit 1]]>
+		</queryString>
+		<field name="logo" class="java.io.InputStream"/>
+		<field name="report_header" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\aamouberry\\workspace\\education\\WebContent\\reports\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT product.product_id,
+product.name,
+purchase_order.order_id, purchase_order.order_date, purchase_order.pos_delivery_date,
+purchase_order.client_number, purchase_order.discount_rate as order_discount_rate,
+purchase_order.discount_amount as order_discount_amount, purchase_order.total_amount,
+order_product.discount_rate, order_product.discount_amount, order_product.tax_rate, order_product.total_tax,
+order_product.qty_ordered, order_product.qty_received, order_product.qty_damaged,
+supplier.name as supplier_name, supplier.contact_name as supplier_contact_name,
+supplier.phone_number as supplier_phone_number,
+shipment.shipment_number, shipment.origin, shipment.destination,
+shipment.date_of_dispatch, shipment.date_of_arrival
+FROM purchase_order
+LEFT OUTER JOIN order_product ON purchase_order.order_id = order_product.order_id
+LEFT OUTER JOIN product ON product.product_id = order_product.product_id
+LEFT OUTER JOIN shipment ON purchase_order.shipment_id = shipment.shipment_id
+LEFT OUTER JOIN supplier ON purchase_order.supplier_id = supplier.supplier_id]]>
+	</queryString>
+	<field name="product_id" class="java.lang.Long"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="order_id" class="java.lang.Long"/>
+	<field name="order_date" class="java.sql.Timestamp"/>
+	<field name="pos_delivery_date" class="java.sql.Timestamp"/>
+	<field name="client_number" class="java.lang.String"/>
+	<field name="order_discount_rate" class="java.lang.Double"/>
+	<field name="order_discount_amount" class="java.lang.Double"/>
+	<field name="total_amount" class="java.lang.Double"/>
+	<field name="discount_rate" class="java.lang.Double"/>
+	<field name="discount_amount" class="java.lang.Double"/>
+	<field name="tax_rate" class="java.lang.Double"/>
+	<field name="total_tax" class="java.lang.Double"/>
+	<field name="qty_ordered" class="java.lang.Long"/>
+	<field name="qty_received" class="java.lang.Long"/>
+	<field name="qty_damaged" class="java.lang.Long"/>
+	<field name="supplier_name" class="java.lang.String"/>
+	<field name="supplier_contact_name" class="java.lang.String"/>
+	<field name="supplier_phone_number" class="java.lang.String"/>
+	<field name="shipment_number" class="java.lang.String"/>
+	<field name="origin" class="java.lang.String"/>
+	<field name="destination" class="java.lang.String"/>
+	<field name="date_of_dispatch" class="java.sql.Timestamp"/>
+	<field name="date_of_arrival" class="java.sql.Timestamp"/>
+	<variable name="numberOfProductsByOrder" class="java.lang.Integer" resetType="Group" resetGroup="OrderGroup" calculation="Count">
+		<variableExpression><![CDATA[$F{product_id}]]></variableExpression>
+	</variable>
+	<variable name="totalNumberOfProducts" class="java.lang.Integer" calculation="Count">
+		<variableExpression><![CDATA[$F{order_id}]]></variableExpression>
+	</variable>
+	<group name="OrderGroup" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{order_id}]]></groupExpression>
+		<groupHeader>
+			<band height="158">
+				<staticText>
+					<reportElement x="66" y="136" width="185" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Nom]]></text>
+				</staticText>
+				<line>
+					<reportElement x="55" y="110" width="641" height="1"/>
+					<graphicElement>
+						<pen lineStyle="Double" lineColor="#000000"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement x="543" y="136" width="76" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Qte en Stock]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="619" y="136" width="66" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Returnable]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="368" y="136" width="96" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ISBN]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="464" y="136" width="78" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Qte minimale]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="251" y="136" width="117" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Code]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="22" y="4" width="55" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Numero:]]></text>
+				</staticText>
+				<line>
+					<reportElement x="56" y="111" width="640" height="1"/>
+				</line>
+				<line>
+					<reportElement x="696" y="111" width="1" height="45"/>
+					<graphicElement>
+						<pen lineStyle="Double"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="618" y="109" width="1" height="45"/>
+					<graphicElement>
+						<pen lineStyle="Double"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="464" y="110" width="1" height="45"/>
+					<graphicElement>
+						<pen lineStyle="Double"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="367" y="111" width="1" height="45"/>
+					<graphicElement>
+						<pen lineStyle="Double"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="249" y="111" width="1" height="45"/>
+					<graphicElement>
+						<pen lineStyle="Double"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="542" y="111" width="1" height="45"/>
+					<graphicElement>
+						<pen lineStyle="Double"/>
+					</graphicElement>
+				</line>
+				<textField>
+					<reportElement x="77" y="4" width="66" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$F{order_id}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="280" y="4" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{order_date}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="161" y="4" width="116" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Date de commande:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="393" y="4" width="90" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Numero Client:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="483" y="4" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{client_number}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="22" y="34" width="101" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Taux de remise:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="233" y="34" width="112" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Montant de remise:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="123" y="34" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$F{order_discount_rate}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="345" y="34" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$F{order_discount_amount}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="22" y="61" width="76" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Fournisseur:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="98" y="61" width="125" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{supplier_name}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="346" y="61" width="150" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{supplier_contact_name}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="233" y="61" width="113" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Person a contacter:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="507" y="61" width="131" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Numero de Telephone:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="638" y="61" width="90" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{supplier_phone_number}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="74" splitType="Prevent">
+				<line>
+					<reportElement x="0" y="0" width="752" height="1"/>
+					<graphicElement>
+						<pen lineStyle="Double" lineColor="#000000"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement x="380" y="16" width="202" height="20"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total de produits par commande:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="663" y="54" width="37" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="585" y="16" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{numberOfProductsByOrder}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="71" splitType="Stretch">
+			<subreport>
+				<reportElement x="1" y="0" width="727" height="71"/>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR}+"bulletinHeader.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="71" splitType="Stretch">
+			<staticText>
+				<reportElement x="233" y="29" width="310" height="33"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LISTE DES COMMANDES]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement x="1" y="0" width="139" height="20" forecolor="#666666"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<line>
+				<reportElement x="54" y="1" width="643" height="1"/>
+			</line>
+			<line>
+				<reportElement x="55" y="-47" width="1" height="70"/>
+				<graphicElement>
+					<pen lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="249" y="3" width="1" height="21"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="367" y="3" width="1" height="21"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="618" y="3" width="1" height="21"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="542" y="2" width="1" height="21"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="464" y="3" width="1" height="21"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="696" y="0" width="1" height="23"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="56" y="23" width="640" height="1"/>
+			</line>
+		</band>
+	</detail>
+	<summary>
+		<band height="48">
+			<textField>
+				<reportElement x="600" y="18" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.Integer"><![CDATA[$V{totalNumberOfProducts}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="465" y="18" width="135" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total de commandes:]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

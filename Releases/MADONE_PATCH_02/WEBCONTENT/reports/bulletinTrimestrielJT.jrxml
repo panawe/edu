@@ -1,0 +1,856 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Bulletin trimestriel JT" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="2.1435888100000184"/>
+	<property name="ireport.x" value="173"/>
+	<property name="ireport.y" value="480"/>
+	<subDataset name="schoolInfo">
+		<queryString>
+			<![CDATA[SELECT logo, report_header from school where show_report_header=1 limit 1]]>
+		</queryString>
+		<field name="logo" class="java.io.InputStream"/>
+		<field name="report_header" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="yearId" class="java.lang.Long"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\My Projects\\education\\WebContent\\reports\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="className" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="schoolId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="termGroupId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT SY.DESCRIPTION SCHOOLYEAR, (SELECT NAME FROM TERM_GROUP WHERE TERM_GROUP_ID=$P{termGroupId}) TERMNAME, TE.TERM_ID,  SJ.NAME SUBJECTNAME,ST.IMAGE,ST.MATRICULE,ST.BIRTH_DATE,ST.CITY_OF_BIRTH,
+CONCAT_WS(' ',TC.LAST_NAME,TC.MIDDLE_NAME, TC.FIRST_NAME) TEACHERNAME, ST.STUDENT_ID STUDENT_ID,  CONCAT_WS(' ', ST.LAST_NAME, ST.MIDDLE_NAME,ST.FIRST_NAME) STUDENTNAME,SJ.SUBJECT_ID,50.0 CLASSRATIO,50.0 EXAMRATIO,
+AV1.CLASS_NAME CLASSNAME, AV1.NBR_STUDENT NBR_OF_STUDENTS, 'TRES BIEN' GRADE_NAME,AV1.SUBJECT_GROUP,
+AV1.MAX_MARK,AV1.AVERAGE_MARK CLASSMARK, AV2.AVERAGE_MARK EXAMMARK, (AV1.AVERAGE_MARK+AV2.AVERAGE_MARK)/2  MOYENNE, 1 SRANK
+FROM  STUDENT ST,TERM TE,SUBJECT SJ, TEACHER TC, SCHOOLYEAR SY,
+(SELECT SCHOOLYEAR_ID,STUDENT_ID,TERM_ID, SUBJECT_ID,TEACHER_ID, SUBJECT_GROUP, AVERAGE_MARK,MAX_MARK,
+CLASS_NAME,NBR_STUDENT FROM AVERAGES AV1
+WHERE TERM_ID = (SELECT MIN(TERM_ID) FROM TERM WHERE TERM_GROUP_ID=$P{termGroupId})
+AND SCHOOLYEAR_ID= $P{yearId}
+AND CLASS_NAME=$P{className}
+AND SCHOOL_ID=$P{schoolId}) AV1,
+(SELECT SCHOOLYEAR_ID,STUDENT_ID,TERM_ID, SUBJECT_ID,TEACHER_ID, SUBJECT_GROUP, AVERAGE_MARK,MAX_MARK,
+CLASS_NAME,NBR_STUDENT FROM AVERAGES AV1
+WHERE TERM_ID = (SELECT MAX(TERM_ID) FROM TERM WHERE TERM_GROUP_ID=$P{termGroupId})
+AND SCHOOLYEAR_ID= $P{yearId}
+AND CLASS_NAME=$P{className}
+AND SCHOOL_ID=$P{schoolId}) AV2
+WHERE AV1.SCHOOLYEAR_ID=SY.SCHOOLYEAR_ID
+AND ST.STUDENT_ID = AV1.STUDENT_ID
+AND AV1.TERM_ID = TE.TERM_ID
+AND AV1.SUBJECT_ID =SJ.SUBJECT_ID
+AND AV1.TEACHER_ID = TC.TEACHER_ID
+AND AV1.SCHOOLYEAR_ID=AV2.SCHOOLYEAR_ID
+AND AV1.STUDENT_ID = AV2.STUDENT_ID
+AND AV1.SUBJECT_ID =AV2.SUBJECT_ID]]>
+	</queryString>
+	<field name="SCHOOLYEAR" class="java.lang.String"/>
+	<field name="TERMNAME" class="java.lang.String"/>
+	<field name="TERM_ID" class="java.lang.Integer"/>
+	<field name="SUBJECTNAME" class="java.lang.String"/>
+	<field name="IMAGE" class="java.io.InputStream"/>
+	<field name="MATRICULE" class="java.lang.String"/>
+	<field name="BIRTH_DATE" class="java.sql.Date"/>
+	<field name="CITY_OF_BIRTH" class="java.lang.String"/>
+	<field name="TEACHERNAME" class="java.lang.String"/>
+	<field name="STUDENT_ID" class="java.lang.Long"/>
+	<field name="STUDENTNAME" class="java.lang.String"/>
+	<field name="SUBJECT_ID" class="java.lang.Integer"/>
+	<field name="CLASSRATIO" class="java.math.BigDecimal"/>
+	<field name="EXAMRATIO" class="java.math.BigDecimal"/>
+	<field name="CLASSNAME" class="java.lang.String"/>
+	<field name="NBR_OF_STUDENTS" class="java.lang.Integer"/>
+	<field name="GRADE_NAME" class="java.lang.String"/>
+	<field name="SUBJECT_GROUP" class="java.lang.String"/>
+	<field name="MAX_MARK" class="java.lang.Double"/>
+	<field name="CLASSMARK" class="java.lang.Double"/>
+	<field name="EXAMMARK" class="java.lang.Double"/>
+	<field name="MOYENNE" class="java.lang.Double"/>
+	<field name="SRANK" class="java.lang.Long"/>
+	<sortField name="CLASSNAME"/>
+	<sortField name="STUDENTNAME"/>
+	<sortField name="SUBJECT_GROUP"/>
+	<sortField name="SUBJECTNAME"/>
+	<variable name="totalPoints" class="java.lang.Double" resetType="Group" resetGroup="StudentGroup" calculation="Sum">
+		<variableExpression><![CDATA[$F{MOYENNE}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="totalPointsGroup" class="java.lang.Double" resetType="Group" resetGroup="SUBJECT_GROUP" calculation="Sum">
+		<variableExpression><![CDATA[$F{MOYENNE}]]></variableExpression>
+	</variable>
+	<variable name="totalPossible" class="java.lang.Double" resetType="Group" resetGroup="StudentGroup" calculation="Sum">
+		<variableExpression><![CDATA[$F{MAX_MARK}]]></variableExpression>
+	</variable>
+	<variable name="moyenneGenerale" class="java.lang.Double" resetType="Group" resetGroup="StudentGroup">
+		<variableExpression><![CDATA[$V{totalPoints}*20/$V{totalPossible}]]></variableExpression>
+	</variable>
+	<variable name="totalPossibleGroup" class="java.lang.Double" resetType="Group" resetGroup="SUBJECT_GROUP" calculation="Sum">
+		<variableExpression><![CDATA[$F{MAX_MARK}]]></variableExpression>
+	</variable>
+	<variable name="moyenneGroup" class="java.lang.Double" resetType="Group" resetGroup="SUBJECT_GROUP">
+		<variableExpression><![CDATA[$V{totalPointsGroup}*20/$V{totalPossibleGroup}]]></variableExpression>
+	</variable>
+	<group name="StudentGroup" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{STUDENT_ID}]]></groupExpression>
+		<groupHeader>
+			<band height="77">
+				<textField>
+					<reportElement x="88" y="21" width="313" height="19"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{STUDENTNAME}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="494" y="0" width="76" height="20"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{CLASSNAME}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="1" y="57" width="126" height="20" backcolor="#999999"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Matieres]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="0" width="571" height="1"/>
+					<graphicElement>
+						<pen lineStyle="Double" lineColor="#000000"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="0" y="57" width="571" height="1"/>
+				</line>
+				<line>
+					<reportElement x="571" y="1" width="1" height="76"/>
+					<graphicElement>
+						<pen lineStyle="Double"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="0" y="0" width="1" height="77"/>
+					<graphicElement>
+						<pen lineStyle="Double"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="127" y="58" width="1" height="19"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="127" y="58" width="1" height="19"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement mode="Opaque" x="128" y="58" width="42" height="19" backcolor="#999999"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SEQ1]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="170" y="58" width="42" height="19" backcolor="#999999"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SEQ2]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="212" y="58" width="42" height="19" backcolor="#999999"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Moy.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="254" y="58" width="42" height="19" backcolor="#999999"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Coef]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="296" y="58" width="42" height="19" backcolor="#999999"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Total]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="338" y="58" width="42" height="19" backcolor="#999999"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Rang]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="380" y="58" width="42" height="19" backcolor="#999999"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Moy. Cl.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="422" y="58" width="73" height="19" backcolor="#999999"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Min/Max]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="495" y="58" width="76" height="19" backcolor="#999999"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Appreciation]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="494" y="20" width="76" height="20"/>
+					<textElement textAlignment="Right">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Integer"><![CDATA[$F{NBR_OF_STUDENTS}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="447" y="1" width="47" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Classe:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="447" y="20" width="47" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Effectif:]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="88" y="1" width="249" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{MATRICULE}]]></textFieldExpression>
+				</textField>
+				<image>
+					<reportElement x="0" y="1" width="76" height="56"/>
+					<imageExpression class="java.io.InputStream"><![CDATA[$F{IMAGE}]]></imageExpression>
+				</image>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement x="147" y="40" width="64" height="17"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.util.Date"><![CDATA[$F{BIRTH_DATE}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="88" y="40" width="59" height="17"/>
+					<textElement verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Ne(e) le]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="211" y="40" width="17" height="17"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[a]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="228" y="40" width="173" height="17"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{CITY_OF_BIRTH}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="144">
+				<line>
+					<reportElement x="0" y="0" width="570" height="1"/>
+					<graphicElement>
+						<pen lineStyle="Double" lineColor="#000000"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="1" y="143" width="570" height="1"/>
+					<graphicElement>
+						<pen lineStyle="Double" lineColor="#000000"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="0" y="1" width="1" height="142"/>
+					<graphicElement>
+						<pen lineStyle="Double"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="571" y="0" width="1" height="143"/>
+					<graphicElement>
+						<pen lineStyle="Double"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="127" y="1" width="1" height="142"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<subreport>
+					<reportElement x="1" y="1" width="126" height="142"/>
+					<subreportParameter name="termGroupId">
+						<subreportParameterExpression><![CDATA[$P{termGroupId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="studentId">
+						<subreportParameterExpression><![CDATA[$F{STUDENT_ID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="schoolId">
+						<subreportParameterExpression><![CDATA[$P{schoolId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="yearId">
+						<subreportParameterExpression><![CDATA[$P{yearId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "bulletinTrimestrielJTT_schooling.jasper"]]></subreportExpression>
+				</subreport>
+				<textField pattern="###0.00;-###0.00">
+					<reportElement x="138" y="27" width="41" height="17"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$V{totalPoints}]]></textFieldExpression>
+				</textField>
+				<textField pattern="###0.00;-###0.00">
+					<reportElement x="180" y="28" width="41" height="16"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$V{totalPossible}/20.0]]></textFieldExpression>
+				</textField>
+				<textField pattern="###0.00;-###0.00">
+					<reportElement x="222" y="28" width="41" height="16"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$V{moyenneGenerale}]]></textFieldExpression>
+				</textField>
+				<subreport>
+					<reportElement x="390" y="28" width="178" height="16"/>
+					<subreportParameter name="termGroupId">
+						<subreportParameterExpression><![CDATA[$P{termGroupId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="studentId">
+						<subreportParameterExpression><![CDATA[$F{STUDENT_ID}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="className">
+						<subreportParameterExpression><![CDATA[$P{className}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="schoolId">
+						<subreportParameterExpression><![CDATA[$P{schoolId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="yearId">
+						<subreportParameterExpression><![CDATA[$P{yearId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "bulletinTrimestrielJT_rangMention.jasper"]]></subreportExpression>
+				</subreport>
+				<subreport isUsingCache="true">
+					<reportElement x="264" y="28" width="125" height="16"/>
+					<subreportParameter name="termGroupId">
+						<subreportParameterExpression><![CDATA[$P{termGroupId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="className">
+						<subreportParameterExpression><![CDATA[$P{className}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="schoolId">
+						<subreportParameterExpression><![CDATA[$P{schoolId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="yearId">
+						<subreportParameterExpression><![CDATA[$P{yearId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "bulletinTrimestrielJT_trimminmaxavg.jasper"]]></subreportExpression>
+				</subreport>
+				<staticText>
+					<reportElement x="138" y="11" width="41" height="16"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<text><![CDATA[Points]]></text>
+				</staticText>
+				<line>
+					<reportElement x="137" y="10" width="431" height="1"/>
+				</line>
+				<line>
+					<reportElement x="137" y="27" width="431" height="1"/>
+				</line>
+				<line>
+					<reportElement x="137" y="44" width="431" height="1"/>
+				</line>
+				<line>
+					<reportElement x="137" y="11" width="1" height="33"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="179" y="11" width="1" height="33"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="221" y="11" width="1" height="33"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement x="180" y="11" width="41" height="16"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<text><![CDATA[Coef.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="222" y="11" width="41" height="16"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<text><![CDATA[Moyenne]]></text>
+				</staticText>
+				<line>
+					<reportElement x="263" y="11" width="1" height="33"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="305" y="11" width="1" height="17"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement x="264" y="11" width="41" height="16"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<text><![CDATA[Moy. Cl]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="306" y="11" width="41" height="16"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<text><![CDATA[Min]]></text>
+				</staticText>
+				<line>
+					<reportElement x="347" y="10" width="1" height="17"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement x="348" y="11" width="41" height="16"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<text><![CDATA[Max]]></text>
+				</staticText>
+				<line>
+					<reportElement x="389" y="11" width="1" height="17"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="389" y="28" width="1" height="17"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="568" y="10" width="1" height="35"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement x="390" y="11" width="41" height="16"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<text><![CDATA[Rang]]></text>
+				</staticText>
+				<line>
+					<reportElement x="431" y="11" width="1" height="17"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="493" y="11" width="1" height="17"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement x="432" y="11" width="61" height="16"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9"/>
+					</textElement>
+					<text><![CDATA[Mention]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="494" y="11" width="74" height="16"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<text><![CDATA[Mention Cons. Classe]]></text>
+				</staticText>
+				<subreport>
+					<reportElement x="128" y="60" width="440" height="54"/>
+					<subreportParameter name="className">
+						<subreportParameterExpression><![CDATA[$P{className}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="schoolId">
+						<subreportParameterExpression><![CDATA[$P{schoolId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "bulletinSequenciel_mgmt.jasper"]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="SUBJECT_GROUP">
+		<groupExpression><![CDATA[$F{SUBJECT_GROUP}]]></groupExpression>
+		<groupFooter>
+			<band height="18">
+				<textField>
+					<reportElement x="1" y="0" width="100" height="18"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{SUBJECT_GROUP}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="0" y="0" width="571" height="1"/>
+				</line>
+				<line>
+					<reportElement x="0" y="1" width="1" height="17"/>
+					<graphicElement>
+						<pen lineStyle="Double"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="571" y="0" width="1" height="18"/>
+					<graphicElement>
+						<pen lineStyle="Double"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="127" y="1" width="1" height="17"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="254" y="1" width="1" height="17"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="296" y="1" width="1" height="17"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="379" y="1" width="1" height="17"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<textField pattern="###0.00;-###0.00">
+					<reportElement x="169" y="1" width="29" height="16"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$V{totalPointsGroup}]]></textFieldExpression>
+				</textField>
+				<textField pattern="###0.00;-###0.00">
+					<reportElement x="212" y="1" width="32" height="16"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$V{totalPossibleGroup}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="136" y="2" width="34" height="15"/>
+					<textElement verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Points:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="198" y="1" width="14" height="16"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[/]]></text>
+				</staticText>
+				<textField pattern="###0.00;-###0.00">
+					<reportElement x="255" y="2" width="41" height="15"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$V{totalPossibleGroup}/20.0]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="298" y="2" width="47" height="15"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Moyenne:]]></text>
+				</staticText>
+				<textField pattern="###0.00;-###0.00">
+					<reportElement x="346" y="2" width="31" height="15"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="9" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$V{moyenneGroup}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="71" splitType="Stretch">
+			<subreport>
+				<reportElement x="1" y="0" width="571" height="71"/>
+				<subreportParameter name="schoolId">
+					<subreportParameterExpression><![CDATA[$P{schoolId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR}+"bulletinHeaderPortrait.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="38" splitType="Stretch">
+			<staticText>
+				<reportElement x="176" y="0" width="65" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[BULLETIN]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="244" y="0" width="146" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{TERMNAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="198" y="18" width="164" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{SCHOOLYEAR}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="6" y="0" width="117" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{SUBJECTNAME}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement x="128" y="0" width="41" height="22"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{CLASSMARK}*20.0/$F{MAX_MARK}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement x="297" y="0" width="40" height="22"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{MOYENNE}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="0" width="571" height="1"/>
+			</line>
+			<line>
+				<reportElement x="0" y="1" width="1" height="21"/>
+				<graphicElement>
+					<pen lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="127" y="1" width="1" height="14"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="127" y="1" width="1" height="21"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="211" y="1" width="1" height="21"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="296" y="1" width="1" height="21"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="379" y="1" width="1" height="21"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="494" y="1" width="1" height="21"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement x="170" y="0" width="41" height="22"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{EXAMMARK}*20.0/$F{MAX_MARK}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="169" y="0" width="1" height="22"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement x="254" y="0" width="42" height="22"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{MAX_MARK}/20.0]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="254" y="1" width="1" height="21"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="337" y="1" width="1" height="21"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="23" y="11" width="104" height="11"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{TEACHERNAME}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="571" y="0" width="1" height="22"/>
+				<graphicElement>
+					<pen lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement x="212" y="1" width="42" height="21"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{MOYENNE}*20.0/$F{MAX_MARK}]]></textFieldExpression>
+			</textField>
+			<subreport runToBottom="false">
+				<reportElement x="380" y="1" width="114" height="21"/>
+				<subreportParameter name="termGroupId">
+					<subreportParameterExpression><![CDATA[$P{termGroupId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="subjectId">
+					<subreportParameterExpression><![CDATA[$F{SUBJECT_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="className">
+					<subreportParameterExpression><![CDATA[$P{className}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="schoolId">
+					<subreportParameterExpression><![CDATA[$P{schoolId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="yearId">
+					<subreportParameterExpression><![CDATA[$P{yearId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "bulletinTrimestrielJT_avgminmax.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="338" y="1" width="41" height="21" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true"/>
+				<subreportParameter name="termGroupId">
+					<subreportParameterExpression><![CDATA[$P{termGroupId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="studentId">
+					<subreportParameterExpression><![CDATA[$F{STUDENT_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="subjectId">
+					<subreportParameterExpression><![CDATA[$F{SUBJECT_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="className">
+					<subreportParameterExpression><![CDATA[$P{className}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="schoolId">
+					<subreportParameterExpression><![CDATA[$P{schoolId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="yearId">
+					<subreportParameterExpression><![CDATA[$P{yearId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "bulletinTrimestrielJT_ranking.jasper"]]></subreportExpression>
+			</subreport>
+			<subreport>
+				<reportElement x="495" y="1" width="76" height="21"/>
+				<subreportParameter name="moyenne">
+					<subreportParameterExpression><![CDATA[$F{MOYENNE}*20.0/$F{MAX_MARK}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "bulletinTrimestrielJT_Appreciation.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

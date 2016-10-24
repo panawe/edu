@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletinHeader" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="2.143588810000003"/>
+	<property name="ireport.x" value="47"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="schoolId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT LOGO, REPORT_HDR_LEFT, REPORT_HDR_RIGHT, REPORT_HEADER from SCHOOL where SCHOOL_ID=$P{schoolId} AND SHOW_REPORT_HEADER=1 limit 1]]>
+	</queryString>
+	<field name="LOGO" class="java.lang.Object"/>
+	<field name="REPORT_HDR_LEFT" class="java.io.InputStream"/>
+	<field name="REPORT_HDR_RIGHT" class="java.io.InputStream"/>
+	<field name="REPORT_HEADER" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="88" splitType="Stretch">
+			<line>
+				<reportElement x="6" y="85" width="549" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<image hAlign="Left" vAlign="Middle">
+				<reportElement x="0" y="0" width="231" height="82"/>
+				<imageExpression class="java.io.InputStream"><![CDATA[$F{REPORT_HDR_LEFT}]]></imageExpression>
+			</image>
+			<image hAlign="Right" vAlign="Middle">
+				<reportElement x="312" y="1" width="243" height="81"/>
+				<imageExpression class="java.io.InputStream"><![CDATA[$F{REPORT_HDR_RIGHT}]]></imageExpression>
+			</image>
+		</band>
+	</title>
+</jasperReport>

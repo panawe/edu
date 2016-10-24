@@ -1,0 +1,331 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>Configurer les Alerts</title>
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+body {
+  margin: 5px 5px 5px 5px;
+  background-color: #ffffff;
+}
+/* ========== Text Styles ========== */
+hr { color: #000000}
+body, table, span.rvts0 /* Normal text */
+{
+ font-size: 10pt;
+ font-family: 'Arial', 'Helvetica', sans-serif;
+ font-style: normal;
+ font-weight: normal;
+ color: #000000;
+ text-decoration: none;
+}
+span.rvts1 /* Heading */
+{
+ font-weight: bold;
+ color: #0000ff;
+}
+span.rvts2 /* Subheading */
+{
+ font-weight: bold;
+ color: #000080;
+}
+span.rvts3 /* Keywords */
+{
+ font-style: italic;
+ color: #800000;
+}
+a.rvts4, span.rvts4 /* Jump 1 */
+{
+ color: #000080;
+ text-decoration: underline;
+}
+a.rvts5, span.rvts5 /* Jump 2 */
+{
+ color: #000080;
+ text-decoration: underline;
+}
+span.rvts6 /* Font Hint */
+{
+ color: #a0a0a0;
+}
+span.rvts7 /* Font Hint Title */
+{
+ font-size: 15pt;
+ font-family: 'Tahoma', 'Geneva', sans-serif;
+ font-weight: bold;
+ color: #696969;
+}
+span.rvts8 /* Font Hint Bold */
+{
+ font-weight: bold;
+ color: #a0a0a0;
+}
+span.rvts9 /* Font Hint Italic */
+{
+ font-style: italic;
+ color: #a0a0a0;
+}
+span.rvts10
+{
+ font-weight: bold;
+ color: #008000;
+}
+span.rvts11
+{
+ font-size: 11pt;
+ font-family: 'Calibri';
+}
+span.rvts12
+{
+ font-family: 'Courier New', 'Courier', monospace;
+ font-style: italic;
+ color: #0000c0;
+}
+span.rvts13
+{
+ font-size: 11pt;
+ font-family: 'Calibri';
+}
+span.rvts14
+{
+ font-size: 11pt;
+ font-family: 'Calibri';
+ font-weight: bold;
+}
+span.rvts15
+{
+ font-style: italic;
+ font-weight: bold;
+ color: #008080;
+}
+span.rvts16
+{
+ font-style: italic;
+ color: #008000;
+}
+span.rvts17
+{
+ font-style: italic;
+ font-weight: bold;
+ color: #008000;
+}
+span.rvts18 /* Font Style */
+{
+ font-size: 16pt;
+ font-family: 'Tahoma', 'Geneva', sans-serif;
+ color: #ffffff;
+}
+span.rvts19 /* Font Style */
+{
+ font-family: 'MS Sans Serif', 'Geneva', sans-serif;
+ color: #808080;
+}
+span.rvts20 /* Font Style */
+{
+ font-family: 'Verdana', 'Geneva', sans-serif;
+ font-style: italic;
+ color: #c0c0c0;
+}
+a.rvts21, span.rvts21 /* Font Style */
+{
+ font-family: 'Verdana', 'Geneva', sans-serif;
+ font-style: italic;
+ color: #6666ff;
+ text-decoration: underline;
+}
+/* ========== Para Styles ========== */
+p,ul,ol /* Paragraph Style */
+{
+ text-align: left;
+ text-indent: 0px;
+ padding: 0px 0px 0px 0px;
+ margin: 0px 0px 0px 0px;
+}
+.rvps1 /* Centered */
+{
+ text-align: center;
+}
+.rvps2
+{
+ line-height: 1.15;
+ margin: 0px 0px 17px 0px;
+}
+.rvps3
+{
+ margin: 0px 0px 0px -9px;
+}
+.rvps4
+{
+ margin: 0px 0px 0px 24px;
+}
+.rvps5 /* Paragraph Style */
+{
+ text-align: left;
+ text-indent: 0px;
+ background: #9fbed0;
+ padding: 5px 5px 2px 5px;
+ margin: -5px -5px 18px -5px;
+}
+.rvps6 /* Paragraph Style */
+{
+ text-align: center;
+ background: #e4e4e4;
+ margin: 20px 0px 0px 0px;
+}
+.rvps7 /* Paragraph Style */
+{
+ border-color: #c0c0c0;
+ border-style: solid;
+ border-width: 1px;
+ border-right: none;
+ border-bottom: none;
+ border-left: none;
+ background: #ffffff;
+ padding: 3px 0px 0px 0px;
+ margin: 27px 0px 0px 0px;
+}
+--></style>
+<link rel="StyleSheet" href="hnd.css" type="text/css"/>
+<script type="text/javascript">if(top.frames.length == 0) { sTopic = top.location.href.substring(top.location.href.lastIndexOf("/") + 1, top.location.href.length); top.location.href="../superUserGuide.html?" + sTopic; }</script>
+<script type="text/javascript" src="jquery.min.js"></script>
+<script type="text/javascript" src="jquery.cookie.js"></script>
+<script type="text/javascript" src="hnd.js"></script>
+<meta name="generator" content="HelpNDoc Freeware Edition"></head>
+<body>
+<h1 class=rvps5><span class=rvts0><span class=rvts18>Configurer les Alerts</span></span></h1>
+<p>Il existe trois types d'alertes.</p>
+<p><br></p>
+<ul style="text-indent: 0px; margin-left: 24px; list-style-position: outside;">
+<li><span class=rvts10>Retard de retour d'un emprunt:</span> Lorsqu'un emprunt depasse la date prevu pour le retour, <br>cet alerte est genere pour rappeler a l'emprunteur d'honnorer son engagement. </li>
+<li><span class=rvts10>Quantite minimum de stock atteint:</span> Lorsque le stock minimum d'un produit est atteint, <br>un e-mail est envoye aux responsables de l'etablissement pour qu'ils reconstitue le stock.</li>
+<li><span class=rvts10>Retard de payment: </span>Lorsque la date limite de payement d'une tranche est atteinte, </li>
+</ul>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; cet alerte envoie un e-mail au etudiants pour leur rappeler le payement le delai et le montant de payement.</p>
+<p><br></p>
+<p>Le contenu du message peut etre change a volonte et une liste de mots clefs est disponible pour permettre</p>
+<p>de specifier les valeurs dynamiques telles par example le montant restant a payer. Voici liste des mots clefs.</p>
+<p><br></p>
+<div class=rvps3><table width=650 border=2 cellpadding=0 cellspacing=-1 style="border-color: #ffffff; border-style: solid; border-collapse: collapse;">
+<tr valign=top>
+<td width=251 height=24 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts14>Mot clef</span></p>
+</td>
+<td width=357 height=24 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts14>Description</span></p>
+</td>
+</tr>
+<tr valign=top>
+<td width=251 height=21 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts12>$SCHOOL_NAME$</span></p>
+</td>
+<td width=357 height=21 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts11>Nom de l</span><span class=rvts13>&#8217;</span><span class=rvts11>ecole</span></p>
+</td>
+</tr>
+<tr valign=top>
+<td width=251 height=24 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts12>$TODAY_DATE$</span></p>
+</td>
+<td width=357 height=24 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts11>Date actuelle</span></p>
+</td>
+</tr>
+<tr valign=top>
+<td width=251 height=24 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts12>$SCHOOL_WEBSITE$</span></p>
+</td>
+<td width=357 height=24 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts11>Le site web de l</span><span class=rvts13>&#8217;</span><span class=rvts11>école</span></p>
+</td>
+</tr>
+<tr valign=top>
+<td width=251 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts12>$SUBJECT_NAME$</span></p>
+</td>
+<td width=357 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts11>Nom de la matiere</span></p>
+</td>
+</tr>
+<tr valign=top>
+<td width=251 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts12>$TOTAL_TUITION$</span></p>
+</td>
+<td width=357 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts11>Total de la tranche</span></p>
+</td>
+</tr>
+<tr valign=top>
+<td width=251 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts12>$PAYED_TUITION$</span></p>
+</td>
+<td width=357 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts11>Total paye sur la tranche</span></p>
+</td>
+</tr>
+<tr valign=top>
+<td width=251 height=24 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts12>$DUE_TUITION$</span></p>
+</td>
+<td width=357 height=24 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts11>Total restant sur la tranche</span></p>
+</td>
+</tr>
+<tr valign=top>
+<td width=251 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts12>$STUDENT_NAME$</span></p>
+</td>
+<td width=357 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts11>Nom de l</span><span class=rvts13>&#8217;</span><span class=rvts11>etudiant</span></p>
+</td>
+</tr>
+<tr valign=top>
+<td width=251 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts12>$PRODUCT_NAME$</span></p>
+</td>
+<td width=357 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts11>Nom du produit</span></p>
+</td>
+</tr>
+<tr valign=top>
+<td width=251 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts12>$MINIMUM_QUANTITY$</span></p>
+</td>
+<td width=357 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts11>Quantite minimum de stock</span></p>
+</td>
+</tr>
+<tr valign=top>
+<td width=251 height=24 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts12>$QUANTITY_IN_STOCK$</span></p>
+</td>
+<td width=357 height=24 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts11>Quantite en stock</span></p>
+</td>
+</tr>
+<tr valign=top>
+<td width=251 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts12>$REQUESTED_DATE$</span></p>
+</td>
+<td width=357 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts11>Date de la demande (reservation)</span></p>
+</td>
+</tr>
+<tr valign=top>
+<td width=251 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts12>$PICKED_UP_DATE$</span></p>
+</td>
+<td width=357 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts11>Date de l</span><span class=rvts13>&#8217;</span><span class=rvts11>emprunt</span></p>
+</td>
+</tr>
+<tr valign=top>
+<td width=251 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts12>$QUANTITY_TO_BE_RETURNED$</span></p>
+</td>
+<td width=357 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts11>Quantite a retourner</span></p>
+</td>
+</tr>
+<tr valign=top>
+<td width=251 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts12>$QUANTITY_RETURNED$</span></p>
+</td>
+<td width=357 height=23 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts11>Quantite retournee</span></p>
+</td>
+</tr>
+<tr valign=top>
+<td width=251 height=24 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts12>$DUE_DATE$</span></p>
+</td>
+<td width=357 height=24 valign=top style="border-color: #ffffff; border-style: solid; background-color: #d3dfee;"><p class=rvps2><span class=rvts11>Date limite de retour</span></p>
+</td>
+</tr>
+</table>
+</div>
+<p class=rvps3><br></p>
+<p class=rvps4><span class=rvts15>Exemple de message d'alerte </span></p>
+<p class=rvps3><br></p>
+<p><img border=0 alt="" hspace=1 vspace=1 src="img_103.jpg"></p>
+<p class=rvps4><span class=rvts15>Page de configuration d'alerte</span></p>
+<p class=rvps4><span class=rvts15><br></span></p>
+<p class=rvps4>Plusieurs parametres permettent de controler le fonctionnement des alertes.</p>
+<p class=rvps4><br></p>
+<ul style="text-indent: 0px; margin-left: 24px; list-style-position: outside;">
+<li class=rvps4 style="margin-left: 0"><span class=rvts10>Nombre de fois:</span> Defini le nombre de fois que le message d'alerte est envoye aux interesses</li>
+<li class=rvps4 style="margin-left: 0"><span class=rvts10>Interval de repetition:</span> Defini l'interval entre les envois d'e-mails de rappel</li>
+<li class=rvps4 style="margin-left: 0"><span class=rvts10>Envoyer a:</span> Liste des e-mails auxquels il faut envoyer l'alerte. Dans le cas des retards de payement, <br>un e-mail est automatiquement envoye aux etudiants concernes en plus de la liste des e-mails dans ce champs. <br>Les e-mails sont separes par un ";".</li>
+<li class=rvps4 style="margin-left: 0"><span class=rvts10>Afficher?:</span> Ce champs permet de decider d'afficher ou non les alertes sur la page d'accueil de l'etudiant.</li>
+<li class=rvps4 style="margin-left: 0"><span class=rvts10>Nombre de jours a afficher:</span> Definit le nombre de jours que le message d'alerte est affiche dans sur la page d'accueil de l'etudiant </li>
+<li class=rvps4 style="margin-left: 0"><span class=rvts10>Nombre de jour:</span> Nombre de jours apres ou avant que le delai soit expire pour que l'alerte soit genere. Ce parametre fonctionne de paire<br>avec le parametre "<span class=rvts16>Moment</span>". Ce parametre n'est applicable qu'aux retards de payment et de retour d'emprunt. </li>
+<li class=rvps4 style="margin-left: 0"><span class=rvts10>Moment:</span> Determine si l'alerte est genere avant ou apres la date d'expiration. Par exemple si le champ "<span class=rvts17>Nombre de jours</span>" est fixe a 4 et le moment<br>est defini comme "<span class=rvts17>Apres</span>" alors l'alerte est genere 4 jours apres que delai soit expire. L'autre valeur du champs "<span class=rvts17>Moment</span>" est "<span class=rvts17>Avant</span>". </li>
+</ul>
+<p class=rvps4>Il permet de generer l'alerte a l'avance.</p>
+<p><img border=0 alt="" hspace=1 vspace=1 src="img_104.jpg"></p>
+<p class=rvps6><span class=rvts19>Copyright © 2011, E-Soft Systems Inc</span></p>
+ </body></html>

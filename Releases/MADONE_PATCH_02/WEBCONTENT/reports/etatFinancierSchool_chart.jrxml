@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="etatFinancierSchool_chart" language="groovy" pageWidth="802" pageHeight="555" orientation="Landscape" columnWidth="802" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="yearId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="schoolId" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT  T.DESCRIPTION DESCRIPTION,SUM(T.AMOUNT)  AMOUNT_DUE,
+SUM(CASE WHEN P.AMOUNT IS NULL THEN 0 ELSE P.AMOUNT END) AMOUNT_PAID,
+SUM(CASE WHEN P.REBATE IS NULL THEN 0 ELSE P.REBATE END) REMISE,
+SUM(T.AMOUNT)-SUM(CASE WHEN P.AMOUNT IS NULL THEN 0 ELSE P.AMOUNT END) -SUM(CASE WHEN P.REBATE IS NULL THEN 0 ELSE P.REBATE END) RESTE
+FROM TUITION T INNER JOIN SCHOOLYEAR SY ON (T.SCHOOLYEAR_ID=SY.SCHOOLYEAR_ID)
+INNER JOIN  SENROLLMENT SE ON (SE.SCHOOLYEAR_ID=SY.SCHOOLYEAR_ID)
+INNER JOIN  CLASS C ON (C.CLASS_ID = SE.CLASS_ID)
+INNER JOIN STUDENT_TUITION ST ON (ST.STUDENT_ID =SE.STUDENT_ID AND T.TUITION_ID =ST.TUITION_ID)
+LEFT OUTER JOIN PAYMENT P ON (T.TUITION_ID = P.TUITION_ID AND SE.ENROLLMENT_ID=P.ENROLLMENT_ID)
+WHERE T.SCHOOL_ID= $P{schoolId}
+AND SY.SCHOOLYEAR_ID=$P{yearId}
+GROUP BY  T.DESCRIPTION ]]>
+	</queryString>
+	<field name="DESCRIPTION" class="java.lang.String"/>
+	<field name="AMOUNT_DUE" class="java.math.BigDecimal"/>
+	<field name="AMOUNT_PAID" class="java.math.BigDecimal"/>
+	<field name="REMISE" class="java.math.BigDecimal"/>
+	<field name="RESTE" class="java.math.BigDecimal"/>
+	<group name="GRADE_NAME">
+		<groupExpression><![CDATA[$F{DESCRIPTION}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="179">
+			<bar3DChart>
+				<chart isShowLegend="true" theme="aegean">
+					<reportElement stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="750" height="179"/>
+					<chartTitle position="Top"/>
+					<chartSubtitle/>
+					<chartLegend position="Top"/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Montant Due"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{DESCRIPTION}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{AMOUNT_DUE}]]></valueExpression>
+						<labelExpression><![CDATA[$F{AMOUNT_DUE}]]></labelExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Montant Paye"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{DESCRIPTION}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{AMOUNT_PAID}]]></valueExpression>
+						<labelExpression><![CDATA[$F{AMOUNT_PAID}]]></labelExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Montant Restant"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{DESCRIPTION}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{RESTE}]]></valueExpression>
+						<labelExpression><![CDATA[$F{RESTE}]]></labelExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Remise"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{DESCRIPTION}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{REMISE}]]></valueExpression>
+						<labelExpression><![CDATA[$F{REMISE}]]></labelExpression>
+					</categorySeries>
+				</categoryDataset>
+				<bar3DPlot>
+					<plot labelRotation="-2.0">
+						<seriesColor seriesOrder="0" color="#006600"/>
+						<seriesColor seriesOrder="1" color="#33CC00"/>
+						<seriesColor seriesOrder="2" color="#2FED87"/>
+						<seriesColor seriesOrder="3" color="#DAB45B"/>
+						<seriesColor seriesOrder="4" color="#B2B1B2"/>
+						<seriesColor seriesOrder="5" color="#276CD5"/>
+						<seriesColor seriesOrder="6" color="#4AFA55"/>
+						<seriesColor seriesOrder="7" color="#31E3E9"/>
+						<seriesColor seriesOrder="8" color="#B5A5C3"/>
+						<seriesColor seriesOrder="9" color="#0F8864"/>
+						<seriesColor seriesOrder="10" color="#256244"/>
+						<seriesColor seriesOrder="11" color="#CE9E7C"/>
+					</plot>
+					<itemLabel color="#000000" backgroundColor="#FFFFFF"/>
+					<categoryAxisFormat labelRotation="-2.0">
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</valueAxisFormat>
+				</bar3DPlot>
+			</bar3DChart>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,274 @@
+@charset "UTF-8";
+/* --- CSS Document by Codify Design Studio - codifydesign.com --- */
+
+body {
+	margin: 0px;
+	color: #777777;
+	font-size: 12px;
+	font-family: Arial;
+	font-family: Arial, Verdana, Univers;
+	background-color: #cfcfcf;
+}
+
+h1 {
+	color: #25476C;
+	font-size: 24px;
+	font-weight: normal;
+	margin: 3px 0px 25px 0px;
+}
+h2 {
+	color: #214265;
+	font-size: 14px;
+	font-weight: normal;
+	margin: 0px 0px 15px 0px;
+}
+h3 {
+	color: #244669;
+	margin-top: 12px;
+	margin-bottom: 0px;
+}
+p {
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 12px;
+	margin-left: 0px;
+}
+a          {
+	color: #36C;
+}
+a:visited  { color: black; }
+a:hover    { color: #5872f4; }
+
+.container {
+	width: 980px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+/* BANNER AREA */
+.bannerArea {
+	width: 100%;height: 83px;
+	background-color: #4971a2;
+	
+}
+
+.bannerArea .container {
+	height:83px;
+	background-image: url(../images/banner_bkgd.jpg);
+	background-repeat: no-repeat;
+}
+
+.bannernav {
+	padding-top: 20px;
+	float: right;
+	color: #112c4c;
+	font-size: 10px;
+	font-family: Arial, Helvetica, Verdana, sans-serif;
+}
+
+.bannernav a { color: #ffffff; text-decoration: none; }
+.bannernav a:visited { color: #ffffff; }
+.bannernav a:hover { color: #112c4c; text-decoration: none; }
+
+.toplogo {
+	padding-left: 30px;
+	padding-top: 5px;
+}
+
+
+
+
+/* TOP NAVIGATION AREA */
+.topnavigationArea {
+	width: 100%;
+	background-image: url(../images/topnav_bkgd.jpg);
+	background-repeat:repeat-x;
+	background-color: #436d9c;
+}
+
+.topnavigationgroup {
+	margin: 0px;
+	float: right;
+	p/adding-right: 40px;
+}
+.topnavigationgroup ul {
+	margin: 0px;
+}
+
+.topnavigationitem {
+	max-width: 167px;
+	margin-left: 0px;
+	padding-left: 10px;
+	padding-top: 9px;
+	padding-right: 10px;
+	padding-bottom: 9px;
+	border-left-style: solid;
+	border-left-width: 1px;
+	border-right-style: none;
+	border-right-width: 1px;
+	color: white;
+	font-size: 14px;
+	font-weight: bold;
+	font-family: Arial, Helvetica, Verdana, sans-serif;
+	float: left;
+}
+
+/* CONTENT AREA */
+.contentArea {
+	width: 100%;
+	background-color: #f0eff0;
+	background-image: url(../images/content_bkgd_tile.jpg);
+	background-repeat: repeat-x;
+	
+}
+
+
+.contentArea .container {
+	padding-top: 30px;
+	padding-bottom: 30px;
+	background-image: url(../images/content_bkgd.jpg);
+	background-repeat: no-repeat;
+}
+
+.contentleft {
+	width: 100%;
+	padding-left: 40px;
+	padding-right: 40px;
+	float: left;
+}
+
+.dr-table {
+	background-color: #FFFFFF;
+	border-collapse: collapse;
+	border-left: 1px solid #C0C0C0;
+	border-top: 1px solid #C0C0C0;
+	empty-cells: show;
+	width: 680
+}
+
+.dr-pnl-b {
+	color: #000000;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: 10px;
+}
+
+.rich-panel-body {
+	color: #000000;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: 10px;
+}
+
+.dr-table-subheadercell {
+	color: #000000;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: 9px;
+	text-align: center;
+	white-space: nowrap;
+}
+
+.dr-table-headercell {
+	border-bottom: 1px solid #C0C0C0;
+	border-right: 1px solid #C0C0C0;
+	color: #000000;
+	letter-spacing: 5px;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	padding: 4px;
+	text-align: center;
+	letter-spacing: 5px;
+}
+
+.dr-table-footercell {
+	border-bottom: 1px solid #C0C0C0;
+	border-right: 1px solid #C0C0C0;
+	color: #000000;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	padding: 4px;
+	text-align: left;
+}
+
+.dr-table-footer {
+	background-color:#CCCCCC;
+}
+
+.dr-table-cell {
+	border-bottom: 1px solid #C0C0C0;
+	border-right: 1px solid #C0C0C0;
+	color: #000000;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: 9px;
+	padding: 2px;
+}
+
+.dr-pnl {
+	border-style: solid;
+	border-width: 1px;
+	padding: 1px;
+	width: 680;
+	border-color: #112c4c;
+}
+
+.dr-pnl-h {
+	background-color: #112c4c;
+	border-color: #112c4c;
+	background-image: url(../images/topnav_bkgd.jpg);
+	color: #FFFFFF;
+	letter-spacing: 5px;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+}
+
+.dr-mpnl-pnl-text {
+	color: #000000;
+	letter-spacing: 3px;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+}
+
+.dr-mpnl-pnl-b {
+	color: #FF0000;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: 17px;
+	font-weight: light;
+}
+.button[type="button"], button[type="reset"], button[type="submit"], input[type="reset"], input[type="submit"], input[type="button"] {
+
+	background-color: #112c4c;
+	border-color: #FFFFFF;
+	background-image: url(../images/bg-btn-blue.png);
+	color: #FFFFFF;
+	letter-spacing: 5px;
+	font-family: Arial, Verdana, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+}
+
+/* FOOTER AREA */
+.footerArea {
+	width: 100%;
+	background-color: #cfcfcf;
+
+	border-top-style: solid;
+	border-top-color: #3f6997;
+	border-top-width: 4px;
+	
+}
+
+.footerArea .container {
+	height: 77px;
+	background-image: url(../images/footer_bkgd.jpg);
+}
+
+.copyright {
+	padding-left: 40px;
+	padding-top: 12px;
+	color: #666666;
+	font-size: 12px;
+	font-family: Arial, Helvetica, Verdana, sans-serif;
+}

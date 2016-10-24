@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletin_annuel_stats" language="groovy" pageWidth="752" pageHeight="572" orientation="Landscape" columnWidth="752" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="6.115909044841468"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="yearId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="schoolId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="className" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="termId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT MIN(MARK) MINMOY, MAX(MARK) MAXMOY, AVG(MARK) AVGMOY FROM YEAR_SUMMARY
+WHERE SCHOOLYEAR_ID= $P{yearId}
+AND SCHOOL_ID =$P{schoolId}
+AND CLASS_NAME=$P{className}
+AND 1= (SELECT SHOW_FINAL_RANK FROM TERM WHERE TERM_ID=$P{termId})
+HAVING MAX(MARK)>0]]>
+	</queryString>
+	<field name="MINMOY" class="java.lang.Double"/>
+	<field name="MAXMOY" class="java.lang.Double"/>
+	<field name="AVGMOY" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="43">
+			<staticText>
+				<reportElement x="0" y="0" width="119" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Moy. la plus forte de la classe /20]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="14" width="119" height="15"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Moy. la plus faible de la classe /20]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="28" width="119" height="15"/>
+				<textElement>
+					<font size="7"/>
+				</textElement>
+				<text><![CDATA[Moy. Generale de la classe /20]]></text>
+			</staticText>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement x="119" y="14" width="47" height="15" forecolor="#FF0000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{MINMOY}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement x="119" y="0" width="47" height="15" forecolor="#FF0000"/>
+				<textElement verticalAlignment="Middle">
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{MAXMOY}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00;-###0.00">
+				<reportElement x="119" y="28" width="47" height="15" forecolor="#FF0000"/>
+				<textElement>
+					<font size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{AVGMOY}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

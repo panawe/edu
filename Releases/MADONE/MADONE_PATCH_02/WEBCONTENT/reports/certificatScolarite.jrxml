@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletinSequenciel" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="40"/>
+	<subDataset name="schoolInfo">
+		<queryString>
+			<![CDATA[SELECT logo, report_header from school where show_report_header=1 limit 1]]>
+		</queryString>
+		<field name="logo" class="java.io.InputStream"/>
+		<field name="report_header" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="studentId" class="java.lang.Long"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\My Projects\\education\\WebContent\\reports\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="motifDepart" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="schoolId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="assiduite" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="travail" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="conduite" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT STUDENT_ID, MATRICULE, CONCAT_WS(' ', LAST_NAME, MIDDLE_NAME, FIRST_NAME) STUDENT_NAME, BIRTH_DATE,  CITY_OF_BIRTH,SC.DIRECTOR,
+(SELECT MIN(ENROLLMENT_DATE) FROM SENROLLMENT SE WHERE SE.STUDENT_ID = S.STUDENT_ID) START_DATE FROM STUDENT S, SCHOOL SC
+WHERE S.SCHOOL_ID = $P{schoolId}
+AND S.STUDENT_ID =$P{studentId}
+AND SC.SCHOOL_ID = S.SCHOOL_ID
+]]>
+	</queryString>
+	<field name="STUDENT_ID" class="java.lang.Long"/>
+	<field name="MATRICULE" class="java.lang.String"/>
+	<field name="STUDENT_NAME" class="java.lang.String"/>
+	<field name="BIRTH_DATE" class="java.sql.Date"/>
+	<field name="CITY_OF_BIRTH" class="java.lang.String"/>
+	<field name="DIRECTOR" class="java.lang.String"/>
+	<field name="START_DATE" class="java.sql.Date"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="71" splitType="Stretch">
+			<subreport>
+				<reportElement x="1" y="0" width="571" height="71"/>
+				<subreportParameter name="schoolId">
+					<subreportParameterExpression><![CDATA[$P{schoolId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR}+"bulletinHeaderPortrait.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="580" splitType="Stretch">
+			<staticText>
+				<reportElement x="116" y="0" width="358" height="36"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CERTIFICAT DE SCOLARITE]]></text>
+			</staticText>
+			<subreport>
+				<reportElement x="16" y="235" width="259" height="188"/>
+				<subreportParameter name="studentId">
+					<subreportParameterExpression><![CDATA[$F{STUDENT_ID}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="schoolId">
+					<subreportParameterExpression><![CDATA[$P{schoolId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "certificatScolariteEnrollments.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="16" y="50" width="544" height="24"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[Le Directeur de l’Ecole Maternelle et Primaire « La Madone »
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="16" y="74" width="142" height="23"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[Certifie que l’élève ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="158" y="74" width="402" height="23"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{STUDENT_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="76" y="97" width="213" height="25"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{MATRICULE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="16" y="97" width="60" height="25"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[N° Mle : ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="16" y="122" width="60" height="24"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[Né(e) à ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="76" y="122" width="96" height="24"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{CITY_OF_BIRTH}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="172" y="122" width="25" height="24"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[, le ]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="197" y="122" width="92" height="24"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{BIRTH_DATE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="289" y="122" width="271" height="24"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[fréquente l’école sus-nommée depuis]]></text>
+			</staticText>
+			<textField pattern="MMMMM  yyyy">
+				<reportElement x="16" y="146" width="100" height="23"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{START_DATE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="275" y="235" width="85" height="32"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[Assiduité  :  ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="360" y="235" width="212" height="32"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{assiduite}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="275" y="267" width="85" height="36"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[Conduite  :  ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="275" y="303" width="85" height="30"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[Travail  :  ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="275" y="333" width="169" height="26"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[Motif de depart  :  ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="360" y="267" width="212" height="36"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{conduite}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="360" y="303" width="212" height="30"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{travail}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="275" y="359" width="297" height="64"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{motifDepart}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="176" y="196" width="188" height="24"/>
+				<textElement>
+					<font size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[SCOLARITE DETAILLEE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="275" y="440" width="125" height="25"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[Fait  à Lomé,  le ]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy">
+				<reportElement x="400" y="440" width="172" height="25"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="275" y="480" width="152" height="24"/>
+				<textElement>
+					<font size="16"/>
+				</textElement>
+				<text><![CDATA[Le  Directeur]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="275" y="535" width="285" height="24"/>
+				<textElement>
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DIRECTOR}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<pageFooter>
+		<band height="26">
+			<line>
+				<reportElement x="1" y="1" width="571" height="1"/>
+				<graphicElement>
+					<pen lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement x="116" y="2" width="293" height="24"/>
+				<textElement>
+					<font size="16" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Devise : SCIENCE  &  CONSCIENCE]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

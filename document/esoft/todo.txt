@@ -1,0 +1,4 @@
+1- Ajouter la recherche sur la page saisie de note
+2- Permettre de liberer un eleve pour permettre de supprimer le current enrollment
+3- Tester le module d'upload les cours
+4- 

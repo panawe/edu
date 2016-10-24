@@ -1,0 +1,2706 @@
+-- MySQL dump 10.11
+--
+-- Host: localhost    Database: protestant
+-- ------------------------------------------------------
+-- Server version	5.0.51a-3ubuntu5.8
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `ALERT`
+--
+
+DROP TABLE IF EXISTS `ALERT`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `ALERT` (
+  `ALERT_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `SUBJECT` varchar(250) NOT NULL,
+  `MESSAGE` text NOT NULL,
+  `NBR_DAYS` int(11) NOT NULL,
+  `MOMENT` tinyint(4) default NULL COMMENT '0-- BEFORE, 1= AFTER',
+  `STATUS` tinyint(4) NOT NULL COMMENT '0-Active, 1- Inactive',
+  `NBR_REPEAT` int(11) NOT NULL,
+  `REPEAT_INTERVAL` int(11) NOT NULL,
+  `FIRST_RUN_TIME` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `LAST_RUN_TIME` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `RUN_COUNT` int(11) default NULL,
+  `EMAILRECEIVER` tinyint(4) NOT NULL COMMENT '0-DON''T SEND TO STUDENT, 1- SEND TO STUDENT',
+  `SENDTO` varchar(500) default NULL COMMENT 'SEND TO E_MAIL',
+  `DISPLAY` tinyint(4) default NULL COMMENT '0-NO, 1 YES',
+  `DAYS_DISPLAY` int(11) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `ALERT_TYPE_CODE` varchar(10) NOT NULL,
+  PRIMARY KEY  (`ALERT_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `ALERT`
+--
+
+LOCK TABLES `ALERT` WRITE;
+/*!40000 ALTER TABLE `ALERT` DISABLE KEYS */;
+INSERT INTO `ALERT` VALUES (1,1,'Retard de payment','<p><strong><em>$TODAY_DATE$  <br /><span style=\"text-decoration: underline;\">Message prvenant de:</span></em> $SCHOOL_NAME$, $SCHOOL_WEBSITE$<br /><em><span style=\"text-decoration: underline;\">Object:</span></em> $SUBJECT_NAME$</strong></p>\n<p>Bonjour Cher $STUDENT_NAME$,</p>\n<p>Un payment de <span style=\"text-decoration: underline;\"><strong>$DUE_TUITION$</strong></span> est du le <strong>$DUE_DATE$</strong> sur le montant total de <strong>$TOTAL_TUITION$</strong>.    <br />Montant paye a ce jour: <strong>$PAYED_TUITION$</strong>.</p>\n<p>Merci de passer a la caisse pour effectuer le payment.</p>\n<p>La Direction</p>',4,0,1,5,1,'2012-03-04 03:43:51','2012-03-04 03:43:51',NULL,1,NULL,0,5,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,'1'),(2,1,'Qantite minimale atteinte','<p><strong>$TODAY_DATE$<br /><span style=\"text-decoration: underline;\"><em>Message provenant de</em>:</span> $SCHOOL_NAME$, $SCHOOL_WEBSITE$</strong><strong><span style=\"text-decoration: underline;\"><br /><em>Object</em>:</span> $SUBJECT_NAME$</strong><br /><br /> La quantite minimale de $PRODUCT_NAME$ est atteinte.   La quantite actuelle en stock est $QUANTITY_IN_STOCK$.</p>\n<p>Merci</p>',4,0,1,5,1,'2012-03-04 03:43:51','2012-03-04 03:43:51',NULL,1,NULL,0,5,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,'2'),(3,1,'Retard de retour','<p><strong>$TODAY_DATE$<br /><em><span style=\"text-decoration: underline;\">Message provenant de</span></em><span style=\"text-decoration: underline;\">:</span> $SCHOOL_NAME$</strong><strong>, $SCHOOL_WEBSITE$.<br /><span style=\"text-decoration: underline;\"><em>Object</em>:</span> $SUBJECT_NAME$</strong></p>\n<p>Le delai retour <strong>($DUE_DATE$</strong>) de l\'emprunt ci-dessous a expire.</p>\n<p>Nom du produit: $PRODUCT_NAME$.  <br />Date de la demande: $REQUESTED_DATE$  <br />Date de reception: $PICKED_UP_DATE$ <br /> Quantite a retourne: $QUANTITY_TO_BE_RETURNED$ <br /> Quantite retourne: $QUANTITY_RETURNED$</p>\n<p>Veuillez retourner ce livre dans de brefs delais, faute de quoi,<br />les sanctions en vigueur seront appliquees.</p>\n<p>Merci.</p>\n<p>La bibliothequaire.</p>',4,0,1,5,1,'2012-03-04 03:43:51','2012-03-04 03:43:51',NULL,1,NULL,0,5,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,'3');
+/*!40000 ALTER TABLE `ALERT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ALERT_RECEIVER`
+--
+
+DROP TABLE IF EXISTS `ALERT_RECEIVER`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `ALERT_RECEIVER` (
+  `RECEIVER_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `ALERT_ID` bigint(20) NOT NULL,
+  `USER_ID` bigint(20) NOT NULL,
+  `TUITION_ID` bigint(20) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`RECEIVER_ID`),
+  KEY `FK_STUDENT_ALERT_2` (`ALERT_ID`),
+  KEY `FK_ALERT_RECEIVER_2` (`USER_ID`),
+  KEY `FK_ALERT_RECEIVER_3` (`TUITION_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `ALERT_RECEIVER`
+--
+
+LOCK TABLES `ALERT_RECEIVER` WRITE;
+/*!40000 ALTER TABLE `ALERT_RECEIVER` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ALERT_RECEIVER` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ANSWER`
+--
+
+DROP TABLE IF EXISTS `ANSWER`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `ANSWER` (
+  `ANSWER_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `ANSWER_SEQ` mediumint(9) NOT NULL,
+  `BODY` text NOT NULL,
+  `QUESTION_ID` bigint(20) NOT NULL,
+  `IS_CORRECT` tinyint(4) NOT NULL default '0' COMMENT '1 = YES, 0 = No',
+  `MOD_BY` bigint(20) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`ANSWER_ID`),
+  KEY `FK_ANSWER_1` (`QUESTION_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='ANSWER';
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `ANSWER`
+--
+
+LOCK TABLES `ANSWER` WRITE;
+/*!40000 ALTER TABLE `ANSWER` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ANSWER` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `AUDITS`
+--
+
+DROP TABLE IF EXISTS `AUDITS`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `AUDITS` (
+  `AUDIT_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `DETAILS` varchar(500) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`AUDIT_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `AUDITS`
+--
+
+LOCK TABLES `AUDITS` WRITE;
+/*!40000 ALTER TABLE `AUDITS` DISABLE KEYS */;
+/*!40000 ALTER TABLE `AUDITS` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `AVERAGES`
+--
+
+DROP TABLE IF EXISTS `AVERAGES`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `AVERAGES` (
+  `AVERAGE_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOLYEAR_ID` mediumint(9) NOT NULL,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `TERM_ID` mediumint(9) NOT NULL,
+  `STUDENT_ID` bigint(20) NOT NULL,
+  `TEACHER_ID` bigint(20) NOT NULL,
+  `LEVEL_ID` mediumint(9) NOT NULL,
+  `NBR_STUDENT` int(11) NOT NULL,
+  `CLASS_NAME` varchar(50) NOT NULL,
+  `CLASS_MARK` double NOT NULL,
+  `CLASS_RATIO` double NOT NULL,
+  `EXAM_MARK` double NOT NULL,
+  `EXAM_RATIO` double NOT NULL,
+  `AVERAGE_MARK` double NOT NULL,
+  `MAX_MARK` int(11) NOT NULL,
+  `RANK_NBR` int(11) default NULL,
+  `GRADE_NAME` varchar(50) default NULL,
+  `STATUS` tinyint(4) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `SUBJECT_ID` mediumint(9) NOT NULL,
+  PRIMARY KEY  (`AVERAGE_ID`),
+  KEY `IX_AVERAGES_1` (`SCHOOL_ID`,`SCHOOLYEAR_ID`,`TERM_ID`,`CLASS_NAME`),
+  KEY `FK_MOYENNE_1` (`SCHOOLYEAR_ID`),
+  KEY `FK_MOYENNE_3` (`TERM_ID`),
+  KEY `FK_MOYENNE_4` (`STUDENT_ID`),
+  KEY `FK_MOYENNE_5` (`TEACHER_ID`),
+  KEY `FK_MOYENNE_6` (`LEVEL_ID`),
+  KEY `FK_AVERAGES_7` (`SUBJECT_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=101 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `AVERAGES`
+--
+
+LOCK TABLES `AVERAGES` WRITE;
+/*!40000 ALTER TABLE `AVERAGES` DISABLE KEYS */;
+INSERT INTO `AVERAGES` VALUES (97,7,1,1,1,1,1,2,'6E A',30,50,30,50,30,40,NULL,'BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,12),(98,7,1,1,1,1,1,2,'6E A',14,50,13,50,13.5,20,NULL,'ASSEZ BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,13),(99,7,1,1,1,1,1,2,'6E A',11,50,15.5,50,13.25,20,NULL,'ASSEZ BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,14),(96,7,1,1,1,1,1,2,'6E A',26.2,50,30,50,28.1,40,NULL,'ASSEZ BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,11),(95,7,1,1,1,1,1,2,'6E A',26,50,23,50,24.5,40,NULL,'ASSEZ BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,10),(94,7,1,1,1,1,1,2,'6E A',34,50,36,50,35,40,NULL,'TRES BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,9),(93,7,1,1,1,1,1,2,'6E A',31.4,50,33,50,32.2,40,NULL,'BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,5),(92,7,1,1,1,1,1,2,'6E A',31,50,30,50,30.5,40,NULL,'BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,4),(91,7,1,1,1,1,1,2,'6E A',32,50,36,50,34,40,NULL,'TRES BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,3),(90,7,1,1,2,1,1,2,'6E A',14,50,14,50,14,20,NULL,'ASSEZ BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,15),(89,7,1,1,2,1,1,2,'6E A',14,50,13,50,13.5,20,NULL,'ASSEZ BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,14),(88,7,1,1,2,1,1,2,'6E A',14,50,13,50,13.5,20,NULL,'ASSEZ BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,13),(87,7,1,1,2,1,1,2,'6E A',33.5,50,24,50,28.75,40,NULL,'ASSEZ BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,12),(86,7,1,1,2,1,1,2,'6E A',31.2,50,36,50,33.6,40,NULL,'BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,11),(85,7,1,1,2,1,1,2,'6E A',24.4,50,32,50,28.2,40,NULL,'ASSEZ BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,10),(84,7,1,1,2,1,1,2,'6E A',40,50,40,50,40,40,NULL,'EXCELLENT',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,9),(83,7,1,1,2,1,1,2,'6E A',32.9,50,36,50,34.45,40,NULL,'TRES BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,5),(82,7,1,1,2,1,1,2,'6E A',30,50,36,50,33,40,NULL,'BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,4),(81,7,1,1,2,1,1,2,'6E A',31,50,34,50,32.5,40,NULL,'BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,3),(100,7,1,1,1,1,1,2,'6E A',12,50,13,50,12.5,20,NULL,'ASSEZ BIEN',0,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,15);
+/*!40000 ALTER TABLE `AVERAGES` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `BRAND`
+--
+
+DROP TABLE IF EXISTS `BRAND`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `BRAND` (
+  `BRAND_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(75) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`BRAND_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `BRAND`
+--
+
+LOCK TABLES `BRAND` WRITE;
+/*!40000 ALTER TABLE `BRAND` DISABLE KEYS */;
+/*!40000 ALTER TABLE `BRAND` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `BULLETIN`
+--
+
+DROP TABLE IF EXISTS `BULLETIN`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `BULLETIN` (
+  `BULLETIN_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `STUDENT_ID` bigint(20) NOT NULL,
+  `TERM_ID` mediumint(9) NOT NULL,
+  `LEVEL_ID` mediumint(9) NOT NULL,
+  `CLASS_NAME` varchar(50) NOT NULL,
+  `GRADE_NAME` varchar(50) default NULL,
+  `RANK_NBR` int(11) NOT NULL,
+  `MARK` double NOT NULL,
+  `STATUS` tinyint(4) NOT NULL,
+  `NBR_STUDENT` int(11) NOT NULL,
+  `MOD_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `CREATE_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `SCHOOLYEAR_ID` mediumint(9) NOT NULL,
+  PRIMARY KEY  (`BULLETIN_ID`),
+  UNIQUE KEY `UQ_BULLETIN_1` (`SCHOOL_ID`,`SCHOOLYEAR_ID`,`TERM_ID`,`CLASS_NAME`,`STUDENT_ID`),
+  KEY `FK_BULLETIN_2` (`STUDENT_ID`),
+  KEY `FK_BULLETIN_3` (`TERM_ID`),
+  KEY `FK_BULLETIN_4` (`LEVEL_ID`),
+  KEY `FK_BULLETIN_5` (`SCHOOLYEAR_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `BULLETIN`
+--
+
+LOCK TABLES `BULLETIN` WRITE;
+/*!40000 ALTER TABLE `BULLETIN` DISABLE KEYS */;
+INSERT INTO `BULLETIN` VALUES (9,1,2,1,1,'6E A','BIEN',1,15.9705882352941,0,2,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,7),(10,1,1,1,1,'6E A','ASSEZ BIEN',2,14.9147058823529,0,2,'2012-03-05 08:11:56','2012-03-05 08:11:56',1,7);
+/*!40000 ALTER TABLE `BULLETIN` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CARRIER`
+--
+
+DROP TABLE IF EXISTS `CARRIER`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `CARRIER` (
+  `CARRIER_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(75) NOT NULL,
+  `CONTACT_NAME` varchar(250) default NULL,
+  `ADDRESS1` varchar(75) default NULL,
+  `ADDRESS2` varchar(75) default NULL,
+  `CITY` varchar(150) default NULL,
+  `PHONE_NUMBER` varchar(12) default NULL,
+  `FAX_NUMBER` varchar(12) default NULL,
+  `EMAIL` varchar(30) default NULL,
+  `WEBSITE` varchar(100) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `COUNTRY_ID` bigint(20) default NULL,
+  PRIMARY KEY  (`CARRIER_ID`),
+  KEY `FK_CARRIER_1` (`COUNTRY_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `CARRIER`
+--
+
+LOCK TABLES `CARRIER` WRITE;
+/*!40000 ALTER TABLE `CARRIER` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CARRIER` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CATEGORY`
+--
+
+DROP TABLE IF EXISTS `CATEGORY`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `CATEGORY` (
+  `CATEGORY_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(75) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`CATEGORY_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `CATEGORY`
+--
+
+LOCK TABLES `CATEGORY` WRITE;
+/*!40000 ALTER TABLE `CATEGORY` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CATEGORY` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CLASS`
+--
+
+DROP TABLE IF EXISTS `CLASS`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `CLASS` (
+  `CLASS_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(50) NOT NULL,
+  `NBR_STUDENTS` mediumint(9) NOT NULL default '0',
+  `CAPACITY` mediumint(9) NOT NULL default '0',
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `LEVEL_ID` mediumint(9) NOT NULL,
+  `RESPONSIBLE_TEACHER_ID` mediumint(9) default NULL,
+  PRIMARY KEY  (`CLASS_ID`),
+  UNIQUE KEY `UQ_CLASS_1` (`SCHOOL_ID`,`NAME`),
+  KEY `FK_CLASS_1` (`LEVEL_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `CLASS`
+--
+
+LOCK TABLES `CLASS` WRITE;
+/*!40000 ALTER TABLE `CLASS` DISABLE KEYS */;
+INSERT INTO `CLASS` VALUES (1,1,'6E A',2,15,'2012-03-04 03:43:51','2012-03-05 06:10:43',2,1,NULL),(2,1,'6E B',0,15,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1,NULL),(3,1,'5E A',0,15,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,2,NULL),(4,1,'5E B',0,15,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,2,NULL),(5,1,'4E A',0,15,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,3,NULL),(6,1,'4E B',0,15,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,3,NULL),(7,1,'3E A',0,15,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,4,NULL),(8,1,'3E B',0,15,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,4,NULL);
+/*!40000 ALTER TABLE `CLASS` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CLASS_COUNCIL`
+--
+
+DROP TABLE IF EXISTS `CLASS_COUNCIL`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `CLASS_COUNCIL` (
+  `CLASS_COUNCIL_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `COUNCIL_DATE` date NOT NULL,
+  `DECISIONS` text NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`CLASS_COUNCIL_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `CLASS_COUNCIL`
+--
+
+LOCK TABLES `CLASS_COUNCIL` WRITE;
+/*!40000 ALTER TABLE `CLASS_COUNCIL` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CLASS_COUNCIL` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CONFIGURATION`
+--
+
+DROP TABLE IF EXISTS `CONFIGURATION`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `CONFIGURATION` (
+  `CONFIG_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `GROUP_NAME` varchar(45) default NULL,
+  `NAME` varchar(50) NOT NULL,
+  `VALUE` varchar(200) NOT NULL,
+  `DESCRIPTION` varchar(200) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`CONFIG_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=45 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `CONFIGURATION`
+--
+
+LOCK TABLES `CONFIGURATION` WRITE;
+/*!40000 ALTER TABLE `CONFIGURATION` DISABLE KEYS */;
+INSERT INTO `CONFIGURATION` VALUES (1,1,'SCHOOL','SCHOOL_SMTP_SERVER','smtp.gmail.com','SCHOOL MAIL SMTP SERVER','2010-10-03 11:45:39','2010-10-03 11:45:39',1),(2,1,'SCHOOL','SCHOOL_SENDER_EMAIL','esoftsystemsinc@gmail.com','SCHOOL E_MAIL ADDRESS','2010-12-15 10:12:31','2010-12-15 10:12:31',1),(3,1,'SCHOOL','SCHOOL_MAIL_SERVER_USER','esoftsystemsinc','SCHOOL MAIL SERVER USER NAME','2010-12-15 10:12:41','2010-12-15 10:12:41',1),(4,1,'SCHOOL','SCHOOL_MAIL_SERVER_PASSWORD','Passw0rd1!','SCHOOL MAIL SERVER PASSWORD','2010-12-15 10:12:48','2010-12-15 10:12:48',1),(5,1,'SCHOOL','DATE_FORMAT','dd/MM/yyyy','FORMAT DE LA DATE','2010-10-31 09:36:05','2010-10-21 02:04:02',1),(6,1,'SCHOOL','MARK_FORMAT','###.##','FORMAT DES NOTES','2010-11-13 10:08:13','2010-10-30 23:29:32',1),(7,1,'SCHOOL','MONEY_FORMAT','### ### ### ### CFA','FORMAT DE LA MONNAIE','2010-10-31 09:37:25','2010-10-30 23:29:32',1),(8,1,'CONSUMER_STATUS','En attente d\'approbation','1','En attente d\'approbation','2010-11-27 21:32:25','2010-11-27 21:32:25',1),(9,1,'CONSUMER_STATUS','Approvee','2','Approvee','2010-11-27 21:32:45','2010-11-27 21:32:45',1),(10,1,'CONSUMER_STATUS','Rejetee','3','Rejetee','2010-11-27 21:34:15','2010-11-27 21:34:15',1),(11,1,'CONSUMER_STATUS','Produit delivre','4','Produit delivre','2010-11-27 21:35:25','2010-11-27 21:35:25',1),(12,1,'CONSUMER_STATUS','Produit Retourne','6','Produit Retourne','2010-11-27 21:36:26','2010-11-27 21:36:26',1),(13,1,'PURCHASE_ORDER_STATUS','En attente d\'expedition','1','En attente d\'expedition','2010-11-25 18:54:40','2010-11-25 18:54:40',1),(14,1,'PURCHASE_ORDER_STATUS','Expedie','2','Expedie','2010-11-25 18:55:17','2010-11-25 18:55:17',1),(15,1,'PURCHASE_ORDER_STATUS','Delivre','3','Delivre','2010-11-25 18:55:34','2010-11-25 18:55:34',1),(16,1,'PURCHASE_ORDER_STATUS','Annule','4','Annule','2010-11-25 18:55:34','2010-11-25 18:55:34',1),(17,1,'SCHOOL','DATE_TIME_FORMAT','dd/MM/yyyy hh:mm','FORMAT DE LA DATE ET HEURE','2010-11-26 11:43:37','2010-11-26 11:19:49',1),(18,1,'ALERT_TYPE','Payment en retard','1','Payment en retard','2010-12-05 07:47:43','2010-12-05 07:47:43',1),(19,1,'ALERT_TYPE','Retard de retour','3','','2010-12-05 07:48:26','2010-12-05 07:48:26',1),(20,1,'ALERT_TYPE','Stock minimum atteint','2','','2010-12-05 07:48:52','2010-12-05 07:48:52',1),(21,1,'SCHOOL','SCHOOL_DEFAULT_PASSWORD','password','Le mot de passe par defaut ','2010-12-13 10:51:51','2010-12-13 10:51:51',1),(22,1,'SCHOOL','SCHOOL_DEFAULT_PASSWORD_LENGTH','6','La longueur du mot de passe par defaut genere par le system','2010-12-13 10:51:51','2010-12-13 10:51:51',1),(23,1,'SCHOOL','SCHOOL_WEBSITE','www.e-softsystems.com','Page web de l\'ecole','2010-12-14 08:11:39','2010-12-14 08:11:39',1),(24,1,'DAY_OF_WEEK','Lundi','1','Lundi','2010-12-14 08:11:39','2010-12-14 08:11:39',1),(25,1,'DAY_OF_WEEK','Mardi','2','Mardi','2010-12-14 08:11:39','2010-12-14 08:11:39',1),(26,1,'DAY_OF_WEEK','Mercredi','3','Mercredi','2010-12-14 08:11:39','2010-12-14 08:11:39',1),(27,1,'DAY_OF_WEEK','Jeudi','4','Jeudi','2010-12-14 08:11:39','2010-12-14 08:11:39',1),(28,1,'DAY_OF_WEEK','Vendredi','5','Vendredi','2010-12-14 08:11:39','2010-12-14 08:11:39',1),(29,1,'DAY_OF_WEEK','Samedi','6','Samedi','2010-12-14 08:11:39','2010-12-14 08:11:39',1),(30,1,'DAY_OF_WEEK','Dimanche','7','Dimanche','2010-12-14 08:11:39','2010-12-14 08:11:39',1),(31,1,'DECISION','SUCCES','SUCCES','PASSE EN CLASSE SUPERIEURE','2010-12-14 08:11:39','2012-03-04 10:07:08',2),(32,1,'DECISION','ECHEC','ECHEC','REDOUBLE','2010-12-14 08:11:39','2012-03-04 10:07:18',2),(33,1,'DECISION','EXCLUSION','EXCLUSION','EXCLU','2010-12-14 08:11:39','2012-03-04 10:07:26',2),(34,1,'STUDENT_STATUS','DOSSIER INACTIF','0','DOSSIER INACTIF','2010-11-27 21:32:45','2010-11-27 21:32:45',1),(35,1,'STUDENT_STATUS','DOSSIER ACTIF','1','DOSSIER ACTIF','2010-11-27 21:32:45','2010-11-27 21:32:45',1),(36,1,'STUDENT_STATUS','DOSSIER EN COURS D\'EDTUDE','2','DOSSIER EN COURS D\'EDTUDE','2010-11-27 21:32:45','2010-11-27 21:32:45',1),(37,1,'STUDENT_STATUS','DOSSIER REJETE','3','DOSSIER REJETE','2010-11-27 21:32:45','2010-11-27 21:32:45',1),(38,1,'STUDENT_STATUS','DOSSIER ACCEPTE','4','DOSSIER ACCEPTE','2010-11-27 21:32:45','2010-11-27 21:32:45',1),(39,1,'LOCALE','Francais','fr','Francais','2010-12-14 08:11:39','2010-12-14 08:11:39',1),(40,1,'LOCALE','Englais','en','Englais','2010-12-14 08:11:39','2010-12-14 08:11:39',1),(41,1,'DEFAULT_LOCALE','Francais','fr','Francais','2010-12-14 08:11:39','2010-12-14 08:11:39',1),(42,1,'CURRICULUM_PROGRESS_STATUS','Termine','1','Termine','2010-11-27 21:32:25','2010-11-27 21:32:25',1),(43,1,'CURRICULUM_PROGRESS_STATUS','En Cours','2','En Cours','2010-11-27 21:32:25','2010-11-27 21:32:25',1),(44,1,'CURRICULUM_PROGRESS_STATUS','Annule','3','Annule','2010-11-27 21:32:25','2010-11-27 21:32:25',1);
+/*!40000 ALTER TABLE `CONFIGURATION` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CORRESPONDANCE`
+--
+
+DROP TABLE IF EXISTS `CORRESPONDANCE`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `CORRESPONDANCE` (
+  `CORRESPONDANCE_ID` bigint(20) NOT NULL auto_increment COMMENT '0 - Not sent, 1 - Sent',
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `SUBJECT` varchar(250) NOT NULL,
+  `DESCRIPTION` text NOT NULL,
+  `CORRESPONDANCE_DATE` date NOT NULL,
+  `SENT` tinyint(4) NOT NULL default '0',
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`CORRESPONDANCE_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `CORRESPONDANCE`
+--
+
+LOCK TABLES `CORRESPONDANCE` WRITE;
+/*!40000 ALTER TABLE `CORRESPONDANCE` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CORRESPONDANCE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `COUNTRY`
+--
+
+DROP TABLE IF EXISTS `COUNTRY`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `COUNTRY` (
+  `COUNTRY_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(100) NOT NULL,
+  `DOMAIN` char(2) default NULL,
+  `CODE` mediumint(9) default NULL,
+  `POPULATION` bigint(20) default NULL,
+  `AREA` double default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`COUNTRY_ID`),
+  UNIQUE KEY `UNIQUE_COUNTRY1` (`NAME`)
+) ENGINE=MyISAM AUTO_INCREMENT=232 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `COUNTRY`
+--
+
+LOCK TABLES `COUNTRY` WRITE;
+/*!40000 ALTER TABLE `COUNTRY` DISABLE KEYS */;
+INSERT INTO `COUNTRY` VALUES (1,1,'Afghanistan','AF',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(2,1,'Afrique du Sud','ZA',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(3,1,'Albanie','AL',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(4,1,'Algerie','DZ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(5,1,'Allemagne','DE',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(6,1,'Andorre','AD',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(7,1,'Angola','AO',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(8,1,'Anguilla','AI',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(9,1,'Antigua-et-Barbuda','AG',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(10,1,'Antilles neerlandaises','AN',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(11,1,'Arabie saoudite','SA',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(12,1,'Argentine','AR',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(13,1,'Armenie','AM',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(14,1,'Aruba','AW',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(15,1,'Australie','AU',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(16,1,'Autriche','AT',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(17,1,'Azerbaidjan','AZ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(18,1,'Bahamas','BS',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(19,1,'Bahrein','BH',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(20,1,'Bangladesh','BD',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(21,1,'Barbade','BB',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(22,1,'Belau','PW',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(23,1,'Belgique','BE',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(24,1,'Belize','BZ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(25,1,'Benin','BJ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(26,1,'Bermudes','BM',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(27,1,'Bhoutan','BT',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(28,1,'Bielorussie','BY',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(29,1,'Birmanie','MM',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(30,1,'Bolivie','BO',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(31,1,'Bosnie-Herzegovine','BA',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(32,1,'Botswana','BW',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(33,1,'Bresil','BR',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(34,1,'Brunei','BN',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(35,1,'Bulgarie','BG',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(36,1,'Burkina Faso','BF',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(37,1,'Burundi','BI',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(38,1,'Cambodge','KH',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(39,1,'Cameroun','CM',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(40,1,'Canada','CA',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(41,1,'Cap-Vert','CV',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(42,1,'Chili','CL',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(43,1,'Chine','CN',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(44,1,'Chypre','CY',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(45,1,'Colombie','CO',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(46,1,'Comores','KM',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(47,1,'Congo','CG',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(48,1,'Congo (Republique democratique du )','CD',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(49,1,'Coree du Nord','KP',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(50,1,'Coree du Sud','KR',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(51,1,'Costa Rica','CR',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(52,1,'Cote d\'Ivoire','CI',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(53,1,'Croatie','HR',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(54,1,'Cuba','CU',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(55,1,'Danemark','DK',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(56,1,'Djibouti','DJ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(57,1,'Dominique','DM',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(58,1,'egypte','EG',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(59,1,'emirats arabes unis','AE',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(60,1,'equateur','EC',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(61,1,'erythree','ER',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(62,1,'Espagne','ES',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(63,1,'Estonie','EE',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(64,1,'etats-Unis','US',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(65,1,'ethiopie','ET',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(66,1,'Fidji','FJ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(67,1,'Finlande','FI',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(68,1,'France','FR',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(69,1,'Gabon','GA',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(70,1,'Gambie','GM',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(71,1,'Georgie','GE',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(72,1,'Ghana','GH',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(73,1,'Gibraltar','GI',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(74,1,'Grece','GR',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(75,1,'Grenade','GD',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(76,1,'Groenland','GL',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(77,1,'Guadeloupe','GP',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(78,1,'Guam','GU',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(79,1,'Guatemala','GT',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(80,1,'Guinee','GN',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(81,1,'Guinee equatoriale','GQ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(82,1,'Guinee-Bissao','GW',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(83,1,'Guyana','GY',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(84,1,'Guyane française','GF',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(85,1,'Haiti','HT',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(86,1,'Honduras','HN',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(87,1,'Hong Kong','HK',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(88,1,'Hongrie','HU',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(89,1,'Ile Christmas','CX',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(90,1,'Ile Norfolk','NF',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(91,1,'Iles Cayman','KY',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(92,1,'Iles Cook','CK',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(93,1,'Iles des Cocos','CC',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(94,1,'Iles Falkland','FK',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(95,1,'Iles Feroe','FO',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(96,1,'Iles Marshall','MH',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(97,1,'Iles Pitcairn','PN',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(98,1,'Iles Salomon','SB',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(99,1,'Iles Svalbard et Jan Mayen','SJ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(100,1,'Iles Turks-et-Caicos','TC',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(101,1,'Iles Vierges americaines','VI',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(102,1,'Iles Vierges britanniques','VG',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(103,1,'Inde','IN',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(104,1,'Indonesie','ID',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(105,1,'Iran','IR',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(106,1,'Iraq','IQ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(107,1,'Irlande','IE',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(108,1,'Islande','IS',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(109,1,'Israel','IL',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(110,1,'Italie','IT',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(111,1,'Jamaique','JM',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(112,1,'Japon','JP',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(113,1,'Jordanie','JO',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(114,1,'Kazakhstan','KZ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(115,1,'Kenya','KE',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(116,1,'Kirghizistan','KG',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(117,1,'Kiribati','KI',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(118,1,'Koweit','KW',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(119,1,'Laos','LA',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(120,1,'Lesotho','LS',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(121,1,'Lettonie','LV',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(122,1,'Liban','LB',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(123,1,'Liberia','LR',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(124,1,'Libye','LY',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(125,1,'Liechtenstein','LI',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(126,1,'Lituanie','LT',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(127,1,'Luxembourg','LU',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(128,1,'Macao','MO',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(129,1,'Macedoine','MK',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(130,1,'Madagascar','MG',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(131,1,'Malaisie','MY',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(132,1,'Malawi','MW',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(133,1,'Maldives','MV',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(134,1,'Mali','ML',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(135,1,'Malte','MT',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(136,1,'Mariannes du Nord','MP',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(137,1,'Maroc','MA',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(138,1,'Martinique','MQ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(139,1,'Maurice','MU',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(140,1,'Mauritanie','MR',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(141,1,'Mayotte','YT',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(142,1,'Mexique','MX',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(143,1,'Micronesie','FM',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(144,1,'Moldavie','MD',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(145,1,'Monaco','MC',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(146,1,'Mongolie','MN',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(147,1,'Montserrat','MS',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(148,1,'Mozambique','MZ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(149,1,'Namibie','NA',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(150,1,'Nauru','NR',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(151,1,'Nepal','NP',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(152,1,'Nicaragua','NI',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(153,1,'Niger','NE',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(154,1,'Nigeria','NG',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(155,1,'Nioue','NU',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(156,1,'Norvege','NO',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(157,1,'Nouvelle-Caledonie','NC',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(158,1,'Nouvelle-Zelande','NZ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(159,1,'Oman','OM',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(160,1,'Ouganda','UG',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(161,1,'Ouzbekistan','UZ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(162,1,'Pakistan','PK',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(163,1,'Panama','PA',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(164,1,'Papouasie-Nouvelle-Guinee','PG',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(165,1,'Paraguay','PY',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(166,1,'Pays-Bas','NL',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(167,1,'Perou','PE',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(168,1,'Philippines','PH',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(169,1,'Pologne','PL',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(170,1,'Polynesie française','PF',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(171,1,'Porto Rico','PR',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(172,1,'Portugal','PT',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(173,1,'Qatar','QA',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(174,1,'Republique centrafricaine','CF',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(175,1,'Republique dominicaine','DO',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(176,1,'Republique tcheque','CZ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(177,1,'Reunion','RE',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(178,1,'Roumanie','RO',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(179,1,'Royaume-Uni','GB',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(180,1,'Russie','RU',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(181,1,'Rwanda','RW',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(182,1,'Sahara occidental35','EH',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(183,1,'Saint-Christophe-et-Nieves','KN',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(184,1,'Sainte-Helene','SH',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(185,1,'Sainte-Lucie','LC',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(186,1,'Saint-Marin','SM',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(187,1,'Saint-Pierre-et-Miquelon','PM',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(188,1,'Saint-Siege','VA',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(189,1,'Saint-Vincent-et-les-Grenadines','VC',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(190,1,'Salvador','SV',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(191,1,'Samoa','WS',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(192,1,'Samoa americaines','AS',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(193,1,'Sao Tome-et-Principe','ST',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(194,1,'Senegal','SN',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(195,1,'Serbie-et-Montenegro','YU',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(196,1,'Seychelles','SC',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(197,1,'Sierra Leone','SL',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(198,1,'Singapour','SG',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(199,1,'Slovaquie','SK',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(200,1,'Slovenie','SI',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(201,1,'Somalie','SO',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(202,1,'Soudan','SD',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(203,1,'Sri Lanka','LK',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(204,1,'Suede','SE',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(205,1,'Suisse','CH',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(206,1,'Suriname','SR',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(207,1,'Swaziland','SZ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(208,1,'Syrie','SY',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(209,1,'Tadjikistan','TJ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(210,1,'Taiwan','TW',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(211,1,'Tanzanie','TZ',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(212,1,'Tchad','TD',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(213,1,'Thailande','TH',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(214,1,'Timor oriental','TL',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(215,1,'Togo','TG',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(216,1,'Tokelaou','TK',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(217,1,'Tonga','TO',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(218,1,'Trinite-et-Tobago','TT',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(219,1,'Tunisie','TN',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(220,1,'Turkmenistan','TM',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(221,1,'Turquie','TR',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(222,1,'Tuvalu','TV',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(223,1,'Ukraine','UA',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(224,1,'Uruguay','UY',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(225,1,'Vanuatu','VU',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(226,1,'Venezuela','VE',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(227,1,'Viet Nam','VN',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(228,1,'Wallis-et-Futuna','WF',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(229,1,'Yemen','YE',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(230,1,'Zambie','ZM',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1),(231,1,'Zimbabwe','ZW',NULL,NULL,NULL,'2012-03-04 03:43:50','2012-03-04 03:43:50',1);
+/*!40000 ALTER TABLE `COUNTRY` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `COURSE`
+--
+
+DROP TABLE IF EXISTS `COURSE`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `COURSE` (
+  `COURSE_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `SUBJECT_ID` mediumint(9) NOT NULL,
+  `CLASS_ID` mediumint(9) NOT NULL,
+  `TEACHER_ID` bigint(20) NOT NULL,
+  `MAX_MARK` double NOT NULL,
+  `BEGIN_DATE` date default NULL,
+  `END_DATE` date default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`COURSE_ID`),
+  UNIQUE KEY `IX_COURSE_1` (`TEACHER_ID`,`CLASS_ID`,`SUBJECT_ID`,`BEGIN_DATE`),
+  KEY `FK_COURSE_2` (`SUBJECT_ID`),
+  KEY `FK_COURSE_3` (`CLASS_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `COURSE`
+--
+
+LOCK TABLES `COURSE` WRITE;
+/*!40000 ALTER TABLE `COURSE` DISABLE KEYS */;
+INSERT INTO `COURSE` VALUES (1,1,1,1,1,40,'2012-03-03','2012-03-03','2012-03-04 03:43:51','2012-03-04 06:46:56',2),(2,1,2,1,1,40,'2012-03-03','2012-03-03','2012-03-04 03:43:51','2012-03-04 06:47:09',2),(3,1,3,1,1,40,'2012-03-03',NULL,'2012-03-04 04:13:55','2012-03-04 06:47:22',2),(4,1,4,1,1,40,'2012-03-03',NULL,'2012-03-04 04:14:28','2012-03-04 06:47:37',2),(5,1,5,1,1,40,'2012-03-03',NULL,'2012-03-04 04:15:09','2012-03-04 06:46:43',2),(6,1,6,1,1,40,'2012-03-03',NULL,'2012-03-04 04:15:44','2012-03-04 06:48:00',2),(7,1,7,1,1,40,'2012-03-03',NULL,'2012-03-04 04:16:10','2012-03-04 06:48:27',2),(8,1,8,1,1,40,'2012-03-03',NULL,'2012-03-04 04:16:48','2012-03-04 06:48:42',2),(9,1,9,1,1,40,'2012-03-03',NULL,'2012-03-04 04:17:44','2012-03-04 06:48:54',2),(10,1,10,1,1,40,'2012-03-03',NULL,'2012-03-04 04:18:10','2012-03-04 06:49:07',2),(11,1,11,1,1,40,'2012-03-03',NULL,'2012-03-04 04:19:07','2012-03-04 06:49:43',2),(12,1,12,1,1,40,'2012-03-03',NULL,'2012-03-04 04:20:20','2012-03-04 06:50:00',2),(13,1,13,1,1,20,'2012-03-03',NULL,'2012-03-04 04:21:41','2012-03-04 04:21:41',2),(14,1,15,1,1,20,'2012-03-03',NULL,'2012-03-04 04:49:16','2012-03-04 04:49:16',2),(15,1,16,1,1,40,'2012-03-03',NULL,'2012-03-04 04:49:59','2012-03-04 06:50:15',2),(16,1,17,1,1,20,'2011-03-03',NULL,'2012-03-04 04:50:33','2012-03-04 04:50:33',2),(20,1,20,1,1,20,'2012-03-03',NULL,'2012-03-04 04:58:43','2012-03-04 04:58:43',2),(18,1,18,1,1,20,'2012-03-03',NULL,'2012-03-04 04:54:56','2012-03-04 04:54:56',2),(19,1,19,1,1,20,'2012-03-03',NULL,'2012-03-04 04:55:42','2012-03-04 04:55:42',2),(21,1,14,1,1,20,'2012-03-03',NULL,'2012-03-04 05:51:53','2012-03-04 05:51:53',2);
+/*!40000 ALTER TABLE `COURSE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `COURSE_HISTORY`
+--
+
+DROP TABLE IF EXISTS `COURSE_HISTORY`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `COURSE_HISTORY` (
+  `COURSE_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `SUBJECT_ID` mediumint(9) NOT NULL,
+  `CLASS_ID` mediumint(9) NOT NULL,
+  `TEACHER_ID` bigint(20) NOT NULL,
+  `MAX_MARK` double NOT NULL,
+  `BEGIN_DATE` date NOT NULL,
+  `END_DATE` date default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`COURSE_ID`),
+  UNIQUE KEY `IX_COURSE_HISTORY_1` (`TEACHER_ID`,`SUBJECT_ID`,`CLASS_ID`,`BEGIN_DATE`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `COURSE_HISTORY`
+--
+
+LOCK TABLES `COURSE_HISTORY` WRITE;
+/*!40000 ALTER TABLE `COURSE_HISTORY` DISABLE KEYS */;
+/*!40000 ALTER TABLE `COURSE_HISTORY` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CURRICULUM`
+--
+
+DROP TABLE IF EXISTS `CURRICULUM`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `CURRICULUM` (
+  `CURRICULUM_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `WEEK_NBR` mediumint(9) default NULL,
+  `WEEK_START_DATE` date default NULL,
+  `OBJECTIVE` text NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `SUBJECT_ID` mediumint(9) NOT NULL,
+  `LEVEL_ID` mediumint(9) NOT NULL,
+  `SCHOOLYEAR_ID` mediumint(9) NOT NULL,
+  PRIMARY KEY  (`CURRICULUM_ID`),
+  KEY `FK_CURRICULUM_1` (`SUBJECT_ID`),
+  KEY `FK_CURRICULUM_2` (`LEVEL_ID`),
+  KEY `FK_CURRICULUM_3` (`SCHOOLYEAR_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `CURRICULUM`
+--
+
+LOCK TABLES `CURRICULUM` WRITE;
+/*!40000 ALTER TABLE `CURRICULUM` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CURRICULUM` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CURRICULUM_PROGRESS`
+--
+
+DROP TABLE IF EXISTS `CURRICULUM_PROGRESS`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `CURRICULUM_PROGRESS` (
+  `PROGRESS_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `CLASS_ID` mediumint(9) NOT NULL,
+  `TEACHER_ID` bigint(20) NOT NULL,
+  `STATUS` tinyint(4) default NULL,
+  `COMMENT` text,
+  `CURRICULUM_ID` mediumint(9) NOT NULL,
+  PRIMARY KEY  (`PROGRESS_ID`),
+  KEY `FK_CURRICULUM_PROGRESS_1` (`CLASS_ID`),
+  KEY `FK_CURRICULUM_PROGRESS_2` (`TEACHER_ID`),
+  KEY `FK_CURRICULUM_PROGRESS_3` (`CURRICULUM_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `CURRICULUM_PROGRESS`
+--
+
+LOCK TABLES `CURRICULUM_PROGRESS` WRITE;
+/*!40000 ALTER TABLE `CURRICULUM_PROGRESS` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CURRICULUM_PROGRESS` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `DISEASE`
+--
+
+DROP TABLE IF EXISTS `DISEASE`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `DISEASE` (
+  `DISEASE_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(50) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`DISEASE_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `DISEASE`
+--
+
+LOCK TABLES `DISEASE` WRITE;
+/*!40000 ALTER TABLE `DISEASE` DISABLE KEYS */;
+/*!40000 ALTER TABLE `DISEASE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `EVENT`
+--
+
+DROP TABLE IF EXISTS `EVENT`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `EVENT` (
+  `EVENT_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `TITLE` varchar(100) NOT NULL,
+  `BEGIN_TIME` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP COMMENT 'FORMAT HH24:MI (14:50)',
+  `END_TIME` timestamp NOT NULL default '0000-00-00 00:00:00' COMMENT 'FORMAT HH24:MI (14:50)',
+  `DESCRIPTION` text NOT NULL,
+  `REC_TYPE` varchar(100) default NULL,
+  `EVENT_PID` mediumint(9) default NULL,
+  `EVENT_LENGTH` mediumint(9) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`EVENT_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `EVENT`
+--
+
+LOCK TABLES `EVENT` WRITE;
+/*!40000 ALTER TABLE `EVENT` DISABLE KEYS */;
+/*!40000 ALTER TABLE `EVENT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `EVENT_TYPE`
+--
+
+DROP TABLE IF EXISTS `EVENT_TYPE`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `EVENT_TYPE` (
+  `EVENT_TYPE_ID` tinyint(4) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(100) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `SHOW_ON_GRADE_REPORT` char(1) default '0',
+  PRIMARY KEY  (`EVENT_TYPE_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `EVENT_TYPE`
+--
+
+LOCK TABLES `EVENT_TYPE` WRITE;
+/*!40000 ALTER TABLE `EVENT_TYPE` DISABLE KEYS */;
+INSERT INTO `EVENT_TYPE` VALUES (1,1,'RETARD','2012-03-04 03:43:51','2012-03-05 08:03:37',1,'1'),(2,1,'ABSENSE','2012-03-04 03:43:51','2012-03-05 08:03:43',1,'1'),(3,1,'PUNITION','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'0'),(4,1,'EXCLUSION','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'0'),(5,1,'AVERTISSEMENT','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'0'),(6,1,'BLAME','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'0'),(7,1,'RECONNAISSANCE','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'0');
+/*!40000 ALTER TABLE `EVENT_TYPE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `EXAM`
+--
+
+DROP TABLE IF EXISTS `EXAM`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `EXAM` (
+  `EXAM_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(100) NOT NULL,
+  `EXAM_DATE` date default NULL,
+  `EXAM_TYPE_ID` mediumint(9) NOT NULL,
+  `EVALUATION_TYPE` tinyint(4) NOT NULL default '0' COMMENT '0 - NOTE DE CLASSE, 1 - EXAMEN (COMPOSITION)',
+  `PUBLISH_MARKS` tinyint(4) NOT NULL default '0' COMMENT '1= YES, 0=NO',
+  `COURSE_ID` mediumint(9) NOT NULL,
+  `TERM_ID` mediumint(9) NOT NULL,
+  `MAX_MARK` double NOT NULL,
+  `RATIO` double NOT NULL,
+  `SCHOOLYEAR_ID` mediumint(9) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`EXAM_ID`),
+  KEY `FK_EXAM_1` (`EXAM_TYPE_ID`),
+  KEY `FK_EXAM_2` (`TERM_ID`),
+  KEY `FK_EXAM_4` (`COURSE_ID`),
+  KEY `FK_EXAM_5` (`SCHOOLYEAR_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `EXAM`
+--
+
+LOCK TABLES `EXAM` WRITE;
+/*!40000 ALTER TABLE `EXAM` DISABLE KEYS */;
+INSERT INTO `EXAM` VALUES (1,1,'Examen du 1er mois','2012-03-03',3,0,1,3,1,20,25,7,'2012-03-04 05:02:29','2012-03-04 05:13:56',2),(2,1,'Examen du 2eme mois ','2012-03-03',3,0,1,3,1,20,25,7,'2012-03-04 05:13:32','2012-03-04 05:17:06',2),(3,1,'Composition du 1er trimestre','2012-03-03',3,1,1,3,1,20,50,7,'2012-03-04 05:16:31','2012-03-04 06:40:18',2),(4,1,'Examen du 1er mois','2012-03-03',3,0,1,4,1,20,25,7,'2012-03-04 05:20:33','2012-03-04 05:20:33',2),(5,1,'Examen du 2nd mois','2012-03-03',3,0,0,4,1,20,25,7,'2012-03-04 05:22:13','2012-03-04 05:22:13',2),(6,1,'Composition du 1er trinestre','2012-03-03',3,1,1,4,1,20,50,7,'2012-03-04 05:23:40','2012-03-04 06:40:37',2),(7,1,'Examen du 1er mois','2012-03-03',3,0,0,5,1,20,15,7,'2012-03-04 05:25:20','2012-03-04 05:25:20',2),(8,1,'Examen du 2eme mois','2012-03-03',3,0,1,5,1,20,15,7,'2012-03-04 05:27:06','2012-03-04 05:27:06',2),(9,1,'Examen du 3rd mois','2012-03-03',3,0,1,5,1,20,20,7,'2012-03-04 05:28:00','2012-03-04 05:28:00',2),(10,1,'Composition du 1er trimestre','2012-03-03',3,1,1,5,1,20,50,7,'2012-03-04 05:30:12','2012-03-04 06:40:47',2),(11,1,'Examen du 1er mois','2012-03-03',3,0,1,9,1,20,25,7,'2012-03-04 05:31:56','2012-03-04 05:31:56',2),(12,1,'Examen du 2eme mois','2012-03-03',3,0,1,9,1,20,25,7,'2012-03-04 05:32:43','2012-03-04 05:32:43',2),(13,1,'Composition du 1er trimestre','2012-03-03',3,1,1,9,1,20,50,7,'2012-03-04 05:33:40','2012-03-04 06:40:58',2),(14,1,'Examen du 1er mois','2012-03-03',3,0,1,10,1,20,15,7,'2012-03-04 05:34:42','2012-03-04 05:34:42',2),(15,1,'Examen du 2eme mois','2012-03-03',3,0,1,10,1,20,15,7,'2012-03-04 05:35:28','2012-03-04 05:35:28',2),(16,1,'Examen du 3eme mois','2012-03-03',3,0,1,10,1,20,20,7,'2012-03-04 05:36:07','2012-03-04 05:36:07',2),(17,1,'Composition du 1er trimestre','2012-03-03',3,1,1,10,1,20,50,7,'2012-03-04 05:36:57','2012-03-04 06:41:11',2),(18,1,'Examen du 1er mois ','2012-03-03',3,0,1,11,1,20,15,7,'2012-03-04 05:39:54','2012-03-04 05:39:54',2),(19,1,'Examen du 2eme mois','2012-03-03',3,0,1,11,1,20,15,7,'2012-03-04 05:41:11','2012-03-04 05:41:11',2),(20,1,'Examen du 3eme mois','2012-03-03',3,0,1,11,1,20,20,7,'2012-03-04 05:41:50','2012-03-04 05:41:50',2),(21,1,'Conposition du 1er trimestre','2012-03-03',3,1,1,11,1,20,50,7,'2012-03-04 05:43:05','2012-03-04 07:35:38',2),(22,1,'Examen du 1er mois','2012-03-03',3,0,1,12,1,20,25,7,'2012-03-04 05:44:28','2012-03-04 05:44:28',2),(23,1,'Composition du 1er trimestre','2012-03-03',3,1,1,12,1,20,50,7,'2012-03-04 05:46:24','2012-03-04 06:41:23',2),(24,1,'Examen du 2eme mois','2012-03-03',3,0,1,12,1,20,25,7,'2012-03-04 05:47:31','2012-03-04 05:47:47',2),(25,1,'Examen du 1er mois','2012-03-03',3,0,1,13,1,20,50,7,'2012-03-04 05:48:54','2012-03-04 05:48:54',2),(26,1,'Composition du 1er trimestre','2012-03-03',3,1,1,13,1,20,50,7,'2012-03-04 05:50:16','2012-03-04 06:41:39',2),(27,1,'Examen de 1er mois','2012-03-03',3,0,1,21,1,20,50,7,'2012-03-04 05:52:08','2012-03-04 05:52:08',2),(28,1,'Composition du 1er trimestre','2012-03-03',3,1,1,21,1,20,50,7,'2012-03-04 05:52:55','2012-03-04 06:41:53',2),(29,1,'Examen du 1er mois','2012-03-03',3,0,1,14,1,20,50,7,'2012-03-04 05:54:05','2012-03-04 05:54:05',2),(30,1,'Composition du 1er trimestre','2012-03-03',3,1,1,14,1,20,50,7,'2012-03-04 05:55:07','2012-03-04 06:42:04',2);
+/*!40000 ALTER TABLE `EXAM` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `EXAMPTION`
+--
+
+DROP TABLE IF EXISTS `EXAMPTION`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `EXAMPTION` (
+  `EXAMPTION_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `EXPT_REASON_ID` smallint(6) NOT NULL,
+  `COMMENTS` varchar(100) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `COURSE_ID` mediumint(9) NOT NULL,
+  `STUDENT_ID` bigint(20) NOT NULL,
+  PRIMARY KEY  (`EXAMPTION_ID`),
+  KEY `FK_EXAMPTION_1` (`COURSE_ID`),
+  KEY `FK_EXAMPTION_2` (`STUDENT_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `EXAMPTION`
+--
+
+LOCK TABLES `EXAMPTION` WRITE;
+/*!40000 ALTER TABLE `EXAMPTION` DISABLE KEYS */;
+/*!40000 ALTER TABLE `EXAMPTION` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `EXAM_TIMETABLE`
+--
+
+DROP TABLE IF EXISTS `EXAM_TIMETABLE`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `EXAM_TIMETABLE` (
+  `TIMETABLE_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `EXAM_DATE` date NOT NULL,
+  `BEGIN_TIME` varchar(5) NOT NULL,
+  `END_TIME` varchar(5) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `TERM_ID` mediumint(9) default NULL,
+  `SCHOOLYEAR_ID` mediumint(9) NOT NULL,
+  `CLASS_ID` mediumint(9) NOT NULL,
+  `COURSE_ID` mediumint(9) NOT NULL,
+  PRIMARY KEY  (`TIMETABLE_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `EXAM_TIMETABLE`
+--
+
+LOCK TABLES `EXAM_TIMETABLE` WRITE;
+/*!40000 ALTER TABLE `EXAM_TIMETABLE` DISABLE KEYS */;
+/*!40000 ALTER TABLE `EXAM_TIMETABLE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `EXAM_TYPE`
+--
+
+DROP TABLE IF EXISTS `EXAM_TYPE`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `EXAM_TYPE` (
+  `EXAM_TYPE_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(100) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`EXAM_TYPE_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `EXAM_TYPE`
+--
+
+LOCK TABLES `EXAM_TYPE` WRITE;
+/*!40000 ALTER TABLE `EXAM_TYPE` DISABLE KEYS */;
+INSERT INTO `EXAM_TYPE` VALUES (1,1,'DEVOIR SURVEILLE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(2,1,'INTERROGATION','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(3,1,'EXAMEN','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(4,1,'REVISION','2012-03-04 03:43:51','2012-03-04 03:43:51',1);
+/*!40000 ALTER TABLE `EXAM_TYPE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `FEEDBACK`
+--
+
+DROP TABLE IF EXISTS `FEEDBACK`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `FEEDBACK` (
+  `FEEDBACK_ID` bigint(20) NOT NULL,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `QUESTION_ID` bigint(20) NOT NULL,
+  `USER_ID` bigint(20) NOT NULL,
+  `REMARK` text NOT NULL,
+  `REVIEWED_BY` bigint(20) default NULL,
+  `REVIEW_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `REVIEW_COMMENT` text,
+  `IS_VALID` tinyint(4) default NULL COMMENT '1= YES THE REMARK IS VALID, 0 = NO IT IS NOT',
+  `MOD_BY` bigint(20) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`FEEDBACK_ID`),
+  KEY `FK_FEEDBACK_1` (`QUESTION_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `FEEDBACK`
+--
+
+LOCK TABLES `FEEDBACK` WRITE;
+/*!40000 ALTER TABLE `FEEDBACK` DISABLE KEYS */;
+/*!40000 ALTER TABLE `FEEDBACK` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `FILES`
+--
+
+DROP TABLE IF EXISTS `FILES`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `FILES` (
+  `FILE_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `CONTENT` longblob,
+  `NAME` varchar(100) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `STUDENT_ID` bigint(20) NOT NULL,
+  PRIMARY KEY  (`FILE_ID`),
+  KEY `FK_FILES_1` (`STUDENT_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `FILES`
+--
+
+LOCK TABLES `FILES` WRITE;
+/*!40000 ALTER TABLE `FILES` DISABLE KEYS */;
+/*!40000 ALTER TABLE `FILES` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `FURNITURE`
+--
+
+DROP TABLE IF EXISTS `FURNITURE`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `FURNITURE` (
+  `FURNITURE_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `DESCRIPTION` text NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `LEVEL_ID` mediumint(9) NOT NULL,
+  `SUBJECT_ID` mediumint(9) NOT NULL,
+  `SCHOOLYEAR_ID` mediumint(9) NOT NULL,
+  PRIMARY KEY  (`FURNITURE_ID`),
+  KEY `FK_FURNITURE_1` (`LEVEL_ID`),
+  KEY `FK_FURNITURE_2` (`SUBJECT_ID`),
+  KEY `FK_FURNITURE_3` (`SCHOOLYEAR_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `FURNITURE`
+--
+
+LOCK TABLES `FURNITURE` WRITE;
+/*!40000 ALTER TABLE `FURNITURE` DISABLE KEYS */;
+/*!40000 ALTER TABLE `FURNITURE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `GRADE`
+--
+
+DROP TABLE IF EXISTS `GRADE`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `GRADE` (
+  `GRADE_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(50) NOT NULL,
+  `BEGIN_RANGE` double default NULL,
+  `END_RANGE` double default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`GRADE_ID`),
+  KEY `FK_GRADE_1` (`SCHOOL_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `GRADE`
+--
+
+LOCK TABLES `GRADE` WRITE;
+/*!40000 ALTER TABLE `GRADE` DISABLE KEYS */;
+INSERT INTO `GRADE` VALUES (1,1,'EXCELLENT',19,20,'2012-03-04 03:43:51','2012-03-04 03:43:51',1),(2,1,'TRES BIEN',17,18.999,'2012-03-04 03:43:51','2012-03-04 03:43:51',1),(3,1,'BIEN',15,16.999,'2012-03-04 03:43:51','2012-03-04 03:43:51',1),(4,1,'ASSEZ BIEN',12,14.999,'2012-03-04 03:43:51','2012-03-04 03:43:51',1),(5,1,'PASSABLE',10,11.999,'2012-03-04 03:43:51','2012-03-04 03:43:51',1),(6,1,'INSUFISANT',0,9.999,'2012-03-04 03:43:51','2012-03-04 03:43:51',1);
+/*!40000 ALTER TABLE `GRADE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `JOB`
+--
+
+DROP TABLE IF EXISTS `JOB`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `JOB` (
+  `JOB_ID` bigint(20) NOT NULL auto_increment,
+  `DETAIL` varchar(500) default NULL,
+  `STATUS` tinyint(4) NOT NULL,
+  `MESSAGE` varchar(250) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  PRIMARY KEY  (`JOB_ID`),
+  KEY `FK_JOB_1` (`SCHOOL_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `JOB`
+--
+
+LOCK TABLES `JOB` WRITE;
+/*!40000 ALTER TABLE `JOB` DISABLE KEYS */;
+/*!40000 ALTER TABLE `JOB` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `LEVELS`
+--
+
+DROP TABLE IF EXISTS `LEVELS`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `LEVELS` (
+  `LEVEL_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(100) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`LEVEL_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `LEVELS`
+--
+
+LOCK TABLES `LEVELS` WRITE;
+/*!40000 ALTER TABLE `LEVELS` DISABLE KEYS */;
+INSERT INTO `LEVELS` VALUES (1,1,'6E','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(2,1,'5E','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(3,1,'4E','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(4,1,'3E','2012-03-04 03:43:51','2012-03-04 03:43:51',1);
+/*!40000 ALTER TABLE `LEVELS` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `MARK`
+--
+
+DROP TABLE IF EXISTS `MARK`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `MARK` (
+  `MARK_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `EXAM_ID` mediumint(9) NOT NULL,
+  `ENROLLMENT_ID` mediumint(9) NOT NULL,
+  `MARK` double NOT NULL,
+  `GRADE_ID` mediumint(9) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `APPROVED_BY` bigint(20) default NULL,
+  PRIMARY KEY  (`MARK_ID`),
+  KEY `FK_MARKS_1` (`EXAM_ID`),
+  KEY `FK_MARKS_2` (`ENROLLMENT_ID`),
+  KEY `FK_MARKS_3` (`GRADE_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=61 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `MARK`
+--
+
+LOCK TABLES `MARK` WRITE;
+/*!40000 ALTER TABLE `MARK` DISABLE KEYS */;
+INSERT INTO `MARK` VALUES (1,1,1,1,32,3,'2012-03-04 06:22:32','2012-03-04 07:49:15',2,NULL),(2,1,2,1,32,3,'2012-03-04 06:22:52','2012-03-04 07:49:36',2,NULL),(3,1,3,1,36,2,'2012-03-04 06:23:15','2012-03-04 07:49:51',2,NULL),(4,1,4,1,28,4,'2012-03-04 06:23:49','2012-03-04 07:50:07',2,NULL),(5,1,5,1,34,2,'2012-03-04 06:24:23','2012-03-04 07:50:27',2,NULL),(6,1,6,1,30,3,'2012-03-04 06:24:42','2012-03-04 07:50:41',2,NULL),(7,1,7,1,30,3,'2012-03-04 06:25:37','2012-03-04 07:51:35',2,NULL),(8,1,8,1,32,3,'2012-03-04 06:25:55','2012-03-04 07:51:48',2,NULL),(9,1,9,1,32,3,'2012-03-04 06:26:11','2012-03-04 07:52:04',2,NULL),(10,1,10,1,33,3,'2012-03-04 06:26:52','2012-03-04 07:52:30',2,NULL),(11,1,11,1,34,2,'2012-03-04 06:27:29','2012-03-04 07:53:31',2,NULL),(12,1,12,1,34,2,'2012-03-04 06:27:45','2012-03-04 07:53:44',2,NULL),(13,1,13,1,36,2,'2012-03-04 06:28:05','2012-03-04 07:53:58',2,NULL),(14,1,14,1,26,4,'2012-03-04 06:28:51','2012-03-04 07:54:11',2,NULL),(15,1,15,1,26,4,'2012-03-04 06:29:05','2012-03-04 07:54:26',2,NULL),(16,1,16,1,26,4,'2012-03-04 06:29:21','2012-03-04 07:54:41',2,NULL),(17,1,17,1,23,5,'2012-03-04 06:29:46','2012-03-04 07:54:59',2,NULL),(18,1,18,1,14,6,'2012-03-04 06:30:20','2012-03-04 07:55:27',2,NULL),(19,1,19,1,28,4,'2012-03-04 06:30:33','2012-03-04 07:55:41',2,NULL),(20,1,20,1,34,2,'2012-03-04 06:30:48','2012-03-04 07:55:58',2,NULL),(21,1,21,1,30,3,'2012-03-04 06:31:10','2012-03-04 07:56:18',2,NULL),(22,1,22,1,30,3,'2012-03-04 06:31:43','2012-03-04 07:56:39',2,NULL),(23,1,23,1,30,3,'2012-03-04 06:32:02','2012-03-04 07:56:53',2,NULL),(24,1,24,1,30,3,'2012-03-04 06:32:24','2012-03-04 07:57:07',2,NULL),(25,1,25,1,14,4,'2012-03-04 06:33:05','2012-03-04 06:33:05',2,NULL),(26,1,26,1,13,4,'2012-03-04 06:33:15','2012-03-04 06:33:15',2,NULL),(27,1,27,1,11,5,'2012-03-04 06:33:42','2012-03-04 06:33:42',2,NULL),(28,1,28,1,15.5,3,'2012-03-04 06:34:00','2012-03-04 06:34:00',2,NULL),(29,1,29,1,12,4,'2012-03-04 06:34:42','2012-03-04 06:34:42',2,NULL),(30,1,30,1,13,4,'2012-03-04 06:34:56','2012-03-04 06:34:56',2,NULL),(31,1,1,2,31,3,'2012-03-05 06:11:38','2012-03-05 06:11:38',2,NULL),(32,1,2,2,31,3,'2012-03-05 06:12:05','2012-03-05 06:12:05',2,NULL),(33,1,3,2,34,2,'2012-03-05 06:12:31','2012-03-05 06:12:31',2,NULL),(34,1,4,2,26,4,'2012-03-05 06:12:51','2012-03-05 06:12:51',2,NULL),(35,1,5,2,34,2,'2012-03-05 06:13:13','2012-03-05 06:13:13',2,NULL),(36,1,6,2,36,2,'2012-03-05 06:13:53','2012-03-05 06:13:53',2,NULL),(37,1,7,2,32,3,'2012-03-05 06:14:28','2012-03-05 06:14:28',2,NULL),(38,1,8,2,31,3,'2012-03-05 06:14:49','2012-03-05 06:14:49',2,NULL),(39,1,9,2,35,2,'2012-03-05 06:15:16','2012-03-05 06:15:16',2,NULL),(40,1,10,2,36,2,'2012-03-05 06:15:50','2012-03-05 06:15:50',2,NULL),(41,1,11,2,40,1,'2012-03-05 06:17:36','2012-03-05 06:17:36',2,NULL),(42,1,12,2,40,1,'2012-03-05 06:17:58','2012-03-05 06:17:58',2,NULL),(43,1,13,2,40,1,'2012-03-05 06:18:13','2012-03-05 06:18:13',2,NULL),(44,1,14,2,26,4,'2012-03-05 06:18:46','2012-03-05 06:18:46',2,NULL),(45,1,15,2,18,6,'2012-03-05 06:19:03','2012-03-05 06:19:03',2,NULL),(46,1,16,2,28,4,'2012-03-05 06:19:18','2012-03-05 06:19:18',2,NULL),(47,1,17,2,32,3,'2012-03-05 06:19:51','2012-03-05 06:19:51',2,NULL),(48,1,18,2,38,1,'2012-03-05 06:20:20','2012-03-05 06:20:20',2,NULL),(49,1,19,2,18,6,'2012-03-05 06:20:33','2012-03-05 06:20:33',2,NULL),(50,1,20,2,36,2,'2012-03-05 06:20:49','2012-03-05 06:20:49',2,NULL),(51,1,21,2,36,2,'2012-03-05 06:21:26','2012-03-05 06:21:26',2,NULL),(52,1,22,2,39,1,'2012-03-05 06:21:53','2012-03-05 06:21:53',2,NULL),(53,1,23,2,24,4,'2012-03-05 06:22:08','2012-03-05 06:22:08',2,NULL),(54,1,24,2,28,4,'2012-03-05 06:22:41','2012-03-05 06:22:41',2,NULL),(55,1,25,2,14,4,'2012-03-05 06:23:16','2012-03-05 06:23:16',2,NULL),(56,1,26,2,13,4,'2012-03-05 06:23:29','2012-03-05 06:23:29',2,NULL),(57,1,27,2,14,4,'2012-03-05 06:23:48','2012-03-05 06:23:48',2,NULL),(58,1,28,2,13,4,'2012-03-05 06:24:00','2012-03-05 06:24:00',2,NULL),(59,1,29,2,14,4,'2012-03-05 06:24:15','2012-03-05 06:24:15',2,NULL),(60,1,30,2,14,4,'2012-03-05 06:24:27','2012-03-05 06:24:27',2,NULL);
+/*!40000 ALTER TABLE `MARK` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `MEDICAL_VISIT`
+--
+
+DROP TABLE IF EXISTS `MEDICAL_VISIT`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `MEDICAL_VISIT` (
+  `MEDICAL_VISIT_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `VISIT_DATE` date NOT NULL,
+  `DIAGNOSIS` text,
+  `PRESCRIPTION` text,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `USER_ID` bigint(20) NOT NULL,
+  `CONSULTED_BY` varchar(100) NOT NULL,
+  `DISEASE_ID` bigint(20) NOT NULL,
+  PRIMARY KEY  (`MEDICAL_VISIT_ID`),
+  KEY `FK_MEDICAL_VISITE_2` (`USER_ID`),
+  KEY `FK_MEDICAL_VISIT_2` (`DISEASE_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `MEDICAL_VISIT`
+--
+
+LOCK TABLES `MEDICAL_VISIT` WRITE;
+/*!40000 ALTER TABLE `MEDICAL_VISIT` DISABLE KEYS */;
+/*!40000 ALTER TABLE `MEDICAL_VISIT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `MENU`
+--
+
+DROP TABLE IF EXISTS `MENU`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `MENU` (
+  `MENU_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `PARENT_MENU_ID` bigint(20) default NULL,
+  `NAME` varchar(50) NOT NULL,
+  `SECURITY_CODE` int(11) default NULL,
+  `DESCRIPTION` varchar(200) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `URL` varchar(100) default NULL,
+  PRIMARY KEY  (`MENU_ID`),
+  UNIQUE KEY `UNIQUE_MENU` (`NAME`,`PARENT_MENU_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=49 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `MENU`
+--
+
+LOCK TABLES `MENU` WRITE;
+/*!40000 ALTER TABLE `MENU` DISABLE KEYS */;
+INSERT INTO `MENU` VALUES (1,1,NULL,'Dossiers',1,'Dossiers','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'#'),(2,1,NULL,'Evaluations',2,'Evaluations','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'#'),(3,1,NULL,'Resultats',3,'Resultats','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'#'),(4,1,NULL,'Stocks',4,'Stocks','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'#'),(5,1,NULL,'Suivi',5,'Suivi','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'#'),(6,1,NULL,'Etat',6,'Etat','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'#'),(7,1,NULL,'Configuration',7,'Configuration','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'#'),(8,1,NULL,'Infirmerie',8,'Infirmerie','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'#'),(43,1,NULL,'Aide',43,'Aide','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'#'),(9,1,1,'Etudiant',9,'Etudiant','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=student'),(10,1,1,'Professeur',10,'Professeur','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=teacher'),(11,1,1,'Correspondance',11,'Correspondance','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=correspondance'),(12,1,1,'Inscriptions',12,'Inscriptions','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=inscriptions'),(13,1,2,'Questions',13,'Questions','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=question'),(14,1,2,'Test en ligne',14,'Test en ligne','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=onlineTest'),(15,1,3,'Saisie de notes',15,'Saisie de notes','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=exam'),(16,1,3,'Calcul des Moyennes',16,'Calcul des Moyennes','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=imprimerBulletin'),(17,1,3,'Resultats Trimestriels',17,'Resultats Trimestriels','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=classementEnLigne'),(18,1,4,'Commandes',18,'Commandes','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=commandes'),(19,1,4,'Produits',19,'Produits','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=produits'),(20,1,4,'Demandes',20,'Demandes','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=demandes'),(21,1,4,'Configuration',21,'Configuration','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=configStock'),(22,1,5,'Retards de payment',22,'Retards de payment','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=paymentDue'),(23,1,5,'Configurer les Alerts',23,'Configurer les Alerts','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=alerts'),(24,1,7,'Tranche de payment',24,'Tranche de payment','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=tuition'),(25,1,7,'Mon Etablissement',25,'Mon Etablissement','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=school'),(27,1,7,'Cours',27,'Cours','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=course'),(28,1,7,'Securite',28,'Securite','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=security'),(29,1,7,'Configurer les Etablissements',29,'Configurer les Etablissements','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=autre'),(30,1,7,'Creer un Etablissement',30,'Creer un Etablissement','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=createSchool'),(31,1,43,'Documentation',31,'Documentation','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=documentation'),(32,1,43,'A Propos',32,'A Propos','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=apropos'),(33,1,6,'Bulletin Trimestriel',33,'Bulletin Trimestriel','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=report&reportName=bulletin'),(34,1,6,'Statistiques par Etudiant par Annee',34,'Statistiques par Etudiant par Annee','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=report&reportName=StatistiquesParEtudiantParAnnee'),(35,1,6,'Statistiques par Etablissement par Niveau',35,'Statistiques par Etablissement par Niveau','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=report&reportName=StatistiquesParEcoleParNiveau'),(36,1,6,'Statistiques par Etablissement',36,'Statistiques par Etablissement','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=report&reportName=StatistiquesParEcole'),(37,1,6,'Statistiques par Classe',37,'Statistiques par Classe','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=report&reportName=StatistiquesParClasse'),(38,1,6,'Statistiques par Matiere',38,'Statistiques par Matiere','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=report&reportName=StatistiquesParEcoleParMatiere'),(39,1,6,'Resultats Trimestriels',39,'Resultats Trimestriels','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=report&reportName=resultatTrimestriel'),(40,1,6,'Inventaire des Stocks',40,'Inventaire des Stock','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=report&reportName=Inventaire'),(41,1,6,'Etat des Demandes',41,'Etat des Demandes','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=report&reportName=EtatDemandes'),(42,1,6,'Etat des Commandes',42,'Etat des Commandes','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=report&reportName=EtatCommandes'),(44,1,8,'Consultation',44,'Consultation','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=consultation'),(45,1,8,'Configuration',45,'Configuration','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=configMed'),(46,1,3,'Impression des Bulletins',46,'Impression des Bulletins','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=impressionBulletin'),(47,1,6,'Bulletin Annuel',47,'Bulletin Annuel','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=report&reportName=bulletinAnnuel'),(48,1,3,'Resultats Annuels',48,'Resultats Annuels','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'dispatch?link=resultatsAnnuel');
+/*!40000 ALTER TABLE `MENU` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `NEWS`
+--
+
+DROP TABLE IF EXISTS `NEWS`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `NEWS` (
+  `NEWS_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `TITLE` varchar(100) NOT NULL,
+  `NEWS_DATE` date NOT NULL,
+  `MESSAGE` text NOT NULL,
+  `PICTURE` longblob,
+  `AUTHOR` varchar(100) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`NEWS_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `NEWS`
+--
+
+LOCK TABLES `NEWS` WRITE;
+/*!40000 ALTER TABLE `NEWS` DISABLE KEYS */;
+/*!40000 ALTER TABLE `NEWS` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `OPERATION`
+--
+
+DROP TABLE IF EXISTS `OPERATION`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `OPERATION` (
+  `OPERATION_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `LOG` varchar(500) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `OPERATION_TYPE_ID` bigint(20) NOT NULL,
+  PRIMARY KEY  (`OPERATION_ID`),
+  KEY `FK_OPERATION_1` (`OPERATION_TYPE_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `OPERATION`
+--
+
+LOCK TABLES `OPERATION` WRITE;
+/*!40000 ALTER TABLE `OPERATION` DISABLE KEYS */;
+/*!40000 ALTER TABLE `OPERATION` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `OPERATION_TYPE`
+--
+
+DROP TABLE IF EXISTS `OPERATION_TYPE`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `OPERATION_TYPE` (
+  `OPERATION_TYPE_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(50) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`OPERATION_TYPE_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `OPERATION_TYPE`
+--
+
+LOCK TABLES `OPERATION_TYPE` WRITE;
+/*!40000 ALTER TABLE `OPERATION_TYPE` DISABLE KEYS */;
+/*!40000 ALTER TABLE `OPERATION_TYPE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ORDER_PRODUCT`
+--
+
+DROP TABLE IF EXISTS `ORDER_PRODUCT`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `ORDER_PRODUCT` (
+  `ORDER_PRODUCT_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `ORDER_ID` bigint(20) NOT NULL,
+  `PRODUCT_ID` bigint(20) NOT NULL,
+  `DISCOUNT_RATE` double default NULL,
+  `DISCOUNT_AMOUNT` double default NULL,
+  `TOTAL_AMOUNT` double default NULL,
+  `TAX_RATE` double default NULL,
+  `TOTAL_TAX` double default NULL,
+  `QTY_ORDERED` bigint(20) NOT NULL,
+  `QTY_RECEIVED` bigint(20) default NULL,
+  `QTY_DAMAGED` bigint(20) default '0',
+  `COMMENT` text,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`ORDER_PRODUCT_ID`),
+  KEY `FK_ORDER_PRODUCT_2` (`PRODUCT_ID`),
+  KEY `FK_ORDER_PRODUCT_3` (`ORDER_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `ORDER_PRODUCT`
+--
+
+LOCK TABLES `ORDER_PRODUCT` WRITE;
+/*!40000 ALTER TABLE `ORDER_PRODUCT` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ORDER_PRODUCT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `PARAMETER`
+--
+
+DROP TABLE IF EXISTS `PARAMETER`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `PARAMETER` (
+  `PARAMETER_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(15) NOT NULL,
+  `DATA_TYPE` varchar(50) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `DISPLAY_NAME` varchar(50) default NULL,
+  `INPUT_TYPE` varchar(50) default NULL,
+  `PARAMETER_SQL` varchar(2000) default NULL,
+  `PARAMETER_VALUES` varchar(2000) default NULL,
+  `MAX_LENGTH` varchar(3) default NULL,
+  `SIZE` varchar(3) default NULL,
+  PRIMARY KEY  (`PARAMETER_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=latin1 COMMENT='PARAMETER';
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `PARAMETER`
+--
+
+LOCK TABLES `PARAMETER` WRITE;
+/*!40000 ALTER TABLE `PARAMETER` DISABLE KEYS */;
+INSERT INTO `PARAMETER` VALUES (1,1,'matricule','String','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'Matricule','Input',NULL,NULL,'15','15'),(2,1,'termId','Long','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'Trimestre','List','SELECT CAST(TERM_ID AS CHAR), NAME FROM TERM ORDER BY TERM_ID',NULL,NULL,NULL),(3,1,'yearId','Long','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'Annee','List','SELECT CAST(SCHOOLYEAR_ID AS CHAR), NAME FROM SCHOOLYEAR ORDER BY NAME',NULL,NULL,NULL),(4,1,'schoolId','Long','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'Etablissement','Output',NULL,NULL,NULL,NULL),(5,1,'schoolIds','Long','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'Etablissements','MultiList','SELECT CAST(SCHOOL_ID AS CHAR), NAME FROM SCHOOL',NULL,NULL,NULL),(6,1,'className','String','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'Classe','List','SELECT NAME, NAME FROM CLASS WHERE SCHOOL_ID=schoolId',NULL,NULL,NULL),(7,1,'orderStatus','String','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'Etat de la Commande','MultiList','SELECT  NAME, DESCRIPTION FROM CONFIGURATION WHERE SCHOOL_ID=schoolId AND GROUP_NAME =\'PURCHASE_ORDER_STATUS\'',NULL,NULL,NULL),(8,1,'demandStatus','String','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'Etat de la Demande','MultiList','SELECT  NAME, DESCRIPTION FROM CONFIGURATION WHERE SCHOOL_ID=schoolId AND GROUP_NAME =\'CONSUMER_STATUS\'',NULL,NULL,NULL);
+/*!40000 ALTER TABLE `PARAMETER` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `PAYMENT`
+--
+
+DROP TABLE IF EXISTS `PAYMENT`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `PAYMENT` (
+  `PAYMENT_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `PAYMENT_DATE` date NOT NULL,
+  `AMOUNT` decimal(10,0) NOT NULL,
+  `REBATE` decimal(10,0) default '0',
+  `COMMENT` varchar(100) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `TUITION_ID` bigint(20) NOT NULL,
+  `ENROLLMENT_ID` mediumint(9) NOT NULL,
+  PRIMARY KEY  (`PAYMENT_ID`),
+  KEY `FK_PAYMENT_2` (`ENROLLMENT_ID`),
+  KEY `FK_PAYMENT_3` (`TUITION_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `PAYMENT`
+--
+
+LOCK TABLES `PAYMENT` WRITE;
+/*!40000 ALTER TABLE `PAYMENT` DISABLE KEYS */;
+/*!40000 ALTER TABLE `PAYMENT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `PAY_TYPE`
+--
+
+DROP TABLE IF EXISTS `PAY_TYPE`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `PAY_TYPE` (
+  `PAY_TYPE_ID` tinyint(4) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(100) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`PAY_TYPE_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `PAY_TYPE`
+--
+
+LOCK TABLES `PAY_TYPE` WRITE;
+/*!40000 ALTER TABLE `PAY_TYPE` DISABLE KEYS */;
+INSERT INTO `PAY_TYPE` VALUES (1,1,'HORAIRE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(2,1,'HEBDOMADAIRE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(3,1,'MENSUEL','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(4,1,'ANNUEL','2012-03-04 03:43:51','2012-03-04 03:43:51',1);
+/*!40000 ALTER TABLE `PAY_TYPE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `POSITION`
+--
+
+DROP TABLE IF EXISTS `POSITION`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `POSITION` (
+  `POSITION_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(50) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`POSITION_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `POSITION`
+--
+
+LOCK TABLES `POSITION` WRITE;
+/*!40000 ALTER TABLE `POSITION` DISABLE KEYS */;
+INSERT INTO `POSITION` VALUES (1,1,'DIRECTRICE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(2,1,'ENSEIGNANT','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(3,1,'SECRETAIRE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(4,1,'GARDIENT','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(5,1,'MAITRE NAGEUR','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(6,1,'MAITRE JUDO','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(7,1,'MAITRE KARATE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(8,1,'CUISINIER','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(9,1,'JARDINIER','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(10,1,'ELEVE','2012-03-04 03:43:51','2012-03-04 03:43:51',1);
+/*!40000 ALTER TABLE `POSITION` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `PRODUCT`
+--
+
+DROP TABLE IF EXISTS `PRODUCT`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `PRODUCT` (
+  `PRODUCT_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(75) NOT NULL,
+  `PRODUCT_CODE` varchar(50) NOT NULL,
+  `BRAND_ID` bigint(20) NOT NULL,
+  `PICTURE` blob,
+  `ISBN` varchar(50) default NULL,
+  `BAR_CODE` varchar(50) default NULL,
+  `QUANTITY` int(11) NOT NULL default '0',
+  `QUANTITY_IN_STOCK` int(11) NOT NULL,
+  `MINQTY_TO_ORDER` int(11) default NULL,
+  `RETURNABLE` char(1) default '0',
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `CATEGORY_ID` bigint(20) NOT NULL,
+  PRIMARY KEY  (`PRODUCT_ID`),
+  KEY `FK_PRODUCT_2` (`BRAND_ID`),
+  KEY `FK_PRODUCT_3` (`CATEGORY_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `PRODUCT`
+--
+
+LOCK TABLES `PRODUCT` WRITE;
+/*!40000 ALTER TABLE `PRODUCT` DISABLE KEYS */;
+/*!40000 ALTER TABLE `PRODUCT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `PRODUCT_CONSUMER`
+--
+
+DROP TABLE IF EXISTS `PRODUCT_CONSUMER`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `PRODUCT_CONSUMER` (
+  `PRODUCT_CONSUMER_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` char(10) NOT NULL,
+  `PRODUCT_ID` bigint(20) NOT NULL,
+  `USER_ID` bigint(20) NOT NULL,
+  `QTY_REQUESTED` bigint(20) NOT NULL,
+  `QTY_PICKED` bigint(20) default '0',
+  `STATUS` tinyint(4) NOT NULL default '0' COMMENT '0- new, 1 - partial, 2- Closed',
+  `REQUEST_DATE` date default NULL,
+  `PICK_UP_DATE` date default NULL,
+  `RELEASED_BY` varchar(75) default NULL,
+  `PICKED_UP_BY` varchar(75) default NULL,
+  `QTY_TO_BE_RETURNED` int(11) default NULL,
+  `QTY_RETURNED` int(11) default NULL,
+  `POSSIBLE_RETURNED_DATE` date default NULL,
+  `RETURN_DATE` date default NULL,
+  `APPROVED_BY` bigint(20) default NULL,
+  `COMMENT` text,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`PRODUCT_CONSUMER_ID`),
+  KEY `FK_PRODUCT_CONSUMER_1` (`PRODUCT_ID`),
+  KEY `FK_PRODUCT_CONSUMER_2` (`USER_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `PRODUCT_CONSUMER`
+--
+
+LOCK TABLES `PRODUCT_CONSUMER` WRITE;
+/*!40000 ALTER TABLE `PRODUCT_CONSUMER` DISABLE KEYS */;
+/*!40000 ALTER TABLE `PRODUCT_CONSUMER` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `PURCHASE_ORDER`
+--
+
+DROP TABLE IF EXISTS `PURCHASE_ORDER`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `PURCHASE_ORDER` (
+  `ORDER_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `SUPPLIER_ID` bigint(20) NOT NULL,
+  `ORDER_DATE` date default NULL,
+  `POS_DELIVERY_DATE` date default NULL,
+  `CLIENT_NUMBER` varchar(20) default NULL,
+  `DISCOUNT_RATE` double default NULL,
+  `DISCOUNT_AMOUNT` double default NULL,
+  `TOTAL_AMOUNT` double NOT NULL,
+  `STATUS` tinyint(4) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `SHIPMENT_ID` bigint(20) default NULL,
+  PRIMARY KEY  (`ORDER_ID`),
+  KEY `FK_ORDER_1` (`SUPPLIER_ID`),
+  KEY `FK_PURCHASE_ORDER_2` (`SHIPMENT_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `PURCHASE_ORDER`
+--
+
+LOCK TABLES `PURCHASE_ORDER` WRITE;
+/*!40000 ALTER TABLE `PURCHASE_ORDER` DISABLE KEYS */;
+/*!40000 ALTER TABLE `PURCHASE_ORDER` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `QNA`
+--
+
+DROP TABLE IF EXISTS `QNA`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `QNA` (
+  `QNA_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `ANSWER_ID` bigint(20) NOT NULL,
+  `QUESTION_ID` bigint(20) NOT NULL,
+  `IS_CORRECT` tinyint(4) NOT NULL,
+  `UT_ID` bigint(20) NOT NULL,
+  `MOD_BY` bigint(20) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`QNA_ID`),
+  KEY `FK_QNA_1` (`QUESTION_ID`),
+  KEY `FK_QNA_2` (`ANSWER_ID`),
+  KEY `FK_QNA_3` (`UT_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `QNA`
+--
+
+LOCK TABLES `QNA` WRITE;
+/*!40000 ALTER TABLE `QNA` DISABLE KEYS */;
+/*!40000 ALTER TABLE `QNA` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `QUESTION`
+--
+
+DROP TABLE IF EXISTS `QUESTION`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `QUESTION` (
+  `QUESTION_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `BODY` text NOT NULL,
+  `SCORE` mediumint(9) NOT NULL default '0',
+  `NBR_ANSWER` tinyint(4) NOT NULL default '1' COMMENT 'NUMBER OF ANSWERS',
+  `DISPLAY_NBR_ANSWER` tinyint(4) NOT NULL default '1' COMMENT '1= DISPLAY NUMBER OF ANSWERS, 0= DO NOT DISPLAY NUMBER OF ANSWERS',
+  `ANSWER_EXPLANATION` text,
+  `SL_ID` bigint(20) default NULL,
+  `IS_PUBLIC` tinyint(4) NOT NULL default '1' COMMENT '0= Not shown in random test, 1= Shown in Random test',
+  `MOD_BY` bigint(20) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `RATING_ID` mediumint(9) NOT NULL,
+  `SUBJECT_ID` mediumint(9) NOT NULL,
+  `LEVEL_ID` mediumint(9) NOT NULL,
+  PRIMARY KEY  (`QUESTION_ID`),
+  KEY `FK_QUESTION_1` (`RATING_ID`),
+  KEY `FK_QUESTION_2` (`SUBJECT_ID`),
+  KEY `FK_QUESTION_3` (`LEVEL_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COMMENT='QUESTION';
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `QUESTION`
+--
+
+LOCK TABLES `QUESTION` WRITE;
+/*!40000 ALTER TABLE `QUESTION` DISABLE KEYS */;
+/*!40000 ALTER TABLE `QUESTION` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `RATING`
+--
+
+DROP TABLE IF EXISTS `RATING`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `RATING` (
+  `RATING_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(15) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`RATING_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1 COMMENT='RATING';
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `RATING`
+--
+
+LOCK TABLES `RATING` WRITE;
+/*!40000 ALTER TABLE `RATING` DISABLE KEYS */;
+INSERT INTO `RATING` VALUES (1,1,'*','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(2,1,'**','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(3,1,'***','2012-03-04 03:43:51','2012-03-04 03:43:51',1);
+/*!40000 ALTER TABLE `RATING` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `RECEIVER`
+--
+
+DROP TABLE IF EXISTS `RECEIVER`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `RECEIVER` (
+  `RECEIVER_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `STUDENT_ID` bigint(20) default NULL,
+  `TEACHER_ID` bigint(20) default NULL,
+  `CORRESPONDANCE_ID` bigint(20) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`RECEIVER_ID`),
+  KEY `FK_SCORRESPONDANCE_2` (`CORRESPONDANCE_ID`),
+  KEY `FK_SCORRESPONDANCE_1` (`STUDENT_ID`),
+  KEY `FK_RECEIVER_3` (`TEACHER_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `RECEIVER`
+--
+
+LOCK TABLES `RECEIVER` WRITE;
+/*!40000 ALTER TABLE `RECEIVER` DISABLE KEYS */;
+/*!40000 ALTER TABLE `RECEIVER` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ROLES`
+--
+
+DROP TABLE IF EXISTS `ROLES`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `ROLES` (
+  `ROLE_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `ROLE_CODE` int(11) default NULL,
+  `NAME` varchar(50) NOT NULL,
+  `DESCRIPTION` varchar(200) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) default NULL,
+  PRIMARY KEY  (`ROLE_ID`),
+  UNIQUE KEY `UNIQUE_GROUPE` (`SCHOOL_ID`,`NAME`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `ROLES`
+--
+
+LOCK TABLES `ROLES` WRITE;
+/*!40000 ALTER TABLE `ROLES` DISABLE KEYS */;
+INSERT INTO `ROLES` VALUES (1,1,1,'Super User','Super User','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(2,1,2,'Administrateur','Administrateur','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(3,1,3,'Etudiant','Etudiant','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(4,1,4,'Professeur','Professeur','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(5,1,5,'Infirmier','Infirmier','2012-03-04 03:43:51','2012-03-04 03:43:51',1);
+/*!40000 ALTER TABLE `ROLES` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ROLES_MENU`
+--
+
+DROP TABLE IF EXISTS `ROLES_MENU`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `ROLES_MENU` (
+  `ROLE_MENU_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `ROLE_ID` bigint(20) NOT NULL,
+  `MENU_ID` bigint(20) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `ACCESS_LEVEL` tinyint(4) NOT NULL,
+  PRIMARY KEY  (`ROLE_MENU_ID`),
+  KEY `FK_ROLES_MENU_1` (`ROLE_ID`),
+  KEY `FK_ROLES_MENU_2` (`MENU_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=126 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `ROLES_MENU`
+--
+
+LOCK TABLES `ROLES_MENU` WRITE;
+/*!40000 ALTER TABLE `ROLES_MENU` DISABLE KEYS */;
+INSERT INTO `ROLES_MENU` VALUES (1,1,1,1,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(2,1,1,2,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(3,1,1,3,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(4,1,1,4,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(5,1,1,5,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(6,1,1,6,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(7,1,1,7,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(8,1,1,43,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(9,1,1,9,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(10,1,1,10,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(11,1,1,11,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(12,1,1,12,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(13,1,1,13,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(14,1,1,14,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(15,1,1,15,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(16,1,1,16,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(17,1,1,17,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(18,1,1,18,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(19,1,1,19,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(20,1,1,20,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(21,1,1,21,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(22,1,1,22,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(23,1,1,23,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(24,1,1,24,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(25,1,1,25,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(26,1,1,27,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(27,1,1,28,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(28,1,1,29,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(29,1,1,30,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(30,1,1,46,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(31,1,1,31,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(32,1,1,32,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(33,1,1,33,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(34,1,1,34,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(35,1,1,35,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(36,1,1,36,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(37,1,1,37,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(38,1,1,38,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(39,1,1,39,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(40,1,1,40,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(41,1,1,41,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(42,1,1,42,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(43,1,1,8,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(44,1,1,44,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(45,1,1,45,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(46,1,1,47,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(47,1,1,48,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(48,1,2,1,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(49,1,2,2,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(50,1,2,3,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(51,1,2,4,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(52,1,2,5,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(53,1,2,6,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(54,1,2,7,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(55,1,2,43,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(56,1,2,9,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(57,1,2,10,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(58,1,2,11,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(59,1,2,12,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(60,1,2,13,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(61,1,2,14,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(62,1,2,15,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(63,1,2,16,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(64,1,2,17,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(65,1,2,18,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(66,1,2,19,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(67,1,2,20,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(68,1,2,21,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(69,1,2,22,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(70,1,2,23,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(71,1,2,24,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(72,1,2,25,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(73,1,2,27,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(74,1,2,28,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(75,1,2,31,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(76,1,2,8,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(77,1,2,44,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(78,1,2,32,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(79,1,2,33,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(80,1,2,34,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(81,1,2,37,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(82,1,2,38,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(83,1,2,39,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(84,1,2,40,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(85,1,2,41,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(86,1,2,45,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(87,1,2,42,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(88,1,2,46,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(89,1,2,47,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(90,1,2,48,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(91,1,3,9,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,0),(92,1,3,17,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(93,1,3,31,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,0),(94,1,3,32,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,0),(95,1,3,48,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,0),(96,1,4,1,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(97,1,4,2,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(98,1,4,3,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(99,1,4,4,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(100,1,4,6,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(101,1,4,43,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(102,1,4,9,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(103,1,4,10,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,0),(104,1,4,11,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(105,1,4,13,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(106,1,4,14,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(107,1,4,15,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(108,1,4,16,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(109,1,4,17,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(110,1,4,19,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,0),(111,1,4,31,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(112,1,4,32,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(113,1,4,33,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(114,1,4,34,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(115,1,4,37,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(116,1,4,38,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(117,1,4,39,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(118,1,4,40,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(119,1,4,41,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(120,1,4,42,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(121,1,4,47,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(122,1,4,48,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(123,1,5,8,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(124,1,5,44,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1),(125,1,5,45,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,1);
+/*!40000 ALTER TABLE `ROLES_MENU` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ROLES_USER`
+--
+
+DROP TABLE IF EXISTS `ROLES_USER`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `ROLES_USER` (
+  `ROLE_USER_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `ROLE_ID` bigint(20) NOT NULL,
+  `USER_ID` bigint(20) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`ROLE_USER_ID`),
+  KEY `FK_ROLES_USER_1` (`USER_ID`),
+  KEY `FK_ROLES_USER_2` (`ROLE_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `ROLES_USER`
+--
+
+LOCK TABLES `ROLES_USER` WRITE;
+/*!40000 ALTER TABLE `ROLES_USER` DISABLE KEYS */;
+INSERT INTO `ROLES_USER` VALUES (1,1,1,1,'2012-03-04 03:43:51','2012-03-04 03:43:51',1),(2,1,2,2,'2012-03-04 03:43:51','2012-03-04 03:43:51',1),(3,1,3,3,'2012-03-04 03:43:51','2012-03-04 03:43:51',1),(4,1,4,4,'2012-03-04 03:43:51','2012-03-04 03:43:51',1),(5,1,5,5,'2012-03-04 03:43:51','2012-03-04 03:43:51',1),(6,1,3,6,'2012-03-04 06:21:14','2012-03-04 06:21:14',2),(7,1,3,7,'2012-03-05 06:10:12','2012-03-05 06:10:12',2);
+/*!40000 ALTER TABLE `ROLES_USER` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `SALARY`
+--
+
+DROP TABLE IF EXISTS `SALARY`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `SALARY` (
+  `SALARY_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `EFFECTIVE_DATE` date NOT NULL,
+  `AMOUNT` decimal(10,0) NOT NULL,
+  `COMMENT` text,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `TEACHER_ID` bigint(20) NOT NULL,
+  `PAY_TYPE_ID` tinyint(4) NOT NULL,
+  PRIMARY KEY  (`SALARY_ID`),
+  KEY `FK_SALARY_HISTORY_1` (`TEACHER_ID`),
+  KEY `FK_SALARY_2` (`PAY_TYPE_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `SALARY`
+--
+
+LOCK TABLES `SALARY` WRITE;
+/*!40000 ALTER TABLE `SALARY` DISABLE KEYS */;
+/*!40000 ALTER TABLE `SALARY` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `SALARY_PAYMENT`
+--
+
+DROP TABLE IF EXISTS `SALARY_PAYMENT`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `SALARY_PAYMENT` (
+  `SALARY_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `PAYMENT_DATE` date default NULL,
+  `PAYROLL_BEGIN_DATE` date default NULL,
+  `PAYROLL_END_DATE` date default NULL,
+  `AMOUNT` decimal(10,0) NOT NULL,
+  `COMMENT` text,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `TEACHER_ID` bigint(20) NOT NULL,
+  PRIMARY KEY  (`SALARY_ID`),
+  KEY `FK_SALARY_1` (`TEACHER_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `SALARY_PAYMENT`
+--
+
+LOCK TABLES `SALARY_PAYMENT` WRITE;
+/*!40000 ALTER TABLE `SALARY_PAYMENT` DISABLE KEYS */;
+/*!40000 ALTER TABLE `SALARY_PAYMENT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `SCHOOL`
+--
+
+DROP TABLE IF EXISTS `SCHOOL`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `SCHOOL` (
+  `SCHOOL_ID` mediumint(9) NOT NULL auto_increment,
+  `NAME` varchar(100) NOT NULL,
+  `SHORT_NAME` varchar(15) NOT NULL,
+  `ADDRESS` varchar(100) default NULL,
+  `CITY` varchar(150) default NULL,
+  `PHONE` varchar(20) NOT NULL,
+  `SCH_TYPE_ID` tinyint(4) default NULL,
+  `SCH_RELIGION_ID` tinyint(4) default NULL,
+  `SCH_LEVEL_ID` tinyint(4) default NULL,
+  `LOGO` longblob,
+  `REPORT_HEADER` text,
+  `SHOW_REPORT_HEADER` tinyint(4) NOT NULL COMMENT '0= No, 1 = Yes',
+  `SHOW_DEFAULT_PASSWORD` tinyint(4) NOT NULL default '0' COMMENT '0= No, 1 = Yes',
+  `GENERATE_RANDOM_PASSWORD` tinyint(4) NOT NULL default '0' COMMENT '0= No, 1 = Yes',
+  `GENERATE_MATRICULE` tinyint(4) NOT NULL default '0' COMMENT '1= YES, 0 = NO',
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `EMAIL` varchar(100) NOT NULL,
+  `COUNTRY_ID` bigint(20) NOT NULL,
+  PRIMARY KEY  (`SCHOOL_ID`),
+  KEY `FK_SCHOOL_1` (`COUNTRY_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `SCHOOL`
+--
+
+LOCK TABLES `SCHOOL` WRITE;
+/*!40000 ALTER TABLE `SCHOOL` DISABLE KEYS */;
+INSERT INTO `SCHOOL` VALUES (1,'COLLEGE PROTESTANT','COLPRO','225 RUE BABA, LOME TOGO','LOME','678 314 5397',1,1,1,NULL,'COLLEGE PROTESTANT',1,0,0,1,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,'esoftsysteminc@gmail.com',215);
+/*!40000 ALTER TABLE `SCHOOL` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `SCHOOLING`
+--
+
+DROP TABLE IF EXISTS `SCHOOLING`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `SCHOOLING` (
+  `SCHOOLING_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `DESCRIPTION` text,
+  `EVENT_DATE` date default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `EVENT_TYPE_ID` tinyint(4) NOT NULL,
+  `STUDENT_ID` bigint(20) default NULL,
+  `TEACHER_ID` bigint(20) default NULL,
+  `TERM_ID` mediumint(9) default NULL,
+  `SCHOOLYEAR_ID` mediumint(9) default NULL,
+  PRIMARY KEY  (`SCHOOLING_ID`),
+  KEY `FK_DISCIPLINE_1` (`EVENT_TYPE_ID`),
+  KEY `FK_DISCIPLINE_2` (`STUDENT_ID`),
+  KEY `FK_SCHOOLING_3` (`TEACHER_ID`),
+  KEY `FK_SCHOOLING_4` (`TERM_ID`),
+  KEY `FK_SCHOOLING_5` (`SCHOOLYEAR_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `SCHOOLING`
+--
+
+LOCK TABLES `SCHOOLING` WRITE;
+/*!40000 ALTER TABLE `SCHOOLING` DISABLE KEYS */;
+INSERT INTO `SCHOOLING` VALUES (1,1,'Test shooling.','2012-03-01','2012-03-04 09:07:30','2012-03-04 09:07:30',2,1,1,NULL,1,7),(2,1,'','2012-03-01','2012-03-04 09:08:56','2012-03-04 09:08:56',2,1,1,NULL,1,7),(3,1,'Test','2012-03-01','2012-03-04 09:09:28','2012-03-04 09:09:28',2,2,1,NULL,1,7),(4,1,'','2012-03-07','2012-03-04 09:10:23','2012-03-04 09:10:23',2,4,1,NULL,1,7),(5,1,'','2012-03-07','2012-03-04 09:10:24','2012-03-04 09:10:24',2,4,1,NULL,1,7);
+/*!40000 ALTER TABLE `SCHOOLING` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `SCHOOLYEAR`
+--
+
+DROP TABLE IF EXISTS `SCHOOLYEAR`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `SCHOOLYEAR` (
+  `SCHOOLYEAR_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(10) NOT NULL COMMENT 'example: 1999-2000',
+  `DESCRIPTION` varchar(100) default NULL,
+  `BEGIN_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `END_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `CREATE_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`SCHOOLYEAR_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `SCHOOLYEAR`
+--
+
+LOCK TABLES `SCHOOLYEAR` WRITE;
+/*!40000 ALTER TABLE `SCHOOLYEAR` DISABLE KEYS */;
+INSERT INTO `SCHOOLYEAR` VALUES (1,1,'2005-2006','ANNEE SCOLAIRE 2005-2006','2005-09-01 07:00:00','2006-06-25 07:00:00','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(2,1,'2006-2007','ANNEE SCOLAIRE 2006-2007','2006-09-01 07:00:00','2007-06-25 07:00:00','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(3,1,'2007-2008','ANNEE SCOLAIRE 2007-2008','2007-09-01 07:00:00','2008-06-25 07:00:00','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(4,1,'2008-2009','ANNEE SCOLAIRE 2008-2009','2008-09-01 07:00:00','2009-06-25 07:00:00','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(5,1,'2009-2010','ANNEE SCOLAIRE 20009-2010','2009-09-01 07:00:00','2010-06-25 07:00:00','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(6,1,'2010-2011','ANNEE SCOLAIRE 2010-2011','2010-09-01 07:00:00','2011-06-25 07:00:00','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(7,1,'2011-2012','ANNEE SCOLAIRE 2011-2012','2011-09-01 07:00:00','2012-06-25 07:00:00','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(8,1,'2012-2013','ANNEE SCOLAIRE 2012-2013','2012-09-01 07:00:00','2013-06-25 07:00:00','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(9,1,'2013-2014','ANNEE SCOLAIRE 2013-2014','2013-09-01 07:00:00','2014-06-25 07:00:00','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(10,1,'2014-2015','ANNEE SCOLAIRE 2014-2015','2014-09-01 07:00:00','2015-06-25 07:00:00','2012-03-04 03:43:51','2012-03-04 03:43:51',1);
+/*!40000 ALTER TABLE `SCHOOLYEAR` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `SCHOOL_LEVEL`
+--
+
+DROP TABLE IF EXISTS `SCHOOL_LEVEL`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `SCHOOL_LEVEL` (
+  `SCH_LEVEL_ID` tinyint(4) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(100) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`SCH_LEVEL_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `SCHOOL_LEVEL`
+--
+
+LOCK TABLES `SCHOOL_LEVEL` WRITE;
+/*!40000 ALTER TABLE `SCHOOL_LEVEL` DISABLE KEYS */;
+INSERT INTO `SCHOOL_LEVEL` VALUES (1,1,'MATERNELLE','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(2,1,'PRIMAIRE','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(3,1,'SECONDAIRE','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(4,1,'LYCEE','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(5,1,'UNIVERSITAIRE','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(6,1,'PROFESSIONNEL','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(7,1,'MATERNELLE - PRIMAIRE','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(8,1,'SECONDAIRE - LYCEE','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(9,1,'PRIMAIRE - SECONDAIRE - LYCEE','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(10,1,'MATERNELLE - PRIMAIRE - SECONDAIRE - LYCEE','2012-03-04 03:43:50','2012-03-04 03:43:50',1);
+/*!40000 ALTER TABLE `SCHOOL_LEVEL` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `SCHOOL_RELIGION`
+--
+
+DROP TABLE IF EXISTS `SCHOOL_RELIGION`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `SCHOOL_RELIGION` (
+  `SCH_RELIGION_ID` tinyint(4) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(100) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`SCH_RELIGION_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `SCHOOL_RELIGION`
+--
+
+LOCK TABLES `SCHOOL_RELIGION` WRITE;
+/*!40000 ALTER TABLE `SCHOOL_RELIGION` DISABLE KEYS */;
+INSERT INTO `SCHOOL_RELIGION` VALUES (1,1,'CATHOLIQUE','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(2,1,'LAIQUE','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(3,1,'ISLAMIQUE','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(4,1,'ANIMISTE','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(5,1,'ATHEISME','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(6,1,'PROTESTANT','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(7,1,'EVANGELISTE','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(8,1,'PANTHECOTE','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(9,1,'ASSEMBLE DE DIEU','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(10,1,'TEMOINS DE JEHOVA','2012-03-04 03:43:50','2012-03-04 03:43:50',1),(11,1,'AUTRE','2012-03-04 03:43:50','2012-03-04 03:43:50',1);
+/*!40000 ALTER TABLE `SCHOOL_RELIGION` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `SCHOOL_TYPE`
+--
+
+DROP TABLE IF EXISTS `SCHOOL_TYPE`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `SCHOOL_TYPE` (
+  `SCH_TYPE_ID` tinyint(4) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(100) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`SCH_TYPE_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `SCHOOL_TYPE`
+--
+
+LOCK TABLES `SCHOOL_TYPE` WRITE;
+/*!40000 ALTER TABLE `SCHOOL_TYPE` DISABLE KEYS */;
+INSERT INTO `SCHOOL_TYPE` VALUES (1,1,'PRIVE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(2,1,'PUBLIQUE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(3,1,'INTERNATIONAL','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(4,1,'AMERICAINE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(5,1,'FRANCAIS','2012-03-04 03:43:51','2012-03-04 03:43:51',1);
+/*!40000 ALTER TABLE `SCHOOL_TYPE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `SENROLLMENT`
+--
+
+DROP TABLE IF EXISTS `SENROLLMENT`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `SENROLLMENT` (
+  `ENROLLMENT_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `COMMENTS` varchar(100) default NULL,
+  `ENROLLMENT_DATE` date default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `STUDENT_ID` bigint(20) NOT NULL,
+  `CLASS_ID` mediumint(9) NOT NULL,
+  `SCHOOLYEAR_ID` mediumint(9) NOT NULL,
+  PRIMARY KEY  (`ENROLLMENT_ID`),
+  KEY `FK_ENROLLMENT_1` (`STUDENT_ID`),
+  KEY `FK_SENROLLMENT_3` (`CLASS_ID`),
+  KEY `FK_SENROLLMENT_4` (`SCHOOLYEAR_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `SENROLLMENT`
+--
+
+LOCK TABLES `SENROLLMENT` WRITE;
+/*!40000 ALTER TABLE `SENROLLMENT` DISABLE KEYS */;
+INSERT INTO `SENROLLMENT` VALUES (1,1,'','2012-03-03','2012-03-04 06:21:39','2012-03-04 06:21:39',2,1,1,7),(2,1,'','2012-03-05','2012-03-05 06:10:43','2012-03-05 06:10:43',2,2,1,7);
+/*!40000 ALTER TABLE `SENROLLMENT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `SESSION_HISTORY`
+--
+
+DROP TABLE IF EXISTS `SESSION_HISTORY`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `SESSION_HISTORY` (
+  `SESSION_HISTORY_ID` bigint(20) NOT NULL auto_increment,
+  `SESSION_ID` varchar(50) default NULL,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `USER_ID` bigint(20) NOT NULL,
+  `BEGIN_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `END_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `CREATE_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `HOST_NAME` varchar(50) default NULL,
+  `HOST_IP` varchar(50) default NULL,
+  `BROWSER` varchar(250) default NULL,
+  `LANGUAGE` varchar(50) default NULL,
+  `OSUSER` varchar(50) default NULL,
+  PRIMARY KEY  (`SESSION_HISTORY_ID`),
+  KEY `FK_SESSION_HISTORY_1` (`USER_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `SESSION_HISTORY`
+--
+
+LOCK TABLES `SESSION_HISTORY` WRITE;
+/*!40000 ALTER TABLE `SESSION_HISTORY` DISABLE KEYS */;
+INSERT INTO `SESSION_HISTORY` VALUES (1,'3AFEA5E28502FD09E97A276E5A16708B',1,2,'2012-03-04 03:58:40','2012-03-04 11:02:35','2012-03-04 03:58:40','2012-03-04 11:02:35',2,'24.99.222.176','24.99.222.176','Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.45 Safari/535.19','netecoles.net',NULL),(2,'3EE5C60087F14D6D423A5CBE7F473419',1,2,'2012-03-04 04:00:03','2012-03-04 04:32:15','2012-03-04 04:00:03','2012-03-04 04:32:15',2,'24.99.222.176','24.99.222.176','Mozilla/5.0 (Windows NT 6.1; rv:10.0.2) Gecko/20100101 Firefox/10.0.2','www.netecoles.net',NULL),(3,'2AA0C9AC48E628DC963DF1969F35E9F9',1,2,'2012-03-04 04:08:31','2012-03-04 04:27:14','2012-03-04 04:08:31','2012-03-04 04:27:14',2,'24.12.247.210','24.12.247.210','Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SearchToolbar 1.2; GTB7.3; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MS-RTC LM 8)','netecoles.net',NULL),(4,'3D7CB80A900C3ABDDC38A32AC8CB7496',1,2,'2012-03-04 04:30:25','2012-03-04 05:05:26','2012-03-04 04:30:25','2012-03-04 05:05:26',2,'24.12.247.210','24.12.247.210','Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SearchToolbar 1.2; GTB7.3; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MS-RTC LM 8)','netecoles.net',NULL),(5,'F99DD58818C2925F40F53718E536736B',1,2,'2012-03-04 04:32:20','2012-03-04 05:04:26','2012-03-04 04:32:20','2012-03-04 05:04:26',2,'24.99.222.176','24.99.222.176','Mozilla/5.0 (Windows NT 6.1; rv:10.0.2) Gecko/20100101 Firefox/10.0.2','www.netecoles.net',NULL),(6,'074ADA3DB4C660BF033CF03AED7B96AC',1,2,'2012-03-04 04:45:41','2012-03-04 05:03:01','2012-03-04 04:45:41','2012-03-04 05:03:01',2,'24.12.247.210','24.12.247.210','Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SearchToolbar 1.2; GTB7.3; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MS-RTC LM 8)','netecoles.net',NULL),(7,'8E34CE102DABFAE7B82F688EA70FA3CF',1,2,'2012-03-04 05:03:14','2012-03-04 08:30:30','2012-03-04 05:03:14','2012-03-04 08:30:30',2,'24.12.247.210','24.12.247.210','Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SearchToolbar 1.2; GTB7.3; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MS-RTC LM 8)','netecoles.net',NULL),(8,'970C671F5F6B53376B1D73AF7F620B8F',1,2,'2012-03-04 05:53:17','2012-03-04 06:24:27','2012-03-04 05:53:17','2012-03-04 06:24:27',2,'24.99.222.176','24.99.222.176','Mozilla/5.0 (Windows NT 6.1; rv:10.0.2) Gecko/20100101 Firefox/10.0.2','www.netecoles.net',NULL),(9,'2F0DCC9DC45FEC56BA31F83604084A44',1,2,'2012-03-04 06:40:14','2012-03-04 07:43:29','2012-03-04 06:40:14','2012-03-04 07:43:29',2,'24.99.222.176','24.99.222.176','Mozilla/5.0 (Windows NT 6.1; rv:10.0.2) Gecko/20100101 Firefox/10.0.2','www.netecoles.net',NULL),(10,'BB56332447EBCC396DA6B0BF6B5372C6',1,2,'2012-03-04 08:35:19','2012-03-04 10:38:34','2012-03-04 08:35:19','2012-03-04 10:38:34',2,'24.12.247.210','24.12.247.210','Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SearchToolbar 1.2; GTB7.3; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; MS-RTC LM 8)','netecoles.net',NULL),(11,'FCA99BEAF90CDD9100339E43F7A733CD',1,2,'2012-03-04 09:36:06','2012-03-04 10:51:35','2012-03-04 09:36:06','2012-03-04 10:51:35',2,'24.99.222.176','24.99.222.176','Mozilla/5.0 (Windows NT 6.1; rv:10.0.2) Gecko/20100101 Firefox/10.0.2','www.netecoles.net',NULL),(12,'825D07CE31F1B8E604ECBD6A07037C8E',1,2,'2012-03-05 06:08:22','2012-03-05 06:56:02','2012-03-05 06:08:22','2012-03-05 06:56:02',2,'24.12.247.210','24.12.247.210','Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11','www.netecoles.net',NULL),(13,'538FCDE1706AA4665D906426DC541EE7',1,2,'2012-03-05 07:56:45','2012-03-05 08:01:52','2012-03-05 07:56:45','2012-03-05 08:01:52',2,'24.99.222.176','24.99.222.176','Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; Tablet PC 2.0; .NET4.0C; MS-RTC LM 8)','www.netecoles.net',NULL),(14,'FA8A26E6A5C1B08F772DCB61BEFB0C48',1,2,'2012-03-05 07:58:33','2012-03-05 07:58:33','2012-03-05 07:58:33','2012-03-05 07:58:33',2,'24.12.247.210','24.12.247.210','Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11','www.netecoles.net',NULL),(15,'934F5098E50B698E14429184EB82AB63',1,1,'2012-03-05 08:01:59','2012-03-05 08:01:59','2012-03-05 08:01:59','2012-03-05 08:01:59',1,'24.99.222.176','24.99.222.176','Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; Tablet PC 2.0; .NET4.0C; MS-RTC LM 8)','www.netecoles.net',NULL),(16,'05E748F4B1E3AAD83C4475577CCCB31E',1,2,'2012-03-05 08:38:57','2012-03-05 08:39:15','2012-03-05 08:38:57','2012-03-05 08:39:15',2,'24.99.222.176','24.99.222.176','Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; Tablet PC 2.0; .NET4.0C; MS-RTC LM 8)','www.netecoles.net',NULL),(17,'893D3A88113ABC016D96C75EDD22E6FA',1,1,'2012-03-05 08:39:24','2012-03-05 08:39:24','2012-03-05 08:39:24','2012-03-05 08:39:24',1,'24.99.222.176','24.99.222.176','Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; Tablet PC 2.0; .NET4.0C; MS-RTC LM 8)','www.netecoles.net',NULL),(18,'FA8A26E6A5C1B08F772DCB61BEFB0C48',1,2,'2012-03-05 08:48:01','2012-03-05 08:48:01','2012-03-05 08:48:01','2012-03-05 08:48:01',2,'24.12.247.210','24.12.247.210','Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11','www.netecoles.net',NULL),(19,'FA8A26E6A5C1B08F772DCB61BEFB0C48',1,2,'2012-03-05 08:48:07','2012-03-05 08:48:07','2012-03-05 08:48:07','2012-03-05 08:48:07',2,'24.12.247.210','24.12.247.210','Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11','www.netecoles.net',NULL);
+/*!40000 ALTER TABLE `SESSION_HISTORY` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `SHIPMENT`
+--
+
+DROP TABLE IF EXISTS `SHIPMENT`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `SHIPMENT` (
+  `SHIPMENT_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `SHIPMENT_NUMBER` varchar(20) NOT NULL,
+  `ORIGIN` varchar(75) default NULL,
+  `DESTINATION` varchar(75) default NULL,
+  `DATE_OF_DISPATCH` date default NULL,
+  `DATE_OF_ARRIVAL` date default NULL,
+  `DELIVER_BY` varchar(75) default NULL,
+  `RECEIVED_BY` varchar(75) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `CARRIER_ID` bigint(20) NOT NULL,
+  PRIMARY KEY  (`SHIPMENT_ID`),
+  KEY `FK_SHIPMENT_1` (`CARRIER_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `SHIPMENT`
+--
+
+LOCK TABLES `SHIPMENT` WRITE;
+/*!40000 ALTER TABLE `SHIPMENT` DISABLE KEYS */;
+/*!40000 ALTER TABLE `SHIPMENT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `STUDENT`
+--
+
+DROP TABLE IF EXISTS `STUDENT`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `STUDENT` (
+  `STUDENT_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `MATRICULE` varchar(10) NOT NULL,
+  `FIRST_NAME` varchar(50) NOT NULL,
+  `LAST_NAME` varchar(50) NOT NULL,
+  `MIDDLE_NAME` varchar(50) default NULL,
+  `NICK_NAME` varchar(50) default NULL,
+  `BIRTH_DATE` date default NULL,
+  `ADDRESS` varchar(100) NOT NULL,
+  `EMAIL` varchar(50) default NULL,
+  `CITY_OF_BIRTH` varchar(150) NOT NULL,
+  `PHONE` varchar(20) NOT NULL,
+  `CELL_PHONE` varchar(20) default NULL,
+  `FATHER_FULL_NAME` varchar(100) NOT NULL,
+  `MOTHER_FULL_NAME` varchar(100) NOT NULL,
+  `TUTOR_FULL_NAME` varchar(100) default NULL,
+  `FATHER_ADDRESS` varchar(100) default NULL,
+  `FATHER_CITY` varchar(150) default NULL,
+  `FATHER_E_MAIL` varchar(50) default NULL,
+  `MOTHER_ADDRESS` varchar(100) default NULL,
+  `MOTHER_CITY` varchar(150) default NULL,
+  `MOTHER_E_MAIL` varchar(50) default NULL,
+  `TUTOR_ADDRESS` varchar(100) default NULL,
+  `TUTOR_CITY` varchar(150) default NULL,
+  `TUTOR_E_MAIL` varchar(50) default NULL,
+  `FATHER_PHONE` varchar(20) default NULL,
+  `MOTHER_PHONE` varchar(20) default NULL,
+  `TUTOR_PHONE` varchar(20) default NULL,
+  `COMMENTS` varchar(100) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `USER_ID` bigint(20) NOT NULL,
+  `CITY` varchar(150) NOT NULL,
+  `image` longblob,
+  `STATUS` tinyint(4) default NULL COMMENT 'ACTIVE/INACTIVE: 0=INACTIVE, 1=ACTIVE, 2=TEMPORARY (ONLINE REGISTRATION)',
+  `ENROLLMENT_ID` mediumint(9) default NULL,
+  `ALLERGY` text,
+  `SCH_RELIGION_ID` tinyint(4) NOT NULL,
+  `SEX` char(1) NOT NULL COMMENT 'M=Masculin, F=Feminin',
+  `DECISION` text,
+  `LEVEL_ID` mediumint(9) default NULL,
+  `COUNTRY_ID` bigint(20) NOT NULL,
+  `COUNTRY_OF_BIRTH` bigint(20) NOT NULL,
+  `FATHER_COUNTRY` bigint(20) default NULL,
+  `MOTHER_COUNTRY` bigint(20) default NULL,
+  `TUTOR_COUNTRY` bigint(20) default NULL,
+  PRIMARY KEY  (`STUDENT_ID`),
+  UNIQUE KEY `UNIQUE_STUDENT` (`MATRICULE`),
+  KEY `FK_STUDENT_3` (`USER_ID`),
+  KEY `FK_STUDENT_5` (`SCH_RELIGION_ID`),
+  KEY `FK_STUDENT_6` (`LEVEL_ID`),
+  KEY `FK_STUDENT_4` (`COUNTRY_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `STUDENT`
+--
+
+LOCK TABLES `STUDENT` WRITE;
+/*!40000 ALTER TABLE `STUDENT` DISABLE KEYS */;
+INSERT INTO `STUDENT` VALUES (1,1,'ADZB050300','Bella','ADZO','','','2003-03-05','kjsfksfjs','','Lome','677 9849 ','','fwhjwfj kij','kjcs iod','','','','','','','','','','','','','','','2012-03-04 06:21:14','2012-03-04 06:21:39',2,6,'Lome',NULL,1,1,'',1,'M',NULL,NULL,215,215,NULL,NULL,NULL),(2,1,'BATT010300','Tiinja','BATANA','','','2012-03-01','kchkcfhjdkj','','lome','78785874','','kdchksjc','kuchskcj','','','','','','','','','','','','','','','2012-03-05 06:10:12','2012-03-05 06:10:43',2,7,'lome',NULL,1,2,'',1,'M',NULL,NULL,215,215,NULL,NULL,NULL);
+/*!40000 ALTER TABLE `STUDENT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `SUBJECT`
+--
+
+DROP TABLE IF EXISTS `SUBJECT`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `SUBJECT` (
+  `SUBJECT_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(100) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`SUBJECT_ID`),
+  UNIQUE KEY `UNIQUE_SUBJECT` (`NAME`)
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `SUBJECT`
+--
+
+LOCK TABLES `SUBJECT` WRITE;
+/*!40000 ALTER TABLE `SUBJECT` DISABLE KEYS */;
+INSERT INTO `SUBJECT` VALUES (1,1,'ENS. BIBLIQUE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(2,1,'PHILOSOPHIE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(3,1,'ORTHO. GRAM.','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(4,1,'COMPOS. FRAN.','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(5,1,'ANGLAIS','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(6,1,'ALLEMAND','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(7,1,'EWE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(8,1,'KABYE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(9,1,'HISTO-GEO','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(10,1,'MATHS.','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(11,1,'SC. PHYSIQUES','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(12,1,'SVT','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(13,1,'ED. PHYS. SPORT','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(14,1,'ED. MUSICALE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(15,1,'DESSIN','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(16,1,'ENS. TECH. ART.','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(17,1,'COUTURE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(18,1,'ENS. IST/VIH/SIDA','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(19,1,'INSTRUCT. CIVIQUE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(20,1,'ENS. AGRICOLE','2012-03-04 03:43:51','2012-03-04 03:43:51',1);
+/*!40000 ALTER TABLE `SUBJECT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `SUPPLIER`
+--
+
+DROP TABLE IF EXISTS `SUPPLIER`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `SUPPLIER` (
+  `SUPPLIER_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(75) NOT NULL,
+  `CONTACT_NAME` varchar(250) default NULL,
+  `ADDRESS1` varchar(75) default NULL,
+  `ADDRESS2` varchar(75) default NULL,
+  `CITY` varchar(150) default NULL,
+  `PHONE_NUMBER` varchar(12) default NULL,
+  `FAX_NUMBER` varchar(12) default NULL,
+  `EMAIL` varchar(30) default NULL,
+  `WEBSITE` varchar(100) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `COUNTRY_ID` bigint(20) default NULL,
+  PRIMARY KEY  (`SUPPLIER_ID`),
+  KEY `FK_SUPPLIER_1` (`COUNTRY_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `SUPPLIER`
+--
+
+LOCK TABLES `SUPPLIER` WRITE;
+/*!40000 ALTER TABLE `SUPPLIER` DISABLE KEYS */;
+/*!40000 ALTER TABLE `SUPPLIER` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `TEACHER`
+--
+
+DROP TABLE IF EXISTS `TEACHER`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `TEACHER` (
+  `TEACHER_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `FIRST_NAME` varchar(50) NOT NULL,
+  `LAST_NAME` varchar(50) NOT NULL,
+  `MATRICULE` varchar(10) NOT NULL,
+  `MIDDLE_NAME` varchar(50) default NULL,
+  `NICK_NAME` varchar(50) default NULL,
+  `BIRTH_DATE` date default NULL,
+  `ADDRESS` varchar(100) NOT NULL,
+  `E_MAIL` varchar(50) default NULL,
+  `CITY_OF_BIRTH` varchar(150) NOT NULL,
+  `PHONE` varchar(20) NOT NULL,
+  `CELL_PHONE` varchar(20) default NULL,
+  `COMMENTS` varchar(100) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `USER_ID` bigint(20) default NULL,
+  `CITY` varchar(150) NOT NULL,
+  `image` longblob,
+  `STATUS` tinyint(4) default NULL COMMENT '0=INATIVE, 1 = ACTIVE',
+  `CURRENT_SALARY` decimal(10,0) default NULL,
+  `HIRED_DATE` date default NULL,
+  `RESUME` text,
+  `ALLERGY` text,
+  `SCH_RELIGION_ID` tinyint(4) NOT NULL,
+  `SEX` char(1) NOT NULL,
+  `COUNTRY_ID` bigint(20) NOT NULL,
+  `COUNTRY_OF_BIRTH` bigint(20) NOT NULL,
+  PRIMARY KEY  (`TEACHER_ID`),
+  UNIQUE KEY `UNIQUE_TEACHER` (`MATRICULE`),
+  KEY `FK_TEACHER_1` (`USER_ID`),
+  KEY `FK_TEACHER_3` (`SCH_RELIGION_ID`),
+  KEY `FK_TEACHER_4` (`COUNTRY_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `TEACHER`
+--
+
+LOCK TABLES `TEACHER` WRITE;
+/*!40000 ALTER TABLE `TEACHER` DISABLE KEYS */;
+INSERT INTO `TEACHER` VALUES (1,1,'KOSSI','KOHUVI','KOSSIK','K.','','2012-03-03','QTIER DJIDJOLE','teacher@yahoo.fr','LOME','225 15 15','905 43 43','DIRECTEUR DE L\'ECOLE MODELE','2012-03-04 03:43:51','2012-03-04 03:43:51',1,4,'LOME',NULL,1,NULL,NULL,NULL,NULL,1,'M',215,215);
+/*!40000 ALTER TABLE `TEACHER` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `TENROLLMENT`
+--
+
+DROP TABLE IF EXISTS `TENROLLMENT`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `TENROLLMENT` (
+  `TENROLLMENT_ID` bigint(20) NOT NULL auto_increment,
+  `TEACHER_ID` bigint(20) NOT NULL,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `EFFECTIVE_DATE` date default NULL,
+  `COMMENTS` varchar(100) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`TENROLLMENT_ID`),
+  KEY `FK_TENROLLMENT_1` (`TEACHER_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `TENROLLMENT`
+--
+
+LOCK TABLES `TENROLLMENT` WRITE;
+/*!40000 ALTER TABLE `TENROLLMENT` DISABLE KEYS */;
+INSERT INTO `TENROLLMENT` VALUES (1,1,1,'2012-03-03','NO COMMENT','2012-03-04 03:43:51','2012-03-04 03:43:51',1);
+/*!40000 ALTER TABLE `TENROLLMENT` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `TERM`
+--
+
+DROP TABLE IF EXISTS `TERM`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `TERM` (
+  `TERM_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(50) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `SHOW_FINAL_RANK` char(1) default '0',
+  PRIMARY KEY  (`TERM_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `TERM`
+--
+
+LOCK TABLES `TERM` WRITE;
+/*!40000 ALTER TABLE `TERM` DISABLE KEYS */;
+INSERT INTO `TERM` VALUES (1,1,'PREMIER TRIMESTRE','2012-03-04 03:43:51','2012-03-05 08:39:47',1,'1'),(2,1,'DEUXIEME TRIMESTRE','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'0'),(3,1,'TROISIEME TRIMESTRE','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'0'),(4,1,'PREMIER SEMESTRE','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'0'),(5,1,'DEUXIEME SEMESTRE','2012-03-04 03:43:51','2012-03-04 03:43:51',1,'0');
+/*!40000 ALTER TABLE `TERM` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `TEST`
+--
+
+DROP TABLE IF EXISTS `TEST`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `TEST` (
+  `TEST_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `TITLE` varchar(100) default NULL,
+  `DESCRIPTION` text NOT NULL,
+  `BEGIN_MESSAGE` text,
+  `END_MESSAGE` text,
+  `DURATION` mediumint(9) NOT NULL COMMENT 'DURATION IN MINUTE. 9999 = INFINITE',
+  `PRORATE_SCORE` tinyint(4) NOT NULL COMMENT '0 -- USE SCORE FROM QUESTIONS, 1= EQUALY PRORATE SCRORE',
+  `SCORE` mediumint(9) NOT NULL default '100',
+  `CERTIFICATE_SCORE` mediumint(9) NOT NULL default '75',
+  `DUE_DATE` date default NULL,
+  `SYSTEM_GENERATED` tinyint(4) NOT NULL default '0' COMMENT '0= Random System generated, 1= User directed',
+  `MOD_BY` bigint(20) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `PASSWORD` varchar(15) default NULL COMMENT 'PROTECT THE QUIZ',
+  `IS_PUBLIC` tinyint(4) NOT NULL default '0',
+  `SHOW_EACH_ANSWER` tinyint(4) NOT NULL default '0' COMMENT 'SHOW ANSWER AFTER EACH QUESTION',
+  `SHOW_ALL_ANSWERS` tinyint(4) NOT NULL default '0' COMMENT 'SHOW ANSWERS AT THE END',
+  `SHOW_RATING` tinyint(4) NOT NULL default '0' COMMENT '0 - Do not display question rating, 1 - Display questions rating',
+  `SHOW_LIVE_SCORE` tinyint(4) NOT NULL,
+  `SHOW_POINTS` tinyint(4) NOT NULL default '0',
+  `ALLOW_MULTIPLE_TRIAL` tinyint(4) NOT NULL COMMENT '0- Not allow users to pass multiple times, 2 - allow',
+  `CAN_CONTINUE_LATER` tinyint(4) NOT NULL COMMENT '0- Test in one shot, 1- Can continue later',
+  `RESULT_DAYS` mediumint(9) NOT NULL default '999999' COMMENT 'NUMBER OF DAYS TO KEEP RESULTS -- 999999 = INFINITE',
+  `CAN_PRINT` tinyint(3) unsigned zerofill default '001' COMMENT '1= YES, 0 = No',
+  `SUBJECT_ID` bigint(20) NOT NULL,
+  `QUESTION_PER_PAGE` mediumint(9) NOT NULL default '1',
+  `LEVEL_ID` mediumint(9) NOT NULL,
+  PRIMARY KEY  (`TEST_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `TEST`
+--
+
+LOCK TABLES `TEST` WRITE;
+/*!40000 ALTER TABLE `TEST` DISABLE KEYS */;
+/*!40000 ALTER TABLE `TEST` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `TEST_QUESTION`
+--
+
+DROP TABLE IF EXISTS `TEST_QUESTION`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `TEST_QUESTION` (
+  `TQ_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `QUESTION_SEQ` mediumint(9) NOT NULL,
+  `MOD_BY` bigint(20) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `TEST_ID` bigint(20) NOT NULL,
+  `SCORE` mediumint(9) default '0',
+  `QUESTION_ID` bigint(20) NOT NULL,
+  PRIMARY KEY  (`TQ_ID`),
+  KEY `FK_TEST_QUESTION_1` (`QUESTION_ID`),
+  KEY `FK_TEST_QUESTION_2` (`TEST_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `TEST_QUESTION`
+--
+
+LOCK TABLES `TEST_QUESTION` WRITE;
+/*!40000 ALTER TABLE `TEST_QUESTION` DISABLE KEYS */;
+/*!40000 ALTER TABLE `TEST_QUESTION` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `TIMETABLE`
+--
+
+DROP TABLE IF EXISTS `TIMETABLE`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `TIMETABLE` (
+  `TIMETABLE_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `DAYOFWEEK` varchar(10) NOT NULL,
+  `BEGIN_TIME` varchar(5) NOT NULL,
+  `END_TIME` varchar(5) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `TERM_ID` mediumint(9) default NULL,
+  `SCHOOLYEAR_ID` mediumint(9) NOT NULL,
+  `CLASS_ID` mediumint(9) NOT NULL,
+  `COURSE_ID` mediumint(9) NOT NULL,
+  PRIMARY KEY  (`TIMETABLE_ID`),
+  KEY `FK_TIMETABLE_2` (`SCHOOLYEAR_ID`),
+  KEY `FK_TIMETABLE_3` (`CLASS_ID`),
+  KEY `FK_TIMETABLE_4` (`COURSE_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `TIMETABLE`
+--
+
+LOCK TABLES `TIMETABLE` WRITE;
+/*!40000 ALTER TABLE `TIMETABLE` DISABLE KEYS */;
+/*!40000 ALTER TABLE `TIMETABLE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `TUITION`
+--
+
+DROP TABLE IF EXISTS `TUITION`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `TUITION` (
+  `TUITION_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `DESCRIPTION` varchar(100) NOT NULL,
+  `DUE_DATE` date default NULL,
+  `AMOUNT` decimal(10,0) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `SCHOOLYEAR_ID` mediumint(9) NOT NULL,
+  `LEVEL_ID` mediumint(9) NOT NULL,
+  `TUITION_TYPE_ID` mediumint(9) NOT NULL,
+  PRIMARY KEY  (`TUITION_ID`),
+  KEY `FK_TUITION_1` (`SCHOOLYEAR_ID`),
+  KEY `FK_TUITION_2` (`LEVEL_ID`),
+  KEY `FK_TUITION_3` (`TUITION_TYPE_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `TUITION`
+--
+
+LOCK TABLES `TUITION` WRITE;
+/*!40000 ALTER TABLE `TUITION` DISABLE KEYS */;
+/*!40000 ALTER TABLE `TUITION` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `TUITION_TYPE`
+--
+
+DROP TABLE IF EXISTS `TUITION_TYPE`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `TUITION_TYPE` (
+  `TUITION_TYPE_ID` mediumint(9) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `NAME` varchar(50) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`TUITION_TYPE_ID`),
+  UNIQUE KEY `UNIQUE_TUITION_TYPE` (`SCHOOL_ID`,`NAME`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `TUITION_TYPE`
+--
+
+LOCK TABLES `TUITION_TYPE` WRITE;
+/*!40000 ALTER TABLE `TUITION_TYPE` DISABLE KEYS */;
+INSERT INTO `TUITION_TYPE` VALUES (1,1,'ECOLAGE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(2,1,'FRAIS CANTINE','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(3,1,'FRAIS ACTIVITES CULTURELLES','2012-03-04 03:43:51','2012-03-04 03:43:51',1),(4,1,'ASSURANCE','2012-03-04 03:43:51','2012-03-04 03:43:51',1);
+/*!40000 ALTER TABLE `TUITION_TYPE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `USERS`
+--
+
+DROP TABLE IF EXISTS `USERS`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `USERS` (
+  `USER_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `USER_NAME` varchar(50) NOT NULL,
+  `PASSWORD` varchar(50) NOT NULL,
+  `FIRST_NAME` varchar(50) NOT NULL,
+  `LAST_NAME` varchar(50) NOT NULL,
+  `CAN_APPROVE` tinyint(4) NOT NULL default '0',
+  `E_MAIL` varchar(50) default NULL,
+  `pageSkin` varchar(15) NOT NULL,
+  `CURRENT_LOCALE` varchar(10) default NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `PHONE` varchar(20) default NULL,
+  `POSITION_ID` mediumint(9) default NULL COMMENT 'DECRIT LE POST OCCUPE',
+  `STATUS` smallint(6) default '1' COMMENT '0-inactive, 1- active',
+  PRIMARY KEY  (`USER_ID`),
+  UNIQUE KEY `UNIQUE_USER` (`USER_NAME`),
+  KEY `FK_USERS_1` (`POSITION_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `USERS`
+--
+
+LOCK TABLES `USERS` WRITE;
+/*!40000 ALTER TABLE `USERS` DISABLE KEYS */;
+INSERT INTO `USERS` VALUES (1,1,'super','super','SUPER','USER',0,'super@gmail.com','emeraldTown',NULL,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,NULL,NULL,1),(2,1,'admin','admin','SYSTEM','ADMIN',0,'admin@gmail.com','emeraldTown',NULL,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,NULL,NULL,1),(3,1,'etudiant','etudiant','DANGA','DJANTA',0,'etudiant@gmail.com','emeraldTown',NULL,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,NULL,NULL,1),(5,1,'infirmier','infirmier','Parfait','AMANA',0,'infirmier@gmail.com','emeraldTown',NULL,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,NULL,NULL,1),(4,1,'prof','prof','KOSSI','KOHUVI',0,'prof@gmail.com','emeraldTown',NULL,'2012-03-04 03:43:51','2012-03-04 03:43:51',1,NULL,NULL,1),(6,1,'ADZB050300','password','Bella','ADZO',0,'','emeraldTown',NULL,'2012-03-04 06:21:14','2012-03-04 06:21:14',2,'677 9849 ',NULL,1),(7,1,'BATT010300','password','Tiinja','BATANA',0,'','emeraldTown',NULL,'2012-03-05 06:10:12','2012-03-05 06:10:12',2,'78785874',NULL,1);
+/*!40000 ALTER TABLE `USERS` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `USERS_FEEDBACK`
+--
+
+DROP TABLE IF EXISTS `USERS_FEEDBACK`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `USERS_FEEDBACK` (
+  `FEEDBACK_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `SCHOOL_NAME` varchar(150) default NULL,
+  `FULL_NAME` varchar(150) default NULL,
+  `EMAIL` varchar(150) default NULL,
+  `USER_TYPE` tinyint(4) default NULL COMMENT '0 Other, 1=Teacher, 3= Parent, 2 Student, 4 =Informaticien, 5 School personnel, 6 Investor',
+  `OVERALL_RATING` tinyint(4) default NULL,
+  `INTERFACE_RATING` tinyint(4) default NULL,
+  `FUNCTIONALITY_RATING` tinyint(4) default NULL,
+  `PERFORMANCE_RATING` tinyint(4) default NULL,
+  `COST_RATING` tinyint(4) default NULL,
+  `SUPPORT_RATING` tinyint(4) default NULL,
+  `DOC_RATING` tinyint(4) default NULL,
+  `COMMENT` text,
+  `USER_DETAILS` text,
+  `MOD_BY` bigint(20) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  PRIMARY KEY  (`FEEDBACK_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `USERS_FEEDBACK`
+--
+
+LOCK TABLES `USERS_FEEDBACK` WRITE;
+/*!40000 ALTER TABLE `USERS_FEEDBACK` DISABLE KEYS */;
+/*!40000 ALTER TABLE `USERS_FEEDBACK` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `USERS_TEST`
+--
+
+DROP TABLE IF EXISTS `USERS_TEST`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `USERS_TEST` (
+  `UT_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `USER_ID` bigint(20) NOT NULL,
+  `TEST_ID` bigint(20) NOT NULL,
+  `BEGIN_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `END_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `DURATION` mediumint(9) default NULL,
+  `RIGHT_ANSWER` mediumint(9) default NULL,
+  `WRONG_ANSWER` mediumint(9) default NULL,
+  `SCORE` mediumint(9) default NULL,
+  `COMPLETED` tinyint(4) NOT NULL default '0' COMMENT '1= YES, 0= NO',
+  `CREATE_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  PRIMARY KEY  (`UT_ID`),
+  KEY `FK_USERS_TEST_1` (`USER_ID`),
+  KEY `FK_USERS_TEST_2` (`TEST_ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `USERS_TEST`
+--
+
+LOCK TABLES `USERS_TEST` WRITE;
+/*!40000 ALTER TABLE `USERS_TEST` DISABLE KEYS */;
+/*!40000 ALTER TABLE `USERS_TEST` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `YEAR_SUMMARY`
+--
+
+DROP TABLE IF EXISTS `YEAR_SUMMARY`;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+CREATE TABLE `YEAR_SUMMARY` (
+  `SUMMARY_ID` bigint(20) NOT NULL auto_increment,
+  `SCHOOL_ID` mediumint(9) NOT NULL,
+  `STUDENT_ID` bigint(20) NOT NULL,
+  `LEVEL_ID` mediumint(9) NOT NULL,
+  `CLASS_NAME` varchar(50) NOT NULL,
+  `GRADE_NAME` varchar(50) default NULL,
+  `RANK_NBR` int(11) NOT NULL,
+  `MARK` double NOT NULL,
+  `STATUS` tinyint(4) NOT NULL,
+  `NBR_STUDENT` int(11) NOT NULL,
+  `MOD_DATE` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+  `CREATE_DATE` timestamp NOT NULL default '0000-00-00 00:00:00',
+  `MOD_BY` bigint(20) NOT NULL,
+  `SCHOOLYEAR_ID` mediumint(9) NOT NULL,
+  `DECISION` varchar(50) default NULL,
+  `COMMENT` text,
+  PRIMARY KEY  (`SUMMARY_ID`),
+  UNIQUE KEY `UQ_YEAR_SUMMARY_1` (`SCHOOL_ID`,`SCHOOLYEAR_ID`,`CLASS_NAME`,`STUDENT_ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Dumping data for table `YEAR_SUMMARY`
+--
+
+LOCK TABLES `YEAR_SUMMARY` WRITE;
+/*!40000 ALTER TABLE `YEAR_SUMMARY` DISABLE KEYS */;
+INSERT INTO `YEAR_SUMMARY` VALUES (3,1,2,1,'6E A','BIEN',1,15.9705882352941,0,2,'2012-03-05 08:12:01','2012-03-05 08:12:01',1,7,'SUCCES',NULL),(4,1,1,1,'6E A','ASSEZ BIEN',2,14.9147058823529,0,2,'2012-03-05 08:12:01','2012-03-05 08:12:01',1,7,'SUCCES',NULL);
+/*!40000 ALTER TABLE `YEAR_SUMMARY` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2012-03-12 20:07:21

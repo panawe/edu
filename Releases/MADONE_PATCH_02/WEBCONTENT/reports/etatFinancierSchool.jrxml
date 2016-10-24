@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="etatFinancierSchool" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="2.1435888100000167"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="schoolInfo">
+		<queryString>
+			<![CDATA[SELECT logo, report_header from school where show_report_header=1 limit 1]]>
+		</queryString>
+		<field name="logo" class="java.io.InputStream"/>
+		<field name="report_header" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\My Projects\\education\\WebContent\\reports\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="schoolId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="yearId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[
+SELECT C.NAME CLASSNAME,SY.NAME SYNAME,T.DUE_DATE,T.DESCRIPTION,COUNT(ST.STUDENT_ID) ST_COUNT,SUM(T.AMOUNT)  AMOUNT_DUE,
+SUM(CASE WHEN P.AMOUNT IS NULL THEN 0 ELSE P.AMOUNT END) AMOUNT_PAID,
+SUM(CASE WHEN P.REBATE IS NULL THEN 0 ELSE P.REBATE END) REMISE,
+SUM(T.AMOUNT)-SUM(CASE WHEN P.AMOUNT IS NULL THEN 0 ELSE P.AMOUNT END) -SUM(CASE WHEN P.REBATE IS NULL THEN 0 ELSE P.REBATE END) RESTE
+FROM TUITION T INNER JOIN SCHOOLYEAR SY ON (T.SCHOOLYEAR_ID=SY.SCHOOLYEAR_ID)
+INNER JOIN  SENROLLMENT SE ON (SE.SCHOOLYEAR_ID=SY.SCHOOLYEAR_ID)
+INNER JOIN  CLASS C ON (C.CLASS_ID = SE.CLASS_ID)
+INNER JOIN STUDENT_TUITION ST ON (ST.STUDENT_ID =SE.STUDENT_ID AND T.TUITION_ID =ST.TUITION_ID)
+LEFT OUTER JOIN PAYMENT P ON (T.TUITION_ID = P.TUITION_ID AND SE.ENROLLMENT_ID=P.ENROLLMENT_ID)
+WHERE T.SCHOOL_ID= $P{schoolId}
+AND SY.SCHOOLYEAR_ID=$P{yearId}
+GROUP BY C.NAME,T.DESCRIPTION,SY.NAME, T.DUE_DATE
+
+]]>
+	</queryString>
+	<field name="CLASSNAME" class="java.lang.String"/>
+	<field name="SYNAME" class="java.lang.String"/>
+	<field name="DUE_DATE" class="java.sql.Date"/>
+	<field name="DESCRIPTION" class="java.lang.String"/>
+	<field name="ST_COUNT" class="java.lang.Long"/>
+	<field name="AMOUNT_DUE" class="java.math.BigDecimal"/>
+	<field name="AMOUNT_PAID" class="java.math.BigDecimal"/>
+	<field name="REMISE" class="java.math.BigDecimal"/>
+	<field name="RESTE" class="java.math.BigDecimal"/>
+	<sortField name="CLASSNAME" order="Descending"/>
+	<sortField name="DUE_DATE"/>
+	<variable name="variable1" class="java.lang.String"/>
+	<variable name="RESTE_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{RESTE}]]></variableExpression>
+	</variable>
+	<variable name="REMISE_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{REMISE}]]></variableExpression>
+	</variable>
+	<variable name="AMOUNT_PAID_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{AMOUNT_PAID}]]></variableExpression>
+	</variable>
+	<variable name="AMOUNT_DUE_1" class="java.math.BigDecimal" calculation="Sum">
+		<variableExpression><![CDATA[$F{AMOUNT_DUE}]]></variableExpression>
+	</variable>
+	<variable name="RESTE_2" class="java.math.BigDecimal" resetType="Group" resetGroup="STUDENT" calculation="Sum">
+		<variableExpression><![CDATA[$F{RESTE}]]></variableExpression>
+	</variable>
+	<variable name="REMISE_2" class="java.math.BigDecimal" resetType="Group" resetGroup="STUDENT" calculation="Sum">
+		<variableExpression><![CDATA[$F{REMISE}]]></variableExpression>
+	</variable>
+	<variable name="AMOUNT_PAID_2" class="java.math.BigDecimal" resetType="Group" resetGroup="STUDENT" calculation="Sum">
+		<variableExpression><![CDATA[$F{AMOUNT_PAID}]]></variableExpression>
+	</variable>
+	<variable name="AMOUNT_DUE_2" class="java.math.BigDecimal" resetType="Group" resetGroup="STUDENT" calculation="Sum">
+		<variableExpression><![CDATA[$F{AMOUNT_DUE}]]></variableExpression>
+	</variable>
+	<group name="Parent" isStartNewPage="true" isResetPageNumber="true">
+		<groupExpression><![CDATA[$F{SYNAME}]]></groupExpression>
+		<groupHeader>
+			<band height="78">
+				<subreport>
+					<reportElement isPrintRepeatedValues="false" x="2" y="16" width="732" height="46" printWhenGroupChanges="Parent"/>
+					<subreportParameter name="schoolId">
+						<subreportParameterExpression><![CDATA[$P{schoolId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="yearId">
+						<subreportParameterExpression><![CDATA[$P{yearId}]]></subreportParameterExpression>
+					</subreportParameter>
+					<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR} + "etatFinancierSchool_chart.jasper"]]></subreportExpression>
+				</subreport>
+				<staticText>
+					<reportElement x="2" y="0" width="120" height="15"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Etat Financier, exercice]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="122" y="0" width="140" height="15"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{SYNAME}]]></textFieldExpression>
+				</textField>
+			</band>
+			<band height="23">
+				<staticText>
+					<reportElement x="142" y="2" width="115" height="19"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tranche de Payement]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="567" y="2" width="87" height="19"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Remise]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="655" y="3" width="85" height="19"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Reste a payer]]></text>
+				</staticText>
+				<line>
+					<reportElement x="566" y="1" width="1" height="21"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="654" y="0" width="1" height="22"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="141" y="1" width="1" height="21"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="0" y="0" width="1" height="23"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement x="1" y="1" width="140" height="21"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Nom et Prenom]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="0" width="740" height="1"/>
+				</line>
+				<staticText>
+					<reportElement x="392" y="2" width="90" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Montant a Payer]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="483" y="2" width="83" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Montant Paye]]></text>
+				</staticText>
+				<line>
+					<reportElement x="482" y="1" width="1" height="21"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="321" y="1" width="1" height="21"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="740" y="0" width="1" height="22"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<line>
+					<reportElement x="390" y="0" width="1" height="21"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement x="322" y="2" width="68" height="19"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Date Limite]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="22" width="741" height="1"/>
+				</line>
+				<line>
+					<reportElement x="257" y="1" width="1" height="21"/>
+					<graphicElement>
+						<pen lineStyle="Solid"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement x="259" y="2" width="62" height="19"/>
+					<textElement verticalAlignment="Middle">
+						<font size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Nbre. Eleves]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="STUDENT">
+		<groupExpression><![CDATA[$F{CLASSNAME}]]></groupExpression>
+		<groupHeader>
+			<band height="13">
+				<textField>
+					<reportElement mode="Opaque" x="0" y="0" width="257" height="13" backcolor="#99CCFF"/>
+					<textElement>
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{CLASSNAME}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="13">
+				<textField pattern="#,##0 CFA">
+					<reportElement mode="Opaque" x="655" y="0" width="86" height="13" backcolor="#99CCFF"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{RESTE_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0 CFA">
+					<reportElement mode="Opaque" x="567" y="0" width="88" height="13" backcolor="#99CCFF"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{REMISE_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0 CFA">
+					<reportElement mode="Opaque" x="483" y="0" width="84" height="13" backcolor="#99CCFF"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{AMOUNT_PAID_2}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0 CFA">
+					<reportElement mode="Opaque" x="390" y="0" width="93" height="13" backcolor="#99CCFF"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font size="8" isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{AMOUNT_DUE_2}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="72" splitType="Stretch">
+			<subreport>
+				<reportElement x="1" y="0" width="738" height="71"/>
+				<subreportParameter name="schoolId">
+					<subreportParameterExpression><![CDATA[$P{schoolId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR}+"ReportHeaderLandscape.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="14" splitType="Stretch">
+			<line>
+				<reportElement x="0" y="-1" width="741" height="1"/>
+			</line>
+			<line>
+				<reportElement x="321" y="-1" width="1" height="13"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="0" y="0" width="1" height="13"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="740" y="0" width="1" height="13"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="566" y="0" width="1" height="13"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="654" y="0" width="1" height="13"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField pattern="#,##0 CFA">
+				<reportElement x="567" y="1" width="87" height="13"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{REMISE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0 CFA">
+				<reportElement x="483" y="0" width="83" height="13"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{AMOUNT_PAID}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0 CFA">
+				<reportElement x="392" y="0" width="90" height="13"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{AMOUNT_DUE}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0 CFA">
+				<reportElement x="655" y="1" width="84" height="13"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{RESTE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="2" y="1" width="255" height="13"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DESCRIPTION}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="13" width="741" height="1"/>
+			</line>
+			<line>
+				<reportElement x="482" y="0" width="1" height="13"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="390" y="-1" width="1" height="13"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement mode="Opaque" x="322" y="0" width="68" height="13" backcolor="#FFFFFF"/>
+				<textElement verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{DUE_DATE}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="258" y="0" width="1" height="13"/>
+				<graphicElement>
+					<pen lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="259" y="0" width="62" height="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{ST_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="20">
+			<textField pattern="#,##0 CFA">
+				<reportElement mode="Opaque" x="654" y="0" width="87" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{RESTE_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0 CFA">
+				<reportElement mode="Opaque" x="566" y="0" width="88" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{REMISE_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0 CFA">
+				<reportElement mode="Opaque" x="482" y="0" width="84" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{AMOUNT_PAID_1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0 CFA">
+				<reportElement mode="Opaque" x="390" y="0" width="92" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{AMOUNT_DUE_1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="idCards" pageWidth="595" pageHeight="842" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="2.143588810000007"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<subDataset name="schoolInfo">
+		<queryString>
+			<![CDATA[SELECT logo, report_header from school where show_report_header=1 limit 1]]>
+		</queryString>
+		<field name="logo" class="java.io.InputStream"/>
+		<field name="report_header" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\My Projects\\education\\WebContent\\reports\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="levelClassId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="schoolId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT SY.NAME,ST.STUDENT_ID,CONCAT_WS(' ',ST.MIDDLE_NAME, ST.FIRST_NAME) FIRST_NAME, ST.LAST_NAME,CONCAT_WS(' ',ST.LAST_NAME,ST.MIDDLE_NAME,ST.FIRST_NAME) FULL_NAME,ST.IMAGE, ST.MATRICULE, ST.BIRTH_DATE, ST.CITY_OF_BIRTH,  C.DOMAIN   ,(SELECT DIRECTOR FROM SCHOOL WHERE SCHOOL_ID= $P{schoolId}) DIRECTOR,(SELECT ID_CARD_BACK FROM SCHOOL WHERE SCHOOL_ID= $P{schoolId}) ID_CARD_BACK FROM STUDENT ST LEFT
+OUTER JOIN COUNTRY C ON (C.COUNTRY_ID=ST.COUNTRY_ID)
+LEFT OUTER JOIN SENROLLMENT SE ON (SE.ENROLLMENT_ID=ST.ENROLLMENT_ID) LEFT OUTER JOIN SCHOOLYEAR SY
+ON (SY.SCHOOLYEAR_ID = SE.SCHOOLYEAR_ID)
+WHERE SE.CLASS_ID=$P{levelClassId}]]>
+	</queryString>
+	<field name="NAME" class="java.lang.String"/>
+	<field name="STUDENT_ID" class="java.lang.Long"/>
+	<field name="FIRST_NAME" class="java.lang.String"/>
+	<field name="LAST_NAME" class="java.lang.String"/>
+	<field name="FULL_NAME" class="java.lang.String"/>
+	<field name="IMAGE" class="java.io.InputStream"/>
+	<field name="MATRICULE" class="java.lang.String"/>
+	<field name="BIRTH_DATE" class="java.sql.Date"/>
+	<field name="CITY_OF_BIRTH" class="java.lang.String"/>
+	<field name="DOMAIN" class="java.lang.String"/>
+	<field name="DIRECTOR" class="java.lang.String"/>
+	<field name="ID_CARD_BACK" class="java.io.InputStream"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="179">
+			<rectangle radius="10">
+				<reportElement x="12" y="11" width="243" height="153"/>
+				<graphicElement>
+					<pen lineStyle="Double" lineColor="#0033FF"/>
+				</graphicElement>
+			</rectangle>
+			<textField isBlankWhenNull="true">
+				<reportElement x="59" y="58" width="100" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{FIRST_NAME}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="58" y="45" width="88" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{LAST_NAME}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="17" y="13" width="143" height="15"/>
+				<textElement>
+					<font fontName="SansSerif" size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CARTE D'IDENTITE SCOLAIRE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="58" width="42" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[Prenoms]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="71" width="42" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[Ne le]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="84" width="15" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[A]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="101" width="56" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[Je soussigne ]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="126" y="127" width="123" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{MATRICULE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="208" y="101" width="41" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[certifie que]]></text>
+			</staticText>
+			<textField pattern="dd MMMMM yyyy" isBlankWhenNull="true">
+				<reportElement x="59" y="71" width="100" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{BIRTH_DATE}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="FillFrame" onErrorType="Blank">
+				<reportElement mode="Transparent" x="161" y="14" width="91" height="79" backcolor="#FFFFFF"/>
+				<imageExpression class="java.io.InputStream"><![CDATA[$F{IMAGE}]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="17" y="32" width="59" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[Annee scolaire]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="45" width="42" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[Nom]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="140" width="37" height="15"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[Cachet]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="32" y="84" width="88" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{CITY_OF_BIRTH}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="120" y="84" width="6" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[(]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="147" y="84" width="6" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[)]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="126" y="84" width="21" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DOMAIN}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="73" y="101" width="135" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DIRECTOR}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="160" y="114" width="89" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[est eleve dans mon ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="127" width="109" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[etablissement sous le No Mlle]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="182" y="140" width="67" height="15"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<text><![CDATA[Signature]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="77" y="32" width="83" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="17" y="114" width="143" height="13"/>
+				<textElement>
+					<font fontName="SansSerif" size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{FULL_NAME}]]></textFieldExpression>
+			</textField>
+			<rectangle radius="10">
+				<reportElement x="258" y="11" width="243" height="153"/>
+				<graphicElement>
+					<pen lineStyle="Double" lineColor="#0033FF"/>
+				</graphicElement>
+			</rectangle>
+			<image scaleImage="FillFrame">
+				<reportElement x="262" y="15" width="233" height="141"/>
+				<imageExpression class="java.io.InputStream"><![CDATA[$F{ID_CARD_BACK}]]></imageExpression>
+			</image>
+		</band>
+	</detail>
+</jasperReport>

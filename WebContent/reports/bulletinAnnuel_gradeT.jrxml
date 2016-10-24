@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletinAnnuel_myennes" language="groovy" pageWidth="802" pageHeight="555" orientation="Landscape" columnWidth="802" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="2.357947691000002"/>
+	<property name="ireport.x" value="231"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Crosstab Data Text" hAlign="Center"/>
+	<parameter name="yearId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="matricule" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="schoolId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="termGroupId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT ST.MATRICULE,ROUND(MARK,2) MOYENNE, ROUND(MAX(MARK),2) MAX_MRK, ROUND(MIN(MARK),2) MIN_MARK, RANK_NBR, GRADE_NAME, TM.NAME TERM, BULL.TERM_ID
+FROM BULLETIN BULL, STUDENT ST, TERM TM, TERM_GROUP TG
+WHERE  BULL.STUDENT_ID = ST.STUDENT_ID
+AND TM.TERM_ID= BULL.TERM_ID
+AND BULL.SCHOOLYEAR_ID= $P{yearId}
+AND ST.MATRICULE=$P{matricule}
+AND BULL.SCHOOL_ID = $P{schoolId}
+AND TM.TERM_GROUP_ID=TG.TERM_GROUP_ID
+AND TG.TERM_GROUP_ID=$P{termGroupId}
+GROUP BY MARK , RANK_NBR, GRADE_NAME, TM.NAME, BULL.TERM_ID,ST.MATRICULE]]>
+	</queryString>
+	<field name="MATRICULE" class="java.lang.String"/>
+	<field name="MOYENNE" class="java.lang.Double"/>
+	<field name="MAX_MRK" class="java.lang.Double"/>
+	<field name="MIN_MARK" class="java.lang.Double"/>
+	<field name="RANK_NBR" class="java.lang.Integer"/>
+	<field name="GRADE_NAME" class="java.lang.String"/>
+	<field name="TERM" class="java.lang.String"/>
+	<field name="TERM_ID" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="19" splitType="Stretch">
+			<crosstab>
+				<reportElement x="0" y="0" width="802" height="19"/>
+				<rowGroup name="MATRICULE" width="180">
+					<bucket>
+						<bucketExpression class="java.lang.String"><![CDATA[$F{MATRICULE}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+							<staticText>
+								<reportElement style="Crosstab Data Text" x="11" y="0" width="169" height="19"/>
+								<textElement textAlignment="Left" verticalAlignment="Middle">
+									<font size="9" isBold="true"/>
+								</textElement>
+								<text><![CDATA[APPRECIATION]]></text>
+							</staticText>
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="TERM" height="0">
+					<bucket>
+						<bucketExpression class="java.lang.String"><![CDATA[$F{TERM}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#FFFFFF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents/>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="GRADEMeasure" class="java.lang.String">
+					<measureExpression><![CDATA[$F{GRADE_NAME}]]></measureExpression>
+				</measure>
+				<crosstabCell width="58" height="19">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField pattern="###0">
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="58" height="19"/>
+							<textElement verticalAlignment="Middle">
+								<font size="9" isBold="true"/>
+							</textElement>
+							<textFieldExpression class="java.lang.String"><![CDATA[$V{GRADEMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="MATRICULE">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression class="java.lang.Double"><![CDATA[$V{GRADEMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="50" columnTotalGroup="TERM">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression class="java.lang.Double"><![CDATA[$V{GRADEMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="MATRICULE" columnTotalGroup="TERM">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25"/>
+							<textElement/>
+							<textFieldExpression class="java.lang.Double"><![CDATA[$V{GRADEMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+		</band>
+	</summary>
+</jasperReport>

@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-2.5.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+     	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.edu.bean" />
+	<context:component-scan base-package="com.edu.dao" />
+	<context:component-scan base-package="com.edu.service" />
+	<context:component-scan base-package="com.edu.job" />
+	<!-- Security -->
+	<context:component-scan base-package="com.edu.security.bean" />
+	<context:component-scan base-package="com.edu.security.dao" />
+	<context:component-scan base-package="com.edu.security.service" />
+	<!-- Stocks -->
+	<context:component-scan base-package="com.edu.stocks.bean" />
+	<context:component-scan base-package="com.edu.stocks.dao" />
+	<context:component-scan base-package="com.edu.stocks.service" />
+	<context:component-scan base-package="com.edu.stocks.job" />
+	<tx:annotation-driven proxy-target-class="true" />
+	<!-- Properties file configuration -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="WEB-INF/education.properties" />
+	</bean>
+
+	<!-- Configuring DataSource -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName">
+			<value>${db.driverClass}</value>
+		</property>
+		<property name="url">
+			<value>${db.url}</value>
+		</property>
+		<property name="username">
+			<value>${db.username}</value>
+		</property>
+		<property name="password">
+			<value>${db.password}</value>
+		</property>
+		<property name="defaultAutoCommit">
+			<value>${db.defaultAutoCommit}</value>
+		</property>
+		<property name="defaultTransactionIsolation">
+			<value>${db.defaultTransactionIsolation}
+			</value>
+		</property>
+		<property name="initialSize">
+			<value>${db.pool.initialSize}</value>
+		</property>
+		<property name="maxActive">
+			<value>${db.pool.maxActive}</value>
+		</property>
+		<property name="minIdle">
+			<value>${db.pool.minIdle}</value>
+		</property>
+		<property name="maxIdle">
+			<value>${db.pool.maxIdle}</value>
+		</property>
+		<property name="maxWait">
+			<value>${db.pool.maxWait}</value>
+		</property>
+		<property name="removeAbandoned">
+			<value>${db.pool.removeAbandoned}</value>
+		</property>
+		<property name="removeAbandonedTimeout">
+			<value>${db.pool.removeAbandonedTimeout}
+			</value>
+		</property>
+		<property name="logAbandoned">
+			<value>${db.pool.logAbandoned}</value>
+		</property>
+		<property name="validationQuery">
+			<value>${db.validationQuery}</value>
+		</property>
+
+	</bean>
+
+
+<bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+  <property name="targetObject" ref="scheduler" />
+  <property name="targetMethod" value="doIt" />
+</bean>
+
+<bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+    <!-- see the example of method invoking job above -->
+    <property name="jobDetail" ref="jobDetail" />
+    <!-- 10 seconds -->
+    <property name="startDelay" value="1000" />
+    <!-- repeat every 30 minutes -->
+    <property name="repeatInterval" value="1800000" />
+</bean>
+
+<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    <property name="triggers">
+        <list>
+            <ref bean="simpleTrigger" />
+        </list>
+    </property>
+</bean>
+
+
+	<!-- Session Factory configuration -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="hibernateProperties">
+			<props>
+				<!--YOUR HIBERNATE PROPERTIES HERE...-->
+				<prop key="hibernate.dialect">${db.hibernate.dialect}</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.show_sql">false</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.max_fetch_depth">4</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.validator.apply_to_ddl">false</prop>
+				<prop key="hibernate.cache.provider_class">org.hibernate.cache.EhCacheProvider
+				</prop>
+				<prop key="hibernate.cache.provider_configuration_file_resource_path">WEB-INF/ehcache.xml</prop>
+				<prop key="hibernate.hbm2ddl.auto">disable</prop>
+				<!-- stats -->
+				<prop key="hibernate.generate_statistics">false</prop>
+				<prop key="hibernate.cache.use_structured_entries">true</prop>
+			</props>
+		</property>
+
+		<property name="mappingResources">
+
+			<list>
+				<value>com/edu/db/Queries.xml</value>
+			</list>
+		</property>
+		<property name="dataSource" ref="dataSource" />
+		<property name="annotatedClasses">
+			<list>
+
+				<value>com.edu.security.model.User</value>
+				<value>com.edu.model.Alert</value>
+				<value>com.edu.model.AlertReceiver</value>
+				<value>com.edu.model.Answer</value>
+				<value>com.edu.model.CodeList</value>
+				<value>com.edu.model.Country</value>
+				<value>com.edu.model.Correspondence</value>
+				<value>com.edu.model.Curriculum</value>
+				<value>com.edu.model.CurriculumProgress</value>
+				<value>com.edu.model.Level</value>
+				<value>com.edu.model.QNA</value>
+				<value>com.edu.model.Question</value>
+				<value>com.edu.model.Subject</value>
+				<value>com.edu.model.SubjectLevel</value>
+				<value>com.edu.model.Teacher</value>
+				<value>com.edu.model.Test</value>
+				<value>com.edu.model.TestQuestion</value>
+				<value>com.edu.model.UserTest</value>
+				<value>com.edu.model.ResultRange</value>
+				<value>com.edu.model.ResultType</value>
+				<value>com.edu.model.Country</value>
+				<value>com.edu.model.Position</value>
+				<value>com.edu.model.ExamTimeTable</value>
+				<value>com.edu.model.ExamType</value>
+				<value>com.edu.model.Exemption</value>
+				<value>com.edu.model.School</value>
+				<value>com.edu.model.SchoolType</value>
+				<value>com.edu.model.SchoolLevel</value>
+				<value>com.edu.model.SchoolReligion</value>
+				<value>com.edu.model.Student</value>
+				<value>com.edu.model.Term</value>
+				<value>com.edu.model.TermGroup</value>
+				<value>com.edu.model.Schooling</value>
+				<value>com.edu.model.EventType</value>
+				<value>com.edu.model.LevelClass</value>
+				<value>com.edu.model.Mark</value>
+				<value>com.edu.model.Grade</value>
+				<value>com.edu.model.Exam</value>
+				<value>com.edu.model.Course</value>
+				<value>com.edu.model.TeacherEnrollment</value>
+				<value>com.edu.model.StudentEnrollment</value>
+				<value>com.edu.security.model.Roles</value>
+				<value>com.edu.security.model.Menu</value>
+				<value>com.edu.security.model.RolesUser</value>
+				<value>com.edu.security.model.RolesMenu</value>
+				<value>com.edu.security.model.SessionHistory</value>
+				<value>com.edu.model.SchoolYear</value>
+				<value>com.edu.model.Receiver</value>
+				<value>com.edu.model.Configuration</value>
+				<value>com.edu.model.Payment</value>
+				<value>com.edu.model.Parent</value>
+				<value>com.edu.model.ParentStudent</value>
+				<value>com.edu.model.PayType</value>
+				<value>com.edu.model.SalaryPayment</value>
+				<value>com.edu.model.Salary</value>
+				<value>com.edu.model.Tuition</value>
+				<value>com.edu.model.Rating</value>
+				<value>com.edu.model.CourseHistory</value>
+				<value>com.edu.model.Averages</value>
+				<value>com.edu.model.Bulletin</value>
+				<value>com.edu.stocks.model.Carrier</value>
+				<value>com.edu.stocks.model.Category</value>
+				<value>com.edu.stocks.model.Brand</value>
+				<value>com.edu.stocks.model.Product</value>
+				<value>com.edu.stocks.model.PurchaseOrder</value>
+				<value>com.edu.stocks.model.OrderProduct</value>
+				<value>com.edu.stocks.model.Shipment</value>
+				<value>com.edu.stocks.model.Supplier</value>
+				<value>com.edu.stocks.model.ProductConsumer</value>
+				<value>com.edu.model.Parameter</value>
+				<value>com.edu.model.Event</value>
+				<value>com.edu.model.ClassCouncil</value>
+				<value>com.edu.model.EventType</value>
+				<value>com.edu.model.Disease</value>
+				<value>com.edu.model.MedicalVisit</value>
+				<value>com.edu.model.TuitionType</value>
+				<value>com.edu.model.TimeTable</value>
+				<value>com.edu.model.OperationType</value>
+				<value>com.edu.model.Operation</value>
+				<value>com.edu.model.Files</value>
+				<value>com.edu.model.UsersFeedback</value>
+				<value>com.edu.model.YearSummary</value>
+				<value>com.edu.model.TermGroupSummary</value>
+				<value>com.edu.model.News</value>
+				<value>com.edu.model.Furniture</value>
+				<value>com.edu.model.StudentTuition</value>
+			</list>
+
+		</property>
+	</bean>
+
+	<!--
+		enable the configuration of transactional behavior based on
+		annotations
+	-->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean
+		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+
+	<bean
+		class="org.springframework.transaction.interceptor.TransactionAttributeSourceAdvisor">
+		<property name="transactionInterceptor" ref="txInterceptor" />
+	</bean>
+
+	<bean id="txInterceptor"
+		class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributeSource">
+			<bean
+				class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource" />
+		</property>
+	</bean>
+	<bean id="lobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler"
+		lazy-init="true" />
+</beans>

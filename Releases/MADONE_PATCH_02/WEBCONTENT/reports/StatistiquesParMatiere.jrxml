@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletin" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.464100000000011"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="140"/>
+	<subDataset name="schoolInfo">
+		<queryString>
+			<![CDATA[SELECT logo, report_header from school where show_report_header=1 limit 1]]>
+		</queryString>
+		<field name="logo" class="java.io.InputStream"/>
+		<field name="report_header" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="termId" class="java.lang.Long"/>
+	<parameter name="yearId" class="java.lang.Long"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\My Projects\\education\\WebContent\\reports\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="schoolId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT  SY.DESCRIPTION SCHOOLYEAR, TE.NAME TERMNAME, LVL.NAME, BULL.CLASS_NAME, AVG(BULL.MARK) AVERAGEMARK, MIN(BULL.MARK) MINMARK,
+MAX(BULL.MARK) MAXMARK, SUM(CASE WHEN BULL.MARK>=10 THEN 1 ELSE 0 END ) PASSED, SUM(CASE WHEN BULL.MARK<10 THEN 1 ELSE 0 END ) FAILED,   AVG(NBR_STUDENT) NBR_STUDENT
+FROM  BULLETIN BULL,TERM TE,  SCHOOLYEAR SY, LEVELS LVL
+WHERE BULL.SCHOOLYEAR_ID = SY.SCHOOLYEAR_ID
+AND BULL.TERM_ID  = TE.TERM_ID
+AND BULL.LEVEL_ID = LVL.LEVEL_ID
+AND BULL.SCHOOL_ID=$P{schoolId}
+AND BULL.TERM_ID=$P{termId}
+AND BULL.SCHOOLYEAR_ID=$P{yearId}
+GROUP BY  SY.DESCRIPTION, TE.NAME, LVL.NAME, BULL.CLASS_NAME
+ORDER BY LVL.NAME, BULL.CLASS_NAME]]>
+	</queryString>
+	<field name="SCHOOLYEAR" class="java.lang.String"/>
+	<field name="TERMNAME" class="java.lang.String"/>
+	<field name="NAME" class="java.lang.String"/>
+	<field name="CLASS_NAME" class="java.lang.String"/>
+	<field name="AVERAGEMARK" class="java.lang.Double"/>
+	<field name="MINMARK" class="java.lang.Double"/>
+	<field name="MAXMARK" class="java.lang.Double"/>
+	<field name="PASSED" class="java.math.BigDecimal"/>
+	<field name="FAILED" class="java.math.BigDecimal"/>
+	<field name="NBR_STUDENT" class="java.math.BigDecimal"/>
+	<sortField name="AVERAGEMARK"/>
+	<sortField name="CLASS_NAME"/>
+	<variable name="variable1" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="71" splitType="Stretch">
+			<subreport>
+				<reportElement x="1" y="0" width="751" height="71"/>
+				<subreportParameter name="schoolId">
+					<subreportParameterExpression><![CDATA[$P{schoolId}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression class="java.lang.String"><![CDATA[$P{SUBREPORT_DIR}+"ReportHeaderLandscape.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="33" splitType="Stretch">
+			<textField>
+				<reportElement x="1" y="0" width="751" height="33"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{TERMNAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<summary>
+		<band height="405">
+			<bar3DChart>
+				<chart theme="eye.candy.sixties">
+					<reportElement x="1" y="0" width="751" height="187"/>
+					<chartTitle position="Top"/>
+					<chartSubtitle color="#000000"/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Plus Faible Moyenne"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{CLASS_NAME}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{MINMARK}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Moyennes"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{CLASS_NAME}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{AVERAGEMARK}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Plus forte Moyenne"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{CLASS_NAME}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{MAXMARK}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<bar3DPlot>
+					<plot labelRotation="-10.0">
+						<seriesColor seriesOrder="0" color="#CC3300"/>
+						<seriesColor seriesOrder="1" color="#FFFF00"/>
+						<seriesColor seriesOrder="2" color="#006633"/>
+					</plot>
+					<itemLabel color="#000000" backgroundColor="#FFFFFF"/>
+					<categoryAxisFormat labelRotation="-10.0">
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</valueAxisFormat>
+				</bar3DPlot>
+			</bar3DChart>
+			<stackedBar3DChart>
+				<chart theme="eye.candy.sixties">
+					<reportElement x="1" y="215" width="751" height="187"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Reussites"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{CLASS_NAME}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{PASSED}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Echecs"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{CLASS_NAME}]]></categoryExpression>
+						<valueExpression><![CDATA[$F{FAILED}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<bar3DPlot>
+					<plot labelRotation="-10.0">
+						<seriesColor seriesOrder="0" color="#006633"/>
+						<seriesColor seriesOrder="1" color="#CC3300"/>
+					</plot>
+					<itemLabel color="#000000" backgroundColor="#FFFFFF"/>
+					<categoryAxisFormat labelRotation="-10.0">
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</valueAxisFormat>
+				</bar3DPlot>
+			</stackedBar3DChart>
+		</band>
+	</summary>
+</jasperReport>

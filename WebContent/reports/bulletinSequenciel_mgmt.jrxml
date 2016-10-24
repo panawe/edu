@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletinSequenciel_mgmt" language="groovy" pageWidth="440" pageHeight="54" columnWidth="440" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.771561000000001"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="className" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="schoolId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT CONCAT_WS(' ',TC.LAST_NAME,TC.MIDDLE_NAME, TC.FIRST_NAME) TEACHER, SC.INSPECTOR, DIRECTOR
+FROM TEACHER TC, CLASS CL, SCHOOL SC
+WHERE CL.RESPONSIBLE_TEACHER_ID=TC.TEACHER_ID
+AND CL.SCHOOL_ID=SC.SCHOOL_ID
+AND SC.SCHOOL_ID=$P{schoolId}
+AND CL.NAME=$P{className}]]>
+	</queryString>
+	<field name="TEACHER" class="java.lang.String"/>
+	<field name="INSPECTOR" class="java.lang.String"/>
+	<field name="DIRECTOR" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="192" y="33" width="131" height="20"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{DIRECTOR}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="72" y="33" width="120" height="20"/>
+				<textElement verticalAlignment="Bottom">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{TEACHER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="192" y="0" width="131" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Le Directeur]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="72" y="0" width="114" height="20"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Le Titulaire]]></text>
+			</staticText>
+		</band>
+	</detail>
+</jasperReport>

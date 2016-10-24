@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="StatistiquesParEcole_graph" pageWidth="565" pageHeight="555" orientation="Landscape" columnWidth="565" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="matricule" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="yearId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT SC.NAME SCHOOLNAME, SY.NAME YEAR, BULL.CLASS_NAME, TE.TERM_ID,TE.NAME TERMNAME,BULL.MARK*BAREM_PRIMAIRE/20.0 MARK,  BULL.NBR_STUDENT, BULL.RANK_NBR,DISPLAY_RANG
+FROM  BULLETIN BULL,TERM TE,  SCHOOLYEAR SY,SCHOOL SC, STUDENT ST
+WHERE BULL.SCHOOLYEAR_ID = SY.SCHOOLYEAR_ID
+AND BULL.TERM_ID  = TE.TERM_ID
+AND ST.MATRICULE = $P{matricule}
+AND BULL.SCHOOLYEAR_ID =$P{yearId}
+AND SC.SCHOOL_ID=BULL.SCHOOL_ID
+AND ST.STUDENT_ID = BULL.STUDENT_ID]]>
+	</queryString>
+	<field name="SCHOOLNAME" class="java.lang.String"/>
+	<field name="YEAR" class="java.lang.String"/>
+	<field name="CLASS_NAME" class="java.lang.String"/>
+	<field name="TERM_ID" class="java.lang.Integer"/>
+	<field name="TERMNAME" class="java.lang.String"/>
+	<field name="MARK" class="java.lang.Double"/>
+	<field name="NBR_STUDENT" class="java.lang.Integer"/>
+	<field name="RANK_NBR" class="java.lang.Integer"/>
+	<field name="DISPLAY_RANG" class="java.lang.Integer"/>
+	<sortField name="YEAR"/>
+	<sortField name="TERM_ID"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="179" splitType="Stretch">
+			<lineChart>
+				<chart theme="aegean">
+					<reportElement x="0" y="0" width="565" height="178"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Moyennes"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{TERMNAME}.substring(2,$F{TERMNAME}.length())]]></categoryExpression>
+						<valueExpression><![CDATA[$F{MARK}]]></valueExpression>
+						<labelExpression><![CDATA[$F{TERMNAME}.substring(2,$F{TERMNAME}.length())]]></labelExpression>
+					</categorySeries>
+				</categoryDataset>
+				<linePlot>
+					<plot labelRotation="-5.0"/>
+					<categoryAxisFormat labelRotation="-5.0">
+						<axisFormat>
+							<labelFont>
+								<font size="8"/>
+							</labelFont>
+							<tickLabelFont/>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</valueAxisFormat>
+				</linePlot>
+			</lineChart>
+		</band>
+	</summary>
+</jasperReport>

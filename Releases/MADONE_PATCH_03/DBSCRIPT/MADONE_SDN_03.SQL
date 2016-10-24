@@ -1,0 +1,22 @@
+INSERT INTO MENU (SCHOOL_ID,SECURITY_CODE,MENU_ID,`PARENT_MENU_ID`, `NAME`, `DESCRIPTION`, `CREATE_DATE`, `MOD_DATE`, `MOD_BY`, `URL`)
+VALUES 
+(1,56,56,6,'Bulletin Mensuel Classe','Bulletin Mensuel Classe',now(),now(),1,'dispatch?link=report&reportName=bulletinMensuelClasse'),
+(1,57,57,6,'Bulletin Mensuel Individuel','Bulletin Mensuel Individuel',now(),now(),1,'dispatch?link=report&reportName=bulletinMensuelStudent');
+
+INSERT INTO ROLES_MENU (SCHOOL_ID,`ROLE_ID`, `MENU_ID`, `CREATE_DATE`, `MOD_DATE`, `MOD_BY`, `ACCESS_LEVEL`) VALUES
+(1,1,56,now(),now(),1,1),(1,1,57,now(),now(),1,1);
+
+INSERT INTO ROLES_MENU (SCHOOL_ID,`ROLE_ID`, `MENU_ID`, `CREATE_DATE`, `MOD_DATE`, `MOD_BY`, `ACCESS_LEVEL`) VALUES
+(1,2,56,now(),now(),1,1),(1,2,57,now(),now(),1,1);
+
+INSERT INTO ROLES_MENU (SCHOOL_ID,`ROLE_ID`, `MENU_ID`, `CREATE_DATE`, `MOD_DATE`, `MOD_BY`, `ACCESS_LEVEL`) VALUES
+(1,4,56,now(),now(),1,1),(1,4,57,now(),now(),1,1);
+
+ALTER TABLE USERS ADD COLUMN CSV_DELIMITER VARCHAR(10);
+
+ALTER TABLE TEACHER MODIFY  SCH_RELIGION_ID tinyint NULL;
+
+INSERT INTO CONFIGURATION (SCHOOL_ID, `NAME`, `VALUE`, `DESCRIPTION`, `CREATE_DATE`, `MOD_DATE`, `MOD_BY`, `GROUP_NAME`) VALUES
+(1, 'LIST_SEPERATOR', ';', 'LIST_SEPERATOR', '2010-11-27 13:32:25', '2010-11-27 13:32:25', 1, 'OPERATING_SYSTEM');
+UPDATE USERS SET CSV_DELIMITER =';';
+COMMIT;

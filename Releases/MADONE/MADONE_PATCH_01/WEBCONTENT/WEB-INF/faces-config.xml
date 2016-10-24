@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_1_2.xsd"
+	version="1.2">
+
+	<!-- <application> <el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver> 
+		<locale-config> <default-locale>fr</default-locale> <supported-locale>en</supported-locale> 
+		<supported-locale>en_US</supported-locale> <supported-locale>de</supported-locale> 
+		<supported-locale>fr</supported-locale> </locale-config> <message-bundle>com.edu.config.MessageRessources</message-bundle> 
+		</application> -->
+
+	<application>
+		<el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
+		<locale-config>
+			<default-locale>fr</default-locale>
+			<supported-locale>en</supported-locale>
+			<supported-locale>de</supported-locale>
+			<supported-locale>en_US</supported-locale>
+		</locale-config>
+		<resource-bundle>
+			<base-name>com.edu.config.MessageRessources</base-name>
+			<var>msg</var>
+		</resource-bundle>
+	</application>
+
+	<navigation-rule>
+		<from-view-id>/index.jsp</from-view-id>
+		<navigation-case>
+			<from-outcome>succes</from-outcome>
+			<to-view-id>/home.faces</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>echec</from-outcome>
+			<to-view-id>/index.faces</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>pending</from-outcome>
+			<to-view-id>/index_school_inscription.faces</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	
+	<navigation-rule>
+		<from-view-id>/index_demo.jsp</from-view-id>
+		<navigation-case>
+			<from-outcome>succes</from-outcome>
+			<to-view-id>/home.faces</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>echec</from-outcome>
+			<to-view-id>/index_demo.faces</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/index_parents.jsp</from-view-id>
+		<navigation-case>
+			<from-outcome>succes</from-outcome>
+			<to-view-id>/home.faces</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>echec</from-outcome>
+			<to-view-id>/index_parents.faces</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+	<navigation-rule>
+		<from-view-id>/index_school_results.jsp</from-view-id>
+		<navigation-case>
+			<from-outcome>succes</from-outcome>
+			<to-view-id>/home.faces</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>echec</from-outcome>
+			<to-view-id>/index_school_results.faces</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<from-view-id>/index_eleves.jsp</from-view-id>
+		<navigation-case>
+			<from-outcome>succes</from-outcome>
+			<to-view-id>/home.faces</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>echec</from-outcome>
+			<to-view-id>/index_eleves.faces</to-view-id>
+		</navigation-case>
+	</navigation-rule>	
+
+	<navigation-rule>
+		<from-view-id>/index_enseignants.jsp</from-view-id>
+		<navigation-case>
+			<from-outcome>succes</from-outcome>
+			<to-view-id>/home.faces</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>echec</from-outcome>
+			<to-view-id>/index_enseignants.faces</to-view-id>
+		</navigation-case>
+	</navigation-rule>	
+		
+	<navigation-rule>
+		<from-view-id>/index_feedback.jsp</from-view-id>
+		<navigation-case>
+			<from-outcome>succes</from-outcome>
+			<to-view-id>/index.faces</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>echec</from-outcome>
+			<to-view-id>/index_feedback.faces</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	
+	<navigation-rule>
+		<from-view-id>/</from-view-id>
+		<navigation-case>
+			<from-outcome>changedLocale</from-outcome>
+			<to-view-id>/home.faces</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	
+	<converter>
+		<converter-id>studentConverter</converter-id>
+		<converter-class>com.edu.util.StudentConverter</converter-class>
+	</converter>
+
+	<converter>
+		<converter-id>teacherConverter</converter-id>
+		<converter-class>com.edu.util.TeacherConverter</converter-class>
+	</converter>
+
+	<converter>
+		<converter-id>menuConverter</converter-id>
+		<converter-class>com.edu.util.MenuConverter</converter-class>
+	</converter>
+	
+		<converter>
+		<converter-id>tuitionConverter</converter-id>
+		<converter-class>com.edu.util.TuitionConverter</converter-class>
+	</converter>
+
+	<converter>
+		<converter-id>userConverter</converter-id>
+		<converter-class>com.edu.util.UserConverter</converter-class>
+	</converter>
+
+</faces-config>

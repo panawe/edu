@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Etat des Commandes" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="2.143588810000005"/>
+	<property name="ireport.x" value="1"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="schoolId" class="java.lang.Long">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="orderStatus" class="java.util.List">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[SELECT PO.ORDER_ID, C.NAME CATEGORY, B.NAME BRAND, P.NAME PRODUCTNAME, P.PRODUCT_CODE,
+P.PICTURE, P.ISBN, P.BAR_CODE, P.QUANTITY, P.QUANTITY_IN_STOCK, P.MINQTY_TO_ORDER,
+PO.ORDER_DATE,PO.POS_DELIVERY_DATE, PO.DISCOUNT_RATE, PO.DISCOUNT_AMOUNT, PO.TOTAL_AMOUNT,
+OP.QTY_ORDERED, OP.QTY_RECEIVED,OP.QTY_DAMAGED, OP.TOTAL_AMOUNT PRODUCT_AMOUNT, OP.DISCOUNT_AMOUNT PRODUCT_DISCOUNT_AMOUNT, S.NAME SUPPLIER, S.PHONE_NUMBER SUPPLIER_NUMBER,
+SH.SHIPMENT_NUMBER, SH.ORIGIN,SH.DATE_OF_DISPATCH, SH.DATE_OF_ARRIVAL, CONFIG.NAME STATUS, CR.NAME CARRIER,
+(SELECT REPORT_HEADER FROM SCHOOL WHERE SCHOOL_ID=$P{schoolId}) HEADER,
+(SELECT VALUE FROM CONFIGURATION WHERE SCHOOL_ID=$P{schoolId} AND NAME = 'MONEY_FORMAT') MONEY_FORMAT
+FROM PURCHASE_ORDER  PO
+INNER JOIN ORDER_PRODUCT OP ON (PO.ORDER_ID = OP.ORDER_ID)
+INNER JOIN PRODUCT P ON (P.PRODUCT_ID = OP.PRODUCT_ID)
+INNER JOIN SUPPLIER S ON (PO.SUPPLIER_ID = S.SUPPLIER_ID)
+INNER JOIN CATEGORY C ON (P.CATEGORY_ID=C.CATEGORY_ID)
+INNER JOIN BRAND B ON (B.BRAND_ID=P.BRAND_ID)
+LEFT OUTER JOIN SHIPMENT SH ON (PO.SHIPMENT_ID = SH.SHIPMENT_ID)
+LEFT OUTER JOIN CARRIER CR ON (CR.CARRIER_ID=SH.CARRIER_ID)
+LEFT OUTER JOIN (SELECT  CAST(VALUE AS SIGNED) STATUS , NAME FROM CONFIGURATION WHERE SCHOOL_ID= $P{schoolId} AND GROUP_NAME ='PURCHASE_ORDER_STATUS') CONFIG
+ON (CONFIG.STATUS=PO.STATUS)
+WHERE PO.SCHOOL_ID=$P{schoolId}
+AND P.SCHOOL_ID=$P{schoolId}
+AND OP.SCHOOL_ID=$P{schoolId}
+AND  $X{IN,CONFIG.NAME, orderStatus}]]>
+	</queryString>
+	<field name="ORDER_ID" class="java.lang.Long"/>
+	<field name="CATEGORY" class="java.lang.String"/>
+	<field name="BRAND" class="java.lang.String"/>
+	<field name="PRODUCTNAME" class="java.lang.String"/>
+	<field name="PRODUCT_CODE" class="java.lang.String"/>
+	<field name="PICTURE" class="java.lang.Object"/>
+	<field name="ISBN" class="java.lang.String"/>
+	<field name="BAR_CODE" class="java.lang.String"/>
+	<field name="QUANTITY" class="java.lang.Integer"/>
+	<field name="QUANTITY_IN_STOCK" class="java.lang.Integer"/>
+	<field name="MINQTY_TO_ORDER" class="java.lang.Integer"/>
+	<field name="ORDER_DATE" class="java.sql.Date"/>
+	<field name="POS_DELIVERY_DATE" class="java.sql.Date"/>
+	<field name="DISCOUNT_RATE" class="java.lang.Double"/>
+	<field name="DISCOUNT_AMOUNT" class="java.lang.Double"/>
+	<field name="TOTAL_AMOUNT" class="java.lang.Double"/>
+	<field name="QTY_ORDERED" class="java.lang.Long"/>
+	<field name="QTY_RECEIVED" class="java.lang.Long"/>
+	<field name="QTY_DAMAGED" class="java.lang.Long"/>
+	<field name="PRODUCT_AMOUNT" class="java.lang.Double"/>
+	<field name="PRODUCT_DISCOUNT_AMOUNT" class="java.lang.Double"/>
+	<field name="SUPPLIER" class="java.lang.String"/>
+	<field name="SUPPLIER_NUMBER" class="java.lang.String"/>
+	<field name="SHIPMENT_NUMBER" class="java.lang.String"/>
+	<field name="ORIGIN" class="java.lang.String"/>
+	<field name="DATE_OF_DISPATCH" class="java.sql.Date"/>
+	<field name="DATE_OF_ARRIVAL" class="java.sql.Date"/>
+	<field name="STATUS" class="java.lang.String"/>
+	<field name="CARRIER" class="java.lang.String"/>
+	<field name="HEADER" class="java.lang.String"/>
+	<field name="MONEY_FORMAT" class="java.lang.String"/>
+	<sortField name="ORDER_ID" order="Descending"/>
+	<group name="ORDER" keepTogether="true">
+		<groupExpression><![CDATA[$F{ORDER_ID}]]></groupExpression>
+		<groupHeader>
+			<band height="69">
+				<textField isBlankWhenNull="true">
+					<reportElement mode="Opaque" x="0" y="0" width="802" height="47" forecolor="#006699" backcolor="#E6E6E6"/>
+					<textElement verticalAlignment="Middle">
+						<font size="14" isBold="true"/>
+					</textElement>
+				</textField>
+				<line>
+					<reportElement x="0" y="0" width="252" height="1" forecolor="#666666"/>
+				</line>
+				<staticText>
+					<reportElement mode="Opaque" x="69" y="49" width="126" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Nom]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="195" y="49" width="106" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Marque]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="301" y="49" width="113" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ISBN]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="414" y="49" width="101" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Code]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="515" y="49" width="62" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Qte Cmde]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="577" y="49" width="72" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+					<textElement textAlignment="Center">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Qte Recue]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="649" y="50" width="63" height="19" forecolor="#006699" backcolor="#E6E6E6"/>
+					<textElement textAlignment="Center">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Remise]]></text>
+				</staticText>
+				<line>
+					<reportElement x="0" y="48" width="802" height="1" forecolor="#666666"/>
+				</line>
+				<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+					<reportElement x="79" y="24" width="89" height="20" forecolor="#CC6600" backcolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.util.Date"><![CDATA[$F{ORDER_DATE}]]></textFieldExpression>
+				</textField>
+				<textField pattern="" isBlankWhenNull="true">
+					<reportElement x="79" y="0" width="89" height="21" forecolor="#CC6600" backcolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Long"><![CDATA[$F{ORDER_ID}]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+					<reportElement x="260" y="1" width="62" height="20" forecolor="#CC6600" backcolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.util.Date"><![CDATA[$F{DATE_OF_DISPATCH}]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+					<reportElement x="260" y="24" width="62" height="20" forecolor="#CC6600" backcolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.util.Date"><![CDATA[$F{DATE_OF_ARRIVAL}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="563" y="24" width="84" height="20" forecolor="#CC6600" backcolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{STATUS}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="415" y="24" width="100" height="20" forecolor="#CC6600" backcolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{CARRIER}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="563" y="1" width="72" height="20" forecolor="#CC6600" backcolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{SUPPLIER}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement x="695" y="1" width="107" height="20" forecolor="#CC6600" backcolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.Double"><![CDATA[$F{TOTAL_AMOUNT}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="712" y="49" width="90" height="20" forecolor="#006699" backcolor="#E6E6E6"/>
+					<textElement>
+						<font size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Montant Paye]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="415" y="1" width="100" height="20" forecolor="#CC6600" backcolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{SHIPMENT_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="695" y="24" width="107" height="20" forecolor="#CC6600" backcolor="#FFFFFF"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{ORIGIN}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="5" y="1" width="74" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Numero Cmde:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="5" y="24" width="74" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Date Cmde:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="168" y="1" width="92" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Date Expedition:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="168" y="24" width="92" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Date Reception:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="325" y="1" width="89" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Numero de suivi:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="325" y="24" width="90" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Transporteur:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="515" y="0" width="48" height="20" forecolor="#000000"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Vendeur:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="529" y="24" width="33" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Etat:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="649" y="24" width="46" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Origine:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="649" y="0" width="46" height="20"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Montant:]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="72">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="-20" width="842" height="92" backcolor="#006699"/>
+				<staticText>
+					<reportElement x="20" y="20" width="234" height="43" forecolor="#FFFFFF"/>
+					<textElement>
+						<font size="34" isBold="true"/>
+					</textElement>
+					<text><![CDATA[COMMANDES]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="638" y="20" width="184" height="72" forecolor="#FFFFFF"/>
+					<textElement markup="html"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{HEADER}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="13"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="23"/>
+	</columnHeader>
+	<detail>
+		<band height="20">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="69" y="0" width="126" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{PRODUCTNAME}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="301" y="0" width="113" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ISBN}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="414" y="0" width="101" height="20"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{PRODUCT_CODE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="195" y="0" width="106" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{BRAND}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0;-###0" isBlankWhenNull="true">
+				<reportElement x="515" y="0" width="62" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{QTY_ORDERED}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0;-###0" isBlankWhenNull="true">
+				<reportElement x="577" y="0" width="64" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Long"><![CDATA[$F{QTY_RECEIVED}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="641" y="1" width="64" height="19"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{PRODUCT_DISCOUNT_AMOUNT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="712" y="0" width="78" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.Double"><![CDATA[$F{PRODUCT_AMOUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="17">
+			<textField>
+				<reportElement mode="Opaque" x="0" y="4" width="680" height="13" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement mode="Opaque" x="680" y="4" width="122" height="13" backcolor="#E6E6E6"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="0" y="4" width="100" height="13"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band/>
+	</summary>
+</jasperReport>

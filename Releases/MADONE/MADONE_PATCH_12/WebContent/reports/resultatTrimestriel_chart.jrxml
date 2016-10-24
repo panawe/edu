@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resultatTrimestriel_chart" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="yearId" class="java.lang.Long"/>
+	<parameter name="className" class="java.lang.String"/>
+	<parameter name="termId" class="java.lang.Long"/>
+	<parameter name="schoolId" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[SELECT CASE WHEN GRADE_NAME IS NULL THEN 'INCONNU' ELSE GRADE_NAME END GRADE_NAME, COUNT(*) NBR FROM BULLETIN WHERE
+CLASS_NAME =$P{className} AND SCHOOL_ID=$P{schoolId}
+AND SCHOOLYEAR_ID=$P{yearId} AND TERM_ID=$P{termId}
+GROUP BY CASE WHEN GRADE_NAME IS NULL THEN 'INCONNU' ELSE GRADE_NAME END]]>
+	</queryString>
+	<field name="GRADE_NAME" class="java.lang.String"/>
+	<field name="NBR" class="java.lang.Long"/>
+	<group name="GRADE_NAME">
+		<groupExpression><![CDATA[$F{GRADE_NAME}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<summary>
+		<band height="135">
+			<bar3DChart>
+				<chart isShowLegend="false" theme="default">
+					<reportElement stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="555" height="135"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend position="Top"/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Statistiques"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{GRADE_NAME}+"("+$F{NBR}+")"]]></categoryExpression>
+						<valueExpression><![CDATA[$F{NBR}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<bar3DPlot isShowLabels="false">
+					<plot labelRotation="15.0">
+						<seriesColor seriesOrder="0" color="#CCCCCC"/>
+						<seriesColor seriesOrder="1" color="#99CCFF"/>
+						<seriesColor seriesOrder="2" color="#FFFF99"/>
+						<seriesColor seriesOrder="3" color="#DAB45B"/>
+						<seriesColor seriesOrder="4" color="#B2B1B2"/>
+						<seriesColor seriesOrder="5" color="#9999FF"/>
+						<seriesColor seriesOrder="6" color="#CCFFCC"/>
+						<seriesColor seriesOrder="7" color="#CCFFCC"/>
+						<seriesColor seriesOrder="8" color="#FFCCCC"/>
+						<seriesColor seriesOrder="9" color="#CCFFFF"/>
+						<seriesColor seriesOrder="10" color="#CCFFCC"/>
+						<seriesColor seriesOrder="11" color="#FFCCCC"/>
+					</plot>
+					<itemLabel color="#000000" backgroundColor="#FFFFFF"/>
+					<categoryAxisFormat labelRotation="15.0">
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat>
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
+					</valueAxisFormat>
+				</bar3DPlot>
+			</bar3DChart>
+		</band>
+	</summary>
+</jasperReport>
